@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Carol UX Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Bricolage Grotesque', sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #FAFAFA;
+            color: #000;
+            image-rendering: -webkit-optimize-contrast;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* 1. 页面容器：锁定 1440x3960 */
+        .about-wrapper {
+            position: relative;
+            width: 1440px; 
+            height: 3960px;
+            background-image: url('about.jpg'); 
+            background-size: 1440px 3960px;
+            background-repeat: no-repeat;
+            background-position: top center;
+        }
+
+        /* 2. 导航栏 */
+        .nav-container {
+            position: absolute;
+            top: 48px;
+            left: 130px;
+            display: flex;
+            gap: 40px;
+            z-index: 20;
+        }
+        .nav-link { font-size: 20px; font-weight: 700; text-decoration: none; color: #000; }
+
+        /* 3. 自我介绍文字：锁定 X:309, Y:576, W:823, H:355 */
+        .about-intro-box {
+            position: absolute;
+            top: 576px;   
+            left: 309px;  
+            width: 823px; 
+            height: 355px;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        .intro-text-flow {
+            font-size: 20px;
+            font-weight: 500; 
+            line-height: 35px; 
+        }
+
+        .intro-hi {
+            font-size: 36px;
+            font-weight: 800; 
+            margin-right: 8px;
+        }
+
+        /* 4. 联系方式图标：精准定位 X:628, Y:899 */
+        /* 由于图标组有总宽度，我们使用 left: 628px 锁定起点 */
+        .inline-social {
+            position: absolute;
+            top: 899px;   /* Figma Y: 899 */
+            left: 628px;  /* Figma X: 628 */
+            display: flex;
+            gap: 28px;
+            z-index: 30;
+        }
+        .social-icon { width: 42px; height: 42px; transition: transform 0.2s; }
+        .social-icon:hover { transform: scale(1.1); }
+
+        /* 5. Footer 与 Back 按钮保持不变 */
+        .footer-section {
+            position: absolute;
+            bottom: 120px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer-title { font-size: 32px; font-weight: 500; margin-bottom: 15px; }
+        .footer-email { font-size: 24px; font-weight: 500; color: #0000FF; text-decoration: underline; margin-bottom: 40px; }
+        .back-to-top {
+            position: absolute;
+            right: 130px;
+            top: 50px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .back-icon { width: 42px; height: 87px; object-fit: contain; }
+        .back-text { font-size: 20px; font-weight: 700; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="about-wrapper">
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="#" class="nav-link">About</a>
+        </nav>
+
+        <div class="about-intro-box">
+            <p class="intro-text-flow">
+                <span class="intro-hi">Hi! I’m Carol.</span>
+                a passionate UX designer and dog lover with two adorable Golden Retrievers. 🐶🐶 When I’m not designing, you’ll find me watching animations, movies, or exploring new cuisines.
+            </p>
+            <p class="intro-text-flow mt-6">
+                I’m also passionate about accessibility and human-centered design, turning complex problems into intuitive, seamless experiences. I’m currently available for UX design opportunities and excited to create meaningful, user-friendly products! So, come connect with me!
+            </p>
+        </div>
+
+        <div class="inline-social">
+            <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+                <img src="icon-instagram.png" alt="Instagram" class="social-icon">
+            </a>
+            <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+                <img src="icon-linkedin.png" alt="LinkedIn" class="social-icon">
+            </a>
+            <a href="mailto:YauchiTATA@Gmail.com">
+                <img src="icon-mail.png" alt="Email" class="social-icon">
+            </a>
+        </div>
+
+        <footer class="footer-section">
+            <h2 class="footer-title">Let’s Connect</h2>
+            <a href="mailto:YauchiTATA@Gmail.com" class="footer-email">YauchiTATA@Gmail.com</a>
+            <div class="flex gap-[28px]">
+                <img src="icon-instagram.png" class="social-icon">
+                <img src="icon-linkedin.png" class="social-icon">
+                <img src="icon-mail.png" class="social-icon">
+            </div>
+            <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <img src="back.png" alt="Back" class="back-icon">
+                <span class="back-text">Click Back</span>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
