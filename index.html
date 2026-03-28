@@ -1,226 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carol | UX Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Bricolage Grotesque', sans-serif; 
-            margin: 0;
-            padding: 0;
-            background-color: #FAFAFA;
-            color: #000;
-            image-rendering: -webkit-optimize-contrast;
-            width: 100%;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carol — Design World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* 1. 全屏背景：确保覆盖 2864px 的总长度 */
-        .full-page-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2864px;
-            background-image: url('homepage.png'); 
-            background-size: cover;
-            background-position: center top;
-            z-index: -1;
-        }
+    :root {
+      --black: #111;
+      --white: #ffffff;
+      --off: #f6f4f1;
+      --gray: #aaa;
+      --border: #e5e1db;
+    }
 
-        /* 2. 主容器 */
-        .main-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 1440px; 
-            margin: 0 auto;
-            min-height: 2864px;
-        }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-        /* 3. 导航栏 */
-        .nav-container {
-            padding: 48px 130px 0 130px;
-            display: flex;
-            gap: 40px;
-        }
-        .nav-link { font-size: 20px; font-weight: 700; text-decoration: none; color: #000; }
+    /* ── cursor ── */
+    #cursor {
+      position: fixed;
+      width: 9px; height: 9px;
+      background: var(--black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, opacity .2s;
+      mix-blend-mode: multiply;
+    }
+    #cursor.big { width: 44px; height: 44px; opacity: 0.1; }
 
-        /* 4. 自我介绍 */
-        .intro-section {
-            padding-left: 130px;
-            margin-top: 80px; 
-            width: 750px;
-        }
-        .hero-title { font-size: 64px; font-weight: 800; line-height: 1.1; margin-bottom: 30px; }
-        .hero-desc { font-size: 20px; font-weight: 500; line-height: 35px; }
+    /* ══════════════════════
+       1. INTRO SCREEN
+    ══════════════════════ */
+    #intro {
+      position: relative;
+      width: 100%; height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      overflow: hidden;
+    }
 
-        /* 5. 联系方式图标 */
-        .social-icons {
-            display: flex;
-            gap: 28px;
-            margin-top: 35px;
-            padding-left: 130px;
-        }
-        .social-icon { width: 42px; height: 42px; transition: transform 0.2s; }
+    #intro-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+    }
 
-        /* 6. 黑标：居中对齐 */
-        .scroll-btn-fixed {
-            position: absolute;
-            top: 640px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 72px;
-            height: 212px;
-            cursor: pointer;
-            z-index: 10;
-            transition: transform 0.3s ease;
-        }
-        .scroll-btn-fixed:hover { transform: translateX(-50%) translateY(10px); }
+    .intro-name {
+      position: relative;
+      z-index: 2;
+      font-size: clamp(90px, 14vw, 200px);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      color: var(--black);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 1.1s ease, transform 1.1s ease;
+      user-select: none;
+    }
+    .intro-name.show { opacity: 1; transform: translateY(0); }
 
-        /* 7. 项目列表 */
-        .project-list {
-            position: absolute;
-            top: 1197px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 60px;
-        }
-        .project-card {
-            position: relative;
-            width: 1368px;
-            height: 502px;
-            border-radius: 24px;
-            overflow: hidden;
-            background-color: #fff;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-        }
-        .more-btn {
-            position: absolute;
-            right: 57px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 85px;
-            height: 85px;
-            cursor: pointer;
-        }
+    /* ══════════════════════
+       2. TYPE SCREEN
+    ══════════════════════ */
+    #type-section {
+      position: relative;
+      width: 100%; height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 10vw;
+      background: #fff;
+      overflow: hidden;
+    }
 
-        /* 8. Footer 区块样式 */
-        .footer-section {
-            position: absolute;
-            top: 2400px; 
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .footer-title { 
-            font-size: 32px; 
-            font-weight: 500; /* Medium */
-            margin-bottom: 15px; 
-        }
-        .footer-email { 
-            font-size: 24px; font-weight: 500; color: #0000FF; 
-            text-decoration: underline; margin-bottom: 40px; 
-        }
-        .footer-social { display: flex; gap: 28px; }
+    /* dot grid */
+    #type-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, #d6d2cc 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
 
-        /* Click Back 按钮精准定位与大小 */
-        .back-to-top {
-            position: absolute;
-            right: 130px;
-            top: 80px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        .back-to-top:hover { opacity: 0.6; }
-        .back-icon {
-            width: 42px;   /* 要求：42px */
-            height: 87px;  /* 要求：87px */
-            object-fit: contain;
-        }
-        .back-text { 
-            font-size: 20px; /* 要求：20px */
-            font-weight: 700; /* 要求：Bold */
-            margin-top: 10px; 
-            white-space: nowrap;
-        }
+    .type-eyebrow {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 32px;
+      opacity: 0; transition: opacity .7s;
+    }
+    .type-eyebrow.show { opacity: 1; }
 
-    </style>
+    #typed-text {
+      position: relative; z-index: 1;
+      font-size: clamp(38px, 5.6vw, 76px);
+      font-weight: 800; line-height: 1.18;
+      letter-spacing: -0.03em; color: var(--black);
+      min-height: 3.8em;
+    }
+
+    .t-cur {
+      display: inline-block;
+      width: 4px; height: .83em;
+      background: var(--black);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink .85s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* nav */
+    #nav {
+      position: absolute;
+      top: 44px; left: 0; right: 0;
+      padding: 0 10vw;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 10;
+      opacity: 0; transform: translateY(-10px);
+      transition: opacity .7s, transform .7s;
+    }
+    #nav.show { opacity: 1; transform: translateY(0); }
+    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--black); text-decoration: none; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--black); transition: width .3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* bottom bar */
+    #bot {
+      position: absolute;
+      bottom: 40px; left: 0; right: 0;
+      padding: 0 10vw;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      z-index: 10;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .7s .15s, transform .7s .15s;
+    }
+    #bot.show { opacity: 1; transform: translateY(0); }
+    .bot-role { font-size: 12px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--gray); }
+    .view-btn {
+      font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--black); text-decoration: none;
+      border: 1.5px solid var(--black); padding: 13px 26px; border-radius: 40px;
+      display: flex; align-items: center; gap: 10px;
+      transition: background .25s, color .25s; cursor: none;
+    }
+    .view-btn:hover { background: var(--black); color: #fff; }
+    .view-btn .arr { transition: transform .25s; }
+    .view-btn:hover .arr { transform: translateX(4px); }
+
+    /* ══════════════════════
+       3. PROJECTS
+    ══════════════════════ */
+    #projects {
+      background: var(--off);
+      padding: 100px 6vw 120px;
+    }
+    .proj-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 52px;
+    }
+    .proj-title {
+      font-size: clamp(38px, 5vw, 64px); font-weight: 800;
+      letter-spacing: -.03em; line-height: 1;
+    }
+    .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
+
+    .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+    .pcard {
+      border-radius: 20px; overflow: hidden;
+      background: var(--white); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      transition: transform .35s, box-shadow .35s; cursor: none;
+    }
+    .pcard:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.08); }
+
+    .pcard-img {
+      position: relative; width: 100%; height: 350px;
+      overflow: hidden; background: #ebe8e3;
+    }
+    .pcard-img img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .5s; }
+    .pcard:hover .pcard-img img { transform: scale(1.05); }
+
+    .ftag {
+      position: absolute; top: 18px; left: 18px;
+      background: rgba(255,255,255,.92); backdrop-filter: blur(6px);
+      border: 1px solid rgba(0,0,0,.1); border-radius: 40px;
+      padding: 5px 14px; font-size: 11px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase; color: var(--black);
+    }
+    .fnum {
+      position: absolute; top: 12px; right: 18px;
+      font-size: 46px; font-weight: 800;
+      color: rgba(255,255,255,.38); line-height: 1; user-select: none;
+    }
+
+    .pcard-body {
+      padding: 22px 24px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+    }
+    .pcard-left h3 { font-size: 19px; font-weight: 800; margin: 0 0 4px; }
+    .pcard-left p { font-size: 13px; color: var(--gray); margin: 0 0 11px; line-height: 1.5; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      padding: 4px 11px; border-radius: 40px; border: 1px solid #d8d3cc; color: #999;
+    }
+    .go {
+      flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
+      background: var(--black); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; text-decoration: none; cursor: none;
+      transition: transform .2s, background .2s;
+    }
+    .pcard:hover .go { transform: scale(1.1); background: #333; }
+
+    /* ══════════════════════
+       4. FOOTER
+    ══════════════════════ */
+    footer {
+      background: var(--black); color: #fff;
+      padding: 80px 10vw 56px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 18px;
+    }
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
+    .ft-email {
+      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
+      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .ft-email:hover { color: #fff; border-color: #fff; }
+    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
+    .ft-socials a {
+      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: #444; text-decoration: none; transition: color .2s;
+    }
+    .ft-socials a:hover { color: #fff; }
+    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
+    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
 <body>
 
-    <div class="full-page-bg"></div>
+<div id="cursor"></div>
 
-    <div class="main-wrapper">
-        <nav class="nav-container">
-            <a href="#" class="nav-link">Home</a>
-            <a href="about.html" class="nav-link">About</a>
-        </nav>
+<!-- ══ 1. INTRO ══ -->
+<section id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-name" id="intro-name">Carol.</div>
+</section>
 
-        <div class="intro-section">
-            <h1 class="hero-title">HI! I am Carol-</h1>
-            <div class="hero-desc">
-                <p>With two years of experience crafting eye-catching visuals in graphic design, I’ve stepped into the world of UX—where great design isn’t just about looking good, but feeling right.</p>
-                <p class="mt-6">I love turning complex problems into elegant, intuitive experiences that people actually enjoy using. Whether it’s fine-tuning interactions, designing a seamless user flow, or bringing ideas to life through prototypes, I thrive on making digital products both beautiful and functional.</p>
-            </div>
+<!-- ══ 2. TYPE ══ -->
+<section id="type-section">
+  <nav id="nav">
+    <a href="#" class="nav-logo">Carol.</a>
+    <div class="nav-links">
+      <a href="#projects">Work</a>
+      <a href="#">About</a>
+      <a href="mailto:YauchiTATA@Gmail.com">Contact</a>
+    </div>
+  </nav>
+
+  <div class="type-eyebrow" id="eyebrow">UX Designer &amp; Visual Thinker</div>
+  <div id="typed-text"><span class="t-cur"></span></div>
+
+  <div id="bot">
+    <div class="bot-role">UX Designer &nbsp;·&nbsp; Open to opportunities</div>
+    <a href="#projects" class="view-btn">View Work <span class="arr">→</span></a>
+  </div>
+</section>
+
+<!-- ══ 3. PROJECTS ══ -->
+<section id="projects">
+  <div class="proj-header reveal">
+    <h2 class="proj-title">Selected<br>Work</h2>
+    <span class="proj-count">02 Projects</span>
+  </div>
+
+  <div class="bento">
+    <div class="pcard reveal">
+      <div class="pcard-img">
+        <img src="parrot.png" alt="Pawrot App">
+        <span class="ftag">UX Design</span>
+        <span class="fnum">01</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-left">
+          <h3>Pawrot App</h3>
+          <p>A companion app designed for parrot owners</p>
+          <div class="chips">
+            <span class="chip">Research</span>
+            <span class="chip">Interaction</span>
+            <span class="chip">Prototyping</span>
+          </div>
         </div>
-
-        <div class="social-icons">
-            <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
-                <img src="icon-instagram.png" alt="Instagram" class="social-icon">
-            </a>
-            <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
-                <img src="icon-linkedin.png" alt="LinkedIn" class="social-icon">
-            </a>
-            <a href="mailto:YauchiTATA@Gmail.com">
-                <img src="icon-mail.png" alt="Email" class="social-icon">
-            </a>
-        </div>
-
-        <a href="#projects-start" class="scroll-btn-fixed">
-            <img src="icon-scroll.png" alt="Scroll" class="w-full h-full object-contain">
-        </a>
-
-        <div id="projects-start" class="project-list">
-            <div class="project-card">
-                <img src="parrot.png" class="w-full h-full object-cover">
-                <a href="pawrot-detail.html">
-                    <img src="icon-more.png" class="more-btn">
-                </a>
-            </div>
-            <div class="project-card">
-                <img src="package.png" class="w-full h-full object-cover">
-                <a href="package-detail.html">
-                    <img src="icon-more.png" class="more-btn">
-                </a>
-            </div>
-        </div>
-
-        <footer class="footer-section">
-            <h2 class="footer-title">Let’s Connect</h2>
-            <a href="mailto:YauchiTATA@Gmail.com" class="footer-email">YauchiTATA@Gmail.com</a>
-            
-            <div class="footer-social">
-                <img src="icon-instagram.png" class="social-icon">
-                <img src="icon-linkedin.png" class="social-icon">
-                <img src="icon-mail.png" class="social-icon">
-            </div>
-
-            <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <img src="back.png" alt="Back" class="back-icon">
-                <span class="back-text">Click Back</span>
-            </div>
-        </footer>
+        <a href="pawrot-detail.html" class="go">→</a>
+      </div>
     </div>
 
+    <div class="pcard reveal">
+      <div class="pcard-img">
+        <img src="package.png" alt="Package Redesign">
+        <span class="ftag">Product Design</span>
+        <span class="fnum">02</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-left">
+          <h3>Package Redesign</h3>
+          <p>End-to-end packaging experience redesign</p>
+          <div class="chips">
+            <span class="chip">Visual</span>
+            <span class="chip">UX Flow</span>
+            <span class="chip">Testing</span>
+          </div>
+        </div>
+        <a href="package-detail.html" class="go">→</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 4. FOOTER ══ -->
+<footer>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
+  <div class="ft-socials">
+    <a href="https://www.instagram.com/yougedashuaige" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  </div>
+  <div class="ft-line"></div>
+  <div class="ft-copy">© 2025 Carol Chen — All rights reserved</div>
+</footer>
+
+<script>
+/* ── cursor ── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a,.pcard').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+/* ── canvas: flowing sine wave lines ── */
+const canvas = document.getElementById('intro-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const LINES = 9;
+let tick = 0;
+
+function drawWaves() {
+  ctx.clearRect(0, 0, W, H);
+  tick += 0.008;
+
+  for (let i = 0; i < LINES; i++) {
+    const t = i / (LINES - 1);
+    const yBase = H * 0.15 + t * H * 0.7;
+    const amp = 18 + i * 6;
+    const freq = 0.004 + i * 0.0006;
+    const phase = tick + i * 0.55;
+
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 3) {
+      const y = yBase + Math.sin(x * freq + phase) * amp
+                      + Math.sin(x * freq * 2.1 + phase * 1.3) * (amp * 0.3);
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    const alpha = 0.07 + (1 - Math.abs(t - 0.5) * 2) * 0.07;
+    ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+
+  /* small floating crosses */
+  const crosses = [
+    [W*0.12, H*0.2], [W*0.88, H*0.75], [W*0.5, H*0.08],
+    [W*0.25, H*0.85], [W*0.78, H*0.18]
+  ];
+  crosses.forEach(([cx, cy], i) => {
+    const drift = Math.sin(tick * 0.8 + i) * 5;
+    ctx.save();
+    ctx.translate(cx, cy + drift);
+    ctx.strokeStyle = 'rgba(0,0,0,0.14)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 6); ctx.stroke();
+    ctx.restore();
+  });
+
+  requestAnimationFrame(drawWaves);
+}
+drawWaves();
+
+/* ── intro → type transition ── */
+const introName = document.getElementById('intro-name');
+setTimeout(() => introName.classList.add('show'), 400);
+
+setTimeout(() => {
+  document.getElementById('type-section').scrollIntoView({ behavior: 'smooth' });
+}, 2200);
+
+/* ── typewriter ── */
+const fullText = "HI, I am Carol,\nwelcome to my\nDesign World_";
+const typedEl = document.getElementById('typed-text');
+let ci = 0;
+
+function typeNext() {
+  if (ci >= fullText.length) {
+    document.getElementById('nav').classList.add('show');
+    document.getElementById('bot').classList.add('show');
+    return;
+  }
+  const ch = fullText[ci];
+  const cursor = typedEl.querySelector('.t-cur');
+  if (ch === '\n') {
+    cursor.before(document.createElement('br'));
+  } else {
+    const s = document.createElement('span');
+    s.textContent = ch;
+    s.style.opacity = '0';
+    s.style.transition = 'opacity 0.06s';
+    cursor.before(s);
+    requestAnimationFrame(() => s.style.opacity = '1');
+  }
+  ci++;
+  const speed = (ch === ',' || ch === '\n') ? 290 : 46 + Math.random() * 26;
+  setTimeout(typeNext, speed);
+}
+
+// start typing after scroll settles
+setTimeout(() => {
+  document.getElementById('eyebrow').classList.add('show');
+  setTimeout(typeNext, 300);
+}, 3200);
+
+/* ── scroll reveal ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 100);
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 </body>
 </html>
