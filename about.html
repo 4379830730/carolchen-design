@@ -1,152 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Carol UX Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Bricolage Grotesque', sans-serif; 
-            margin: 0;
-            padding: 0;
-            background-color: #FAFAFA;
-            color: #000;
-            image-rendering: -webkit-optimize-contrast;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carol — About</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* 1. 页面容器：锁定 1440x3960 */
-        .about-wrapper {
-            position: relative;
-            width: 1440px; 
-            height: 3960px;
-            background-image: url('about.jpg'); 
-            background-size: 1440px 3960px;
-            background-repeat: no-repeat;
-            background-position: top center;
-        }
+    :root {
+      --black: #111;
+      --white: #ffffff;
+      --off: #f6f4f1;
+      --gray: #aaa;
+      --border: #e5e1db;
+    }
 
-        /* 2. 导航栏 */
-        .nav-container {
-            position: absolute;
-            top: 48px;
-            left: 130px;
-            display: flex;
-            gap: 40px;
-            z-index: 20;
-        }
-        .nav-link { font-size: 20px; font-weight: 700; text-decoration: none; color: #000; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-        /* 3. 自我介绍文字：锁定 X:309, Y:576, W:823, H:355 */
-        .about-intro-box {
-            position: absolute;
-            top: 576px;   
-            left: 309px;  
-            width: 823px; 
-            height: 355px;
-            text-align: justify;
-            text-align-last: center;
-        }
+   /* ── cursor ── */
+    #cursor {
+      position: fixed;
+      width: 9px; height: 9px;
+      background: #fff; 
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, opacity .2s;
+      mix-blend-mode: difference; 
+    }
+    #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
-        .intro-text-flow {
-            font-size: 20px;
-            font-weight: 500; 
-            line-height: 35px; 
-        }
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 36px 10vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+    .nav-logo {
+      font-size: 15px; font-weight: 800;
+      letter-spacing: -.02em; color: var(--black); text-decoration: none;
+    }
+    
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links > a, .nav-item-dropdown > a {
+      font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
+    }
+    .nav-links > a::after, .nav-item-dropdown > a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--black); transition: width .3s;
+    }
+    .nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
+    .nav-links > a.active::after { width: 100%; }
 
-        .intro-hi {
-            font-size: 36px;
-            font-weight: 800; 
-            margin-right: 8px;
-        }
+    /* ── Contact Dropdown Menu ── */
+    .nav-item-dropdown {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 12px;
+      margin-bottom: -12px;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: -10px;
+      margin-top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 140px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+      opacity: 0;
+      transform: translateY(-5px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 100;
+    }
+    .nav-item-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .dropdown-menu a {
+      display: flex !important;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      color: var(--black) !important;
+      text-decoration: none !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: capitalize !important;
+      border-radius: 8px;
+      transition: background 0.2s !important;
+    }
+    .dropdown-menu a::after { display: none !important; } 
+    .dropdown-menu a:hover { background: var(--off); }
+    .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
 
-        /* 4. 联系方式图标：精准定位 X:628, Y:899 */
-        /* 由于图标组有总宽度，我们使用 left: 628px 锁定起点 */
-        .inline-social {
-            position: absolute;
-            top: 899px;   /* Figma Y: 899 */
-            left: 628px;  /* Figma X: 628 */
-            display: flex;
-            gap: 28px;
-            z-index: 30;
-        }
-        .social-icon { width: 42px; height: 42px; transition: transform 0.2s; }
-        .social-icon:hover { transform: scale(1.1); }
 
-        /* 5. Footer 与 Back 按钮保持不变 */
-        .footer-section {
-            position: absolute;
-            bottom: 120px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .footer-title { font-size: 32px; font-weight: 500; margin-bottom: 15px; }
-        .footer-email { font-size: 24px; font-weight: 500; color: #0000FF; text-decoration: underline; margin-bottom: 40px; }
-        .back-to-top {
-            position: absolute;
-            right: 130px;
-            top: 50px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-        .back-icon { width: 42px; height: 87px; object-fit: contain; }
-        .back-text { font-size: 20px; font-weight: 700; margin-top: 10px; }
-    </style>
+    /* ══════════════════════
+       HERO
+    ══════════════════════ */
+    #hero {
+      min-height: 100vh;
+      padding: 160px 10vw 100px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* dot grid bg */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, #d6d2cc 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .hero-left { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 500; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--gray);
+      margin-bottom: 24px;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp .7s ease .2s forwards;
+    }
+
+    .hero-name {
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 800; letter-spacing: -.04em;
+      line-height: 1.05; margin-bottom: 28px;
+      opacity: 0; transform: translateY(16px);
+      animation: fadeUp .8s ease .35s forwards;
+    }
+
+    .hero-bio {
+      font-size: 16px; font-weight: 400; line-height: 1.75;
+      color: #555; max-width: 460px;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp .8s ease .5s forwards;
+    }
+
+    .hero-tags {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-top: 28px;
+      opacity: 0; transform: translateY(10px);
+      animation: fadeUp .7s ease .65s forwards;
+    }
+    .hero-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 40px; border: 1px solid var(--border); color: #888;
+    }
+
+    /* photo box */
+    .hero-right {
+      position: relative; z-index: 1;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .9s ease .4s forwards;
+    }
+
+    .photo-frame {
+      width: 75%; 
+      max-width: 420px;
+      margin-left: auto;
+
+      aspect-ratio: 4/5;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--off);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .photo-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    /* 已删除 .photo-badge 相关的 CSS 样式 */
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════
+       CONTENT SECTIONS
+    ══════════════════════ */
+    .content-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 10vw 120px;
+    }
+
+    /* section divider */
+    .sec {
+      padding-top: 80px;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+    .sec:first-child { margin-top: 0; border-top: none; }
+
+    .sec-header {
+      display: flex; justify-content: space-between;
+      align-items: baseline; margin-bottom: 48px;
+    }
+    .sec-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -.03em;
+    }
+    .sec-num {
+      font-size: 12px; font-weight: 500; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--gray);
+    }
+
+    /* ── timeline rows (Education & Experience) ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .trow {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 32px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .trow.in { opacity: 1; transform: translateY(0); }
+    .trow:last-child { border-bottom: none; }
+
+    .trow-date {
+      font-size: 12px; font-weight: 500; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--gray);
+      padding-top: 4px; line-height: 1.6;
+    }
+
+    .trow-body h3 {
+      font-size: 18px; font-weight: 800;
+      margin-bottom: 4px; letter-spacing: -.01em;
+    }
+    .trow-body .sub {
+      font-size: 13px; font-weight: 500; color: var(--gray);
+      margin-bottom: 10px; letter-spacing: .02em;
+    }
+    .trow-body p {
+      font-size: 14px; line-height: 1.7; color: #666; max-width: 560px;
+    }
+
+    /* ── awards ── */
+    .awards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .award-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      background: var(--white);
+      display: flex; flex-direction: column; gap: 10px;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease,
+                  box-shadow .3s ease;
+    }
+    .award-card.in { opacity: 1; transform: translateY(0); }
+    .award-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.07); }
+
+    .award-year {
+      font-size: 11px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--gray);
+    }
+    .award-name {
+      font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3;
+    }
+    .award-org {
+      font-size: 13px; color: var(--gray); font-weight: 500;
+    }
+
+    /* ── skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .skill-group {
+      background: var(--off);
+      border-radius: 16px;
+      padding: 28px;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .skill-group.in { opacity: 1; transform: translateY(0); }
+
+    .skill-group-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--gray);
+      margin-bottom: 18px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tag {
+      font-size: 13px; font-weight: 700;
+      padding: 7px 14px; border-radius: 40px;
+      background: var(--white); border: 1px solid var(--border);
+      color: var(--black); letter-spacing: .01em;
+    }
+
+    /* ══════════════════════
+       FOOTER
+    ══════════════════════ */
+    footer {
+      background: var(--black); color: #fff;
+      padding: 80px 10vw 56px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 18px;
+    }
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
+    .ft-email {
+      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
+      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .ft-email:hover { color: #fff; border-color: #fff; }
+    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
+    .ft-socials a {
+      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: #444; text-decoration: none; transition: color .2s;
+    }
+    .ft-socials a:hover { color: #fff; }
+    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
+    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+
+    /* back to top */
+    .back-top {
+      position: fixed; bottom: 36px; right: 36px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--black); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; text-decoration: none; cursor: none;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .35s, transform .35s, background .2s;
+      z-index: 50;
+    }
+    .back-top.show { opacity: 1; transform: translateY(0); }
+    .back-top:hover { background: #333; }
+  </style>
 </head>
 <body>
 
-    <div class="about-wrapper">
-        <nav class="nav-container">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="#" class="nav-link">About</a>
-        </nav>
+<div id="cursor"></div>
 
-        <div class="about-intro-box">
-            <p class="intro-text-flow">
-                <span class="intro-hi">Hi! I’m Carol.</span>
-                a passionate UX designer and dog lover with two adorable Golden Retrievers. 🐶🐶 When I’m not designing, you’ll find me watching animations, movies, or exploring new cuisines.
-            </p>
-            <p class="intro-text-flow mt-6">
-                I’m also passionate about accessibility and human-centered design, turning complex problems into intuitive, seamless experiences. I’m currently available for UX design opportunities and excited to create meaningful, user-friendly products! So, come connect with me!
-            </p>
-        </div>
-
-        <div class="inline-social">
-            <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
-                <img src="icon-instagram.png" alt="Instagram" class="social-icon">
-            </a>
-            <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
-                <img src="icon-linkedin.png" alt="LinkedIn" class="social-icon">
-            </a>
-            <a href="mailto:YauchiTATA@Gmail.com">
-                <img src="icon-mail.png" alt="Email" class="social-icon">
-            </a>
-        </div>
-
-        <footer class="footer-section">
-            <h2 class="footer-title">Let’s Connect</h2>
-            <a href="mailto:YauchiTATA@Gmail.com" class="footer-email">YauchiTATA@Gmail.com</a>
-            <div class="flex gap-[28px]">
-                <img src="icon-instagram.png" class="social-icon">
-                <img src="icon-linkedin.png" class="social-icon">
-                <img src="icon-mail.png" class="social-icon">
-            </div>
-            <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <img src="back.png" alt="Back" class="back-icon">
-                <span class="back-text">Click Back</span>
-            </div>
-        </footer>
+<nav id="main-nav">
+  <a href="index.html" class="nav-logo">Carol.</a>
+  <div class="nav-links">
+    <a href="index.html#projects">Work</a>
+    <a href="about.html" class="active">About</a>
+    
+    <div class="nav-item-dropdown">
+      <a href="#">Contact</a>
+      <div class="dropdown-menu">
+        <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+          <img src="icon-linkedin.png" alt="LinkedIn"> LinkedIn
+        </a>
+        <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+          <img src="icon-instagram.png" alt="Instagram"> Instagram
+        </a>
+        <a href="mailto:YauchiTATA@Gmail.com">
+          <img src="icon-mail.png" alt="Email"> Email
+        </a>
+      </div>
     </div>
+  </div>
+</nav>
 
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">About Me</div>
+    <h1 class="hero-name">Hi, I'm<br>Carol.</h1>
+    <p class="hero-bio">
+      With two years of experience in graphic design and a growing passion for UX, I turn complex problems into elegant, intuitive experiences. I care deeply about the intersection of beauty and function — design that doesn't just look good, but feels right.
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag">UX Design</span>
+      <span class="hero-tag">Visual Design</span>
+      <span class="hero-tag">Prototyping</span>
+      <span class="hero-tag">Based in Canada</span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="photo-frame">
+      <img src="carol-photo.jpg" alt="Carol">
+      </div>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <div class="sec">
+    <div class="sec-header">
+      <h2 class="sec-title">Education</h2>
+      <span class="sec-num">01</span>
+    </div>
+    <div class="timeline">
+      <div class="trow reveal">
+        <div class="trow-date">2023 — 2025</div>
+        <div class="trow-body">
+          <h3>Your University Name</h3>
+          <div class="sub">Program / Major Name</div>
+          <p>Brief description of the program, focus areas, or notable coursework. Replace this with your actual education details.</p>
+        </div>
+      </div>
+      <div class="trow reveal">
+        <div class="trow-date">2020 — 2023</div>
+        <div class="trow-body">
+          <h3>Previous School Name</h3>
+          <div class="sub">Diploma / Certificate</div>
+          <p>Brief description. Replace this with your actual education details.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-header">
+      <h2 class="sec-title">Experience</h2>
+      <span class="sec-num">02</span>
+    </div>
+    <div class="timeline">
+      <div class="trow reveal">
+        <div class="trow-date">2024 — Now</div>
+        <div class="trow-body">
+          <h3>Company Name</h3>
+          <div class="sub">Job Title · Full-time / Internship</div>
+          <p>Brief description of your role and responsibilities. What did you design? What impact did you make? Replace with your real experience.</p>
+        </div>
+      </div>
+      <div class="trow reveal">
+        <div class="trow-date">2023 — 2024</div>
+        <div class="trow-body">
+          <h3>Another Company</h3>
+          <div class="sub">Graphic Designer · Freelance</div>
+          <p>Brief description of the work you did. Types of clients, projects, or deliverables. Replace with your real experience.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-header">
+      <h2 class="sec-title">Awards</h2>
+      <span class="sec-num">03</span>
+    </div>
+    <div class="awards-grid">
+      <div class="award-card reveal">
+        <div class="award-year">2024</div>
+        <div class="award-name">Award Name Here</div>
+        <div class="award-org">Organizing Body / Competition</div>
+      </div>
+      <div class="award-card reveal">
+        <div class="award-year">2024</div>
+        <div class="award-name">Another Award Name</div>
+        <div class="award-org">Organizing Body / Competition</div>
+      </div>
+      <div class="award-card reveal">
+        <div class="award-year">2023</div>
+        <div class="award-name">Award Name Here</div>
+        <div class="award-org">Organizing Body / Competition</div>
+      </div>
+      <div class="award-card reveal">
+        <div class="award-year">2023</div>
+        <div class="award-name">Award Name Here</div>
+        <div class="award-org">Organizing Body / Competition</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-header">
+      <h2 class="sec-title">Skills</h2>
+      <span class="sec-num">04</span>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group reveal">
+        <div class="skill-group-label">Design Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Illustrator</span>
+          <span class="skill-tag">Photoshop</span>
+          <span class="skill-tag">InDesign</span>
+          <span class="skill-tag">Procreate</span>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <div class="skill-group-label">UX Methods</div>
+        <div class="skill-tags">
+          <span class="skill-tag">User Research</span>
+          <span class="skill-tag">Wireframing</span>
+          <span class="skill-tag">Prototyping</span>
+          <span class="skill-tag">Usability Testing</span>
+          <span class="skill-tag">User Flow</span>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">English</span>
+          <span class="skill-tag">Mandarin</span>
+          <span class="skill-tag">HTML / CSS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
+  <div class="ft-socials">
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  </div>
+  <div class="ft-line"></div>
+  <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
+</footer>
+
+<a href="#" class="back-top" id="back-top">↑</a>
+
+<script>
+  /* ── cursor ── */
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top = e.clientY + 'px';
+  });
+  /* 添加 .dropdown-menu 让鼠标滑过下拉菜单时也放大 */
+  document.querySelectorAll('a, .award-card, .skill-group, .dropdown-menu').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+
+  /* ── nav border on scroll ── */
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+    document.getElementById('back-top').classList.toggle('show', window.scrollY > 400);
+  });
+
+  /* ── scroll reveal ── */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 </body>
 </html>

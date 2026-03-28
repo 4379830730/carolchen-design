@@ -25,19 +25,19 @@
       cursor: none;
     }
 
-    /* ── cursor ── */
+   /* ── cursor ── */
     #cursor {
       position: fixed;
       width: 9px; height: 9px;
-      background: var(--black);
+      background: #fff; /* 改成白色，配合差值模式 */
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%,-50%);
       transition: width .2s, height .2s, opacity .2s;
-      mix-blend-mode: multiply;
+      mix-blend-mode: difference; /* 改为智能反色模式 */
     }
-    #cursor.big { width: 44px; height: 44px; opacity: 0.1; }
+    #cursor.big { width: 44px; height: 44px; opacity: 1; } /* 去掉透明度，让反色更清晰 */
 
     /* ══════════════════════
        1. INTRO SCREEN
@@ -134,16 +134,70 @@
     }
     #nav.show { opacity: 1; transform: translateY(0); }
     .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--black); text-decoration: none; }
-    .nav-links { display: flex; gap: 32px; }
-    .nav-links a {
+    
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links > a, .nav-item-dropdown > a {
       font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
       color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
     }
-    .nav-links a::after {
+    .nav-links > a::after, .nav-item-dropdown > a::after {
       content: ''; position: absolute; bottom: 0; left: 0;
       width: 0; height: 1px; background: var(--black); transition: width .3s;
     }
-    .nav-links a:hover::after { width: 100%; }
+    .nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
+
+    /* ── Contact Dropdown Menu ── */
+    .nav-item-dropdown {
+      position: relative;
+      display: inline-block;
+      /* 缩小距离，搭建更紧密的悬浮桥梁，防止菜单消失 */
+      padding-bottom: 12px;
+      margin-bottom: -12px;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: -10px;
+      margin-top: 0; /* 移除上方间距，让菜单紧贴着文字 */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 140px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+      opacity: 0;
+      transform: translateY(-5px); /* 悬浮动画移动距离变短，更干脆 */
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 100;
+    }
+    .nav-item-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .dropdown-menu a {
+      display: flex !important;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      color: var(--black) !important;
+      text-decoration: none !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: capitalize !important;
+      border-radius: 8px;
+      transition: background 0.2s !important;
+    }
+    .dropdown-menu a::after { display: none !important; } 
+    .dropdown-menu a:hover { background: var(--off); }
+    .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
 
     /* bottom bar */
     #bot {
@@ -245,7 +299,7 @@
       text-align: center; gap: 18px;
     }
     .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
-    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
+    .ft-title { font-size: clamp(24px, 5vw, 38px); font-weight: 800; letter-spacing: -.03em; }
     .ft-email {
       font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
       letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
@@ -270,20 +324,33 @@
 
 <div id="cursor"></div>
 
-<!-- ══ 1. INTRO ══ -->
 <section id="intro">
   <canvas id="intro-canvas"></canvas>
   <div class="intro-name" id="intro-name">Carol.</div>
 </section>
 
-<!-- ══ 2. TYPE ══ -->
 <section id="type-section">
   <nav id="nav">
     <a href="#" class="nav-logo">Carol.</a>
     <div class="nav-links">
       <a href="#projects">Work</a>
-      <a href="#">About</a>
-      <a href="mailto:YauchiTATA@Gmail.com">Contact</a>
+      <a href="about.html">About</a>
+      
+      <div class="nav-item-dropdown">
+        <a href="#">Contact</a>
+        <div class="dropdown-menu">
+          <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+            <img src="icon-linkedin.png" alt="LinkedIn"> LinkedIn
+          </a>
+          <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+            <img src="icon-instagram.png" alt="Instagram"> Instagram
+          </a>
+          <a href="mailto:YauchiTATA@Gmail.com">
+            <img src="icon-mail.png" alt="Email"> Email
+          </a>
+        </div>
+      </div>
+      
     </div>
   </nav>
 
@@ -296,19 +363,58 @@
   </div>
 </section>
 
-<!-- ══ 3. PROJECTS ══ -->
 <section id="projects">
   <div class="proj-header reveal">
-    <h2 class="proj-title">Selected<br>Work</h2>
-    <span class="proj-count">02 Projects</span>
+    <h2 class="proj-title">All<br>Projects</h2>
+    <span class="proj-count">04 Projects</span>
   </div>
 
   <div class="bento">
     <div class="pcard reveal">
       <div class="pcard-img">
+        <img src="project4.png" alt="Brantford Bus Kiosk">
+        <span class="ftag">Web Design</span>
+        <span class="fnum">01</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-left">
+          <h3>Brantford Bus Kiosk HCI Project</h3>
+          <p>A brief description of your fourth project.</p>
+          <div class="chips">
+            <span class="chip">Wireframing</span>
+            <span class="chip">Development</span>
+            <span class="chip">Testing</span>
+          </div>
+        </div>
+        <a href="project4-detail.html" class="go">→</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal">
+      <div class="pcard-img">
+        <img src="project3.png" alt="Uber Eats UX Research">
+        <span class="ftag">UX Research</span>
+        <span class="fnum">02</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-left">
+          <h3>Uber Eats UX Research</h3>
+          <p>A brief description of your third project.</p>
+          <div class="chips">
+            <span class="chip">Research</span>
+            <span class="chip">Strategy</span>
+            <span class="chip">UI Design</span>
+          </div>
+        </div>
+        <a href="https://4379830730.github.io/Ubereats_research/" class="go" target="_blank">→</a>
+      </div>
+    </div>
+
+    <div class="pcard reveal">
+      <div class="pcard-img">
         <img src="parrot.png" alt="Pawrot App">
         <span class="ftag">UX Design</span>
-        <span class="fnum">01</span>
+        <span class="fnum">03</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -328,7 +434,7 @@
       <div class="pcard-img">
         <img src="package.png" alt="Package Redesign">
         <span class="ftag">Product Design</span>
-        <span class="fnum">02</span>
+        <span class="fnum">04</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -346,17 +452,15 @@
   </div>
 </section>
 
-<!-- ══ 4. FOOTER ══ -->
 <footer>
-  <div class="ft-label">Let's Connect</div>
-  <div class="ft-title">Say Hello.</div>
+   <div class="ft-title">Let's Connect.</div>
   <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
   <div class="ft-socials">
-    <a href="https://www.instagram.com/yougedashuaige" target="_blank">Instagram</a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
     <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
   </div>
   <div class="ft-line"></div>
-  <div class="ft-copy">© 2025 Carol Chen — All rights reserved</div>
+  <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
 </footer>
 
 <script>
@@ -366,7 +470,8 @@ document.addEventListener('mousemove', e => {
   cur.style.left = e.clientX + 'px';
   cur.style.top = e.clientY + 'px';
 });
-document.querySelectorAll('a,.pcard').forEach(el => {
+// 给新加入的下拉菜单也加上鼠标放大的效果
+document.querySelectorAll('a,.pcard,.dropdown-menu').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
