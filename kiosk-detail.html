@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brantford Bus Kiosk — Carol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #111;
+      --white: #ffffff;
+      --off: #f6f4f1;
+      --gray: #aaa;
+      --border: #e5e1db;
+      --mid: #f0ede9;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── cursor ── */
+    #cursor {
+      position: fixed;
+      width: 9px; height: 9px;
+      background: #fff; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, opacity .2s;
+      mix-blend-mode: difference;
+    }
+    #cursor.big { width: 44px; height: 44px; opacity: 1; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: 34px 10vw;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 100;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--black); text-decoration: none; }
+    
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links > a, .nav-item-dropdown > a {
+      font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
+    }
+    .nav-links > a::after, .nav-item-dropdown > a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--black); transition: width .3s;
+    }
+    .nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
+
+    /* ── Contact Dropdown Menu ── */
+    .nav-item-dropdown {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 12px;
+      margin-bottom: -12px;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: -10px;
+      margin-top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 140px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+      opacity: 0;
+      transform: translateY(-5px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 100;
+    }
+    .nav-item-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .dropdown-menu a {
+      display: flex !important;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      color: var(--black) !important;
+      text-decoration: none !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: capitalize !important;
+      border-radius: 8px;
+      transition: background 0.2s !important;
+    }
+    .dropdown-menu a::after { display: none !important; } 
+    .dropdown-menu a:hover { background: var(--off); }
+    .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
+
+    /* ── Side Navigation (右侧悬浮导航) ── */
+    .side-nav {
+      position: fixed;
+      top: 50%;
+      right: 3vw; 
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 90;
+      align-items: flex-end;
+      /* 初始隐藏状态：透明且不可点击 */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    /* 显示状态：由 JS 控制 */
+    .side-nav.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @media (max-width: 1200px) {
+      .side-nav { display: none !important; }
+    }
+    .side-nav a {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gray);
+      text-decoration: none;
+      transition: color 0.3s, transform 0.3s;
+      position: relative;
+    }
+    .side-nav a::after {
+      content: '';
+      position: absolute;
+      right: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--black);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .side-nav a:hover, .side-nav a.active {
+      color: var(--black);
+      transform: translateX(-10px);
+    }
+    .side-nav a.active::after {
+      opacity: 1;
+    }
+
+    /* ══════════════════════
+       HERO
+    ══════════════════════ */
+    #hero {
+      min-height: 100vh;
+      padding: 140px 10vw 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative; overflow: hidden;
+      background: var(--off);
+    }
+
+    /* dot grid */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, #d6d2cc 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.45; pointer-events: none;
+    }
+
+    .hero-meta {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp .7s ease .2s forwards;
+    }
+    .meta-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 40px;
+      background: var(--white); border: 1px solid var(--border); color: #888;
+    }
+    .meta-tag.accent {
+      background: var(--black); color: var(--white); border-color: var(--black);
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 7.5vw, 110px);
+      font-weight: 800; letter-spacing: -.04em; line-height: 1.0;
+      max-width: 900px; margin-bottom: 32px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .9s ease .35s forwards;
+    }
+
+    .hero-subtitle {
+      font-size: 17px; font-weight: 400; color: #666;
+      line-height: 1.7; max-width: 620px; margin-bottom: 48px;
+      opacity: 0; transform: translateY(14px);
+      animation: fadeUp .8s ease .5s forwards;
+    }
+
+    .hero-stats {
+      display: flex; gap: 48px; flex-wrap: wrap;
+      padding-top: 40px; border-top: 1px solid var(--border);
+      opacity: 0; transform: translateY(10px);
+      animation: fadeUp .7s ease .65s forwards;
+    }
+    .stat-item {}
+    .stat-label { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
+    .stat-val { font-size: 15px; font-weight: 700; line-height: 1.4; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* hero two-col layout */
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+    }
+    .hero-left-col { display: flex; flex-direction: column; }
+
+    /* hero video */
+    .hero-video-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      background: transparent; 
+      border: 1px solid var(--border);
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp .9s ease .5s forwards;
+      overflow: hidden; 
+    }
+    .hero-video-wrap video {
+      width: 100%; 
+      height: 100%;
+      display: block;
+      object-fit: cover; 
+    }
+
+    /* ══════════════════════
+       COVER IMAGE
+    ══════════════════════ */
+    .cover-band {
+      width: 100%; height: 60vh; min-height: 360px;
+      background: #ddd;
+      overflow: hidden; position: relative;
+    }
+    .cover-band img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ══════════════════════
+       CONTENT LAYOUT
+    ══════════════════════ */
+    .page-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 10vw 120px;
+    }
+
+    /* section */
+    .sec {
+      padding-top: 80px;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+    .sec:first-child { margin-top: 80px; border-top: none; }
+
+    .sec-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 44px;
+    }
+    .sec-title {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800; letter-spacing: -.03em;
+    }
+    .sec-num {
+      font-size: 12px; font-weight: 500; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--gray);
+    }
+
+    /* prose */
+    .prose {
+      font-size: 16px; line-height: 1.8; color: #555; max-width: 680px;
+    }
+    .prose + .prose { margin-top: 20px; }
+
+    /* two-col text */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    }
+
+    /* full-width image block */
+    .img-block {
+      width: 100%; border-radius: 16px; overflow: hidden;
+      background: var(--mid); margin-top: 40px;
+      border: 1px solid var(--border);
+    }
+    .img-block img { width: 100%; display: block; }
+    .img-block .img-cap {
+      padding: 14px 20px;
+      font-size: 12px; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--gray);
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    /* two-col images */
+    .img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+    .img-row .img-block { margin-top: 0; }
+
+    /* ── video block ── */
+    .video-block {
+      display: flex;
+      flex-direction: column;
+      height: 100%; 
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border); 
+      background: var(--white); 
+      margin-top: 0;
+      position: relative;
+    }
+    
+    .video-block video { 
+      width: 100%; 
+      display: block; 
+      flex-grow: 1;
+      object-fit: contain; 
+      background: transparent; 
+    }
+    
+    .video-block .vid-cap {
+      margin-top: auto; 
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 12px; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--gray);
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    /* video row: two side-by-side */
+    .video-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-top: 40px;
+      align-items: stretch; 
+    }
+
+    /* quote / callout */
+    .callout {
+      margin: 36px 0;
+      padding: 28px 32px;
+      background: var(--off);
+      border-left: 3px solid var(--black);
+      border-radius: 0 12px 12px 0;
+    }
+    .callout p {
+      font-size: 16px; line-height: 1.75; color: #444; font-style: italic;
+    }
+    .callout .callout-author {
+      margin-top: 10px; font-size: 12px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--gray);
+      font-style: normal;
+    }
+
+    /* user quote (smaller) */
+    .uquote {
+      display: flex; gap: 14px; align-items: flex-start;
+      margin: 14px 0;
+    }
+    .uquote::before {
+      content: '"';
+      font-size: 32px; font-weight: 800; color: var(--border);
+      line-height: 1; flex-shrink: 0; margin-top: -4px;
+    }
+    .uquote p { font-size: 15px; line-height: 1.65; color: #555; font-style: italic; }
+
+    /* key feature cards */
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+      margin-top: 8px;
+    }
+    .fcard {
+      border: 1px solid var(--border); border-radius: 16px; padding: 26px;
+      background: var(--white);
+      transition: box-shadow .3s, transform .3s;
+    }
+    .fcard:hover { box-shadow: 0 12px 40px rgba(0,0,0,.07); transform: translateY(-3px); }
+    .fcard-num { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); margin-bottom: 12px; }
+    .fcard h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; letter-spacing: -.01em; }
+    .fcard p { font-size: 13px; line-height: 1.65; color: #666; }
+
+    /* finding rows */
+    .finding {
+      padding: 32px 0; border-bottom: 1px solid var(--border);
+    }
+    .finding:last-child { border-bottom: none; }
+    .finding-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 10px;
+    }
+    .finding h4 { font-size: 18px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em; }
+    .finding .friction { font-size: 14px; line-height: 1.7; color: #666; margin-bottom: 10px; }
+    .finding .fix {
+      font-size: 14px; line-height: 1.7; color: var(--black);
+      padding: 14px 18px; background: var(--off); border-radius: 10px;
+    }
+    .finding .fix strong { font-weight: 800; }
+
+    /* improvement list */
+    .improve-list { list-style: none; margin-top: 8px; }
+    .improve-list li {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      font-size: 15px; line-height: 1.65; color: #555;
+    }
+    .improve-list li:last-child { border-bottom: none; }
+    .improve-list li::before {
+      content: '→';
+      font-size: 14px; font-weight: 800; color: var(--black);
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* reflection */
+    .reflection-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .rcard {
+      background: var(--off); border-radius: 16px; padding: 28px;
+    }
+    .rcard h4 { font-size: 15px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em; }
+    .rcard p { font-size: 14px; line-height: 1.7; color: #666; }
+
+    /* reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s, transform .65s; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ══════════════════════
+       FOOTER
+    ══════════════════════ */
+    footer {
+      background: var(--black); color: #fff;
+      padding: 80px 10vw 56px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 18px;
+    }
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
+    .ft-title { font-size: clamp(24px, 5vw, 38px); font-weight: 800; letter-spacing: -.03em; }
+    .ft-email {
+      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
+      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .ft-email:hover { color: #fff; border-color: #fff; }
+    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
+    .ft-socials a {
+      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: #444; text-decoration: none; transition: color .2s;
+    }
+    .ft-socials a:hover { color: #fff; }
+    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
+    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+
+    /* next project */
+    .next-proj {
+      width: 100%; padding: 64px 10vw;
+      background: var(--off); border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      text-decoration: none; color: var(--black);
+      transition: background .25s;
+      cursor: none;
+    }
+    .next-proj:hover { background: #eeebe6; }
+    .next-label { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+    .next-name { font-size: clamp(22px, 3vw, 36px); font-weight: 800; letter-spacing: -.02em; }
+    .next-arrow { font-size: 32px; transition: transform .25s; }
+    .next-proj:hover .next-arrow { transform: translateX(8px); }
+
+    /* back top */
+    .back-top {
+      position: fixed; bottom: 36px; right: 36px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--black); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; text-decoration: none; cursor: none;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .3s, transform .3s, background .2s;
+      z-index: 50;
+    }
+    .back-top.show { opacity: 1; transform: translateY(0); }
+    .back-top:hover { background: #333; }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div class="side-nav">
+  <a href="#overview">Overview</a>
+  <a href="#problem">Problem</a>
+  <a href="#goal">Goal</a>
+  <a href="#research">Research</a>
+  <a href="#ideation">Ideation</a>
+  <a href="#test1">Test 1</a>
+  <a href="#midfi">Mid-Fi</a>
+  <a href="#test2">Test 2</a>
+  <a href="#hifi">Hi-Fi</a>
+  <a href="#impact">Impact</a>
+  <a href="#reflection">Reflection</a>
+</div>
+
+<nav id="main-nav">
+  <a href="index.html" class="nav-logo">Carol.</a>
+  <div class="nav-links">
+    <a href="index.html#projects">Work</a>
+    <a href="about.html">About</a>
+    
+    <div class="nav-item-dropdown">
+      <a href="#">Contact</a>
+      <div class="dropdown-menu">
+        <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+          <img src="icon-linkedin.png" alt="LinkedIn"> LinkedIn
+        </a>
+        <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+          <img src="icon-instagram.png" alt="Instagram"> Instagram
+        </a>
+        <a href="mailto:YauchiTATA@Gmail.com">
+          <img src="icon-mail.png" alt="Email"> Email
+        </a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-inner">
+
+    <div class="hero-left-col">
+      <div class="hero-meta">
+        <span class="meta-tag accent">UX Design</span>
+        <span class="meta-tag">Physical + Digital</span>
+        <span class="meta-tag">Accessibility</span>
+        <span class="meta-tag">Public Transit</span>
+      </div>
+      <h1 class="hero-title">Brantford<br>Bus Kiosk</h1>
+      <p class="hero-subtitle">
+        Bridging the digital divide in public transit — a "phygital" kiosk that ensures every commuter can access real-time bus information, regardless of tech literacy.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-label">Timeline</div>
+          <div class="stat-val">Sep — Dec 2025<br>4 Months</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Team</div>
+          <div class="stat-val">Page 404<br>5 Members</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Tools</div>
+          <div class="stat-val">Figma<br>Physical Prototyping</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="hero-video-wrap" id="hero-vid-wrap">
+      <video src="kiosk-project.mp4" autoplay controls muted loop playsinline></video>
+    </div>
+
+  </div>
+</section>
+
+<div class="cover-band">
+  <img src="kiosk-cover.png" alt="Brantford Bus Kiosk">
+</div>
+
+<div class="page-body">
+
+  <div class="sec" id="overview">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Overview</h2>
+      <span class="sec-num">01</span>
+    </div>
+    <div class="two-col reveal">
+      <div>
+        <p class="prose">This project was a 4-month collaboration with Brantford Transit to tackle the digital divide in public transportation. Our goal was to create a kiosk that combines the convenience of digital search with the tactile experience of the physical world.</p>
+        <p class="prose" style="margin-top:20px;">The transportation department confirmed that 10% of passengers do not use smartphones — creating a gap in accessibility that no existing solution addressed.</p>
+      </div>
+      <div>
+        <p class="prose">Our solution integrates three core features: a printable itinerary, multimodal input (touchscreen + physical keyboard), and multilingual support for 6 languages — meeting Brantford's ICF goals for digital inclusion and public innovation.</p>
+      </div>
+    </div>
+    <div class="img-block reveal" style="margin-top:40px;">
+      <img src="kiosk-overview.png" alt="Kiosk Design">
+      <div class="img-cap">Final Kiosk Design</div>
+    </div>
+
+    <div class="video-row reveal">
+      <div class="video-block">
+        <video src="kiosk-ui-flow.mp4" controls playsinline></video>
+        <div class="vid-cap">Kiosk Screen UI Flow</div>
+      </div>
+      <div class="video-block">
+        <video src="kiosk-audio-tutorial.mp4" controls playsinline></video>
+        <div class="vid-cap">Bus Kiosk Audio Tutorial</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="problem">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">The Problem</h2>
+      <span class="sec-num">02</span>
+    </div>
+    <div class="two-col reveal">
+      <div>
+        <p class="prose">Commuters in Brantford often struggle to find accurate and clear bus information. During field research, a clear pattern emerged — the system failed two groups entirely.</p>
+        <div class="callout" style="margin-top:30px;">
+          <p>While younger students confidently checked their phones, many seniors and newcomers walked straight past the information wall to ask the ticket booth staff.</p>
+          <div class="callout-author">— Observation, Brantford Transit Terminal</div>
+        </div>
+      </div>
+      <div style="padding-top:10px;">
+        <div class="uquote"><p>I cannot read the maps on the wall.</p></div>
+        <div class="uquote"><p>I don't want to buy internet just to use the bus app.</p></div>
+        <div class="prose" style="margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
+          <strong style="color:var(--black);">The Analogue Gap:</strong> Wall-mounted printed schedules were small, clustered, and impossible to read — offering no real-time updates.<br><br>
+          <strong style="color:var(--black);">The Digital Gap:</strong> Real-time info required smartphones and data plans, excluding those without tech access.
+        </div>
+      </div>
+    </div>
+    <div class="img-block reveal" style="margin-top:60px;">
+      <img src="wall-of-confusion.png" alt="Wall of Confusion">
+      <div class="img-cap">Current state: printed schedules are small, clustered, and hard to read</div>
+    </div>
+  </div>
+
+  <div class="sec" id="goal">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Goal</h2>
+      <span class="sec-num">03</span>
+    </div>
+    <p class="prose reveal" style="max-width:780px; font-size:20px; color: var(--black); font-weight:500; line-height:1.65;">
+      Design an inclusive, accessible, and easy-to-use bus information kiosk that helps all riders quickly obtain route information — without a smartphone.
+    </p>
+    <div class="feature-grid reveal" style="margin-top:40px;">
+      <div class="fcard">
+        <div class="fcard-num">01</div>
+        <h4>Printable Itinerary</h4>
+        <p>A thermal printer provides a physical receipt with departure times, stop list, and alighting reminders.</p>
+      </div>
+      <div class="fcard">
+        <div class="fcard-num">02</div>
+        <h4>Multimodal Input</h4>
+        <p>Touchscreen input alongside a physical keyboard, catering to both digital natives and analogue users.</p>
+      </div>
+      <div class="fcard">
+        <div class="fcard-num">03</div>
+        <h4>Multilingual Support</h4>
+        <p>Language selection on the welcome screen, buried in settings, to support Brantford's diverse communities.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="research">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Research & Discovery</h2>
+      <span class="sec-num">04</span>
+    </div>
+    <p class="prose reveal">Instead of relying solely on data, we spent a full day at the Brantford Transit Terminal. We conducted <strong style="font-weight:800; color:var(--black);">17 intercept interviews</strong> and observed passenger behaviors during peak and off-peak hours.</p>
+    
+    <p class="prose reveal" style="margin-top:40px; margin-bottom:24px;">We identified three distinct user groups, each facing a unique barrier to entry:</p>
+    <div class="img-block reveal">
+      <img src="user-groups.png" alt="User Groups">
+      <div class="img-cap">Seniors, newcomers, and non-tech users — each with distinct pain points</div>
+    </div>
+  </div>
+
+  <div class="sec" id="ideation">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Ideation</h2>
+      <span class="sec-num">05</span>
+    </div>
+    <p class="prose reveal">Based on early observations, we centered solutions around the bus shelter kiosk. After presenting concept ideas to our mentor, we narrowed our focus to a "phygital" product integrating physical and digital experiences.</p>
+    <div class="img-row reveal">
+      <div class="img-block">
+        <img src="sketches.png" alt="Sketches">
+        <div class="img-cap">Initial solution sketches</div>
+      </div>
+      <div class="img-block">
+        <img src="first-concept.png" alt="First Concept">
+        <div class="img-cap">First concept exploration</div>
+      </div>
+    </div>
+    <div class="img-block reveal">
+      <img src="user-flow.png" alt="User Flow">
+      <div class="img-cap">Kiosk screen UI flow</div>
+    </div>
+  </div>
+
+  <div class="sec" id="test1">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Guerilla Testing</h2>
+      <span class="sec-num">06</span>
+    </div>
+    <p class="prose reveal">We took paper prototypes directly to the bus terminal. This "fail fast" approach immediately exposed three critical friction points our initial assumptions had missed.</p>
+    
+    <div class="img-block reveal">
+      <img src="guerilla-process.png" alt="Testing Process at Bus Terminal">
+      <div class="img-cap">Testing process with paper prototypes at the bus terminal</div>
+    </div>
+
+    <div class="reveal" style="margin-top:40px;">
+      <div class="finding">
+        <div class="finding-label">Finding 01</div>
+        <h4>Multilingual Needs Buried</h4>
+        <div class="friction">Non-English speakers felt intimidated when the interface started in English. They didn't want to hunt for a translation button.</div>
+        <div class="fix"><strong>The Fix:</strong> Language selection moved to the very first screen — the welcome mat, not a hidden setting.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-label">Finding 02</div>
+        <h4>Keyboard Hesitation</h4>
+        <div class="friction">While students happily typed, seniors hesitated to use an onscreen keyboard, preferring the tactile assurance of physical keys.</div>
+        <div class="fix"><strong>The Fix:</strong> Physical keyboard reinstated — users shouldn't have to change their habits to use our machine.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-label">Finding 03</div>
+        <h4>Visual Confusion vs. Tactile Confirmation</h4>
+        <div class="friction">Users wanted immediate visual confirmation of their route selection on a map, not just a text list.</div>
+        <div class="fix"><strong>The Fix:</strong> Redesigned Split View — a static map alongside the list of stops for visual reinforcement.</div>
+      </div>
+    </div>
+    
+    <div class="img-block reveal">
+      <img src="guerilla-testing.png" alt="Testing Insights">
+      <div class="img-cap">Field testing feedback synthesis</div>
+    </div>
+  </div>
+
+  <div class="sec" id="midfi">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Mid-Fidelity Design</h2>
+      <span class="sec-num">07</span>
+    </div>
+    <p class="prose reveal">Based on guerilla testing findings, we built mid-fidelity prototypes and verified the full ecosystem — how users switched between the physical keyboard and screen.</p>
+    
+    <div class="img-block reveal">
+      <img src="mid-fi-1.png" alt="Mid-Fi Design 1">
+      <div class="img-cap">Mid-Fidelity Design Iteration 1</div>
+    </div>
+    <div class="img-block reveal">
+      <img src="mid-fi-2.png" alt="Mid-Fi Design 2">
+      <div class="img-cap">Mid-Fidelity Design Iteration 2</div>
+    </div>
+    <div class="img-block reveal">
+      <img src="mid-fi-3.png" alt="Mid-Fi Design 3">
+      <div class="img-cap">Mid-Fidelity Design Iteration 3</div>
+    </div>
+  </div>
+
+  <div class="sec" id="test2" style="margin-top:0; padding-top:60px;">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Usability Testing 2</h2>
+      <span class="sec-num">07.1</span>
+    </div>
+    <p class="prose reveal">Second round of usability testing with <strong style="font-weight:800; color:var(--black);">13 participants</strong> — students, seniors, newcomers, and non-tech users. Three key findings shaped Version 2.0.</p>
+    
+    <div class="img-block reveal">
+      <img src="usability-testing-photo.png" alt="Usability Testing Session">
+      <div class="img-cap">Usability testing session with participants</div>
+    </div>
+
+    <div class="reveal" style="margin-top:24px;">
+      <div class="finding">
+        <div class="finding-label">Finding A</div>
+        <h4>Static Map Confusion</h4>
+        <div class="friction">Users instinctively tried to touch, drag, and zoom the static map. When it didn't respond, they assumed the kiosk was broken.</div>
+        <div class="fix"><strong>The Fix:</strong> Upgraded to a fully interactive map allowing standard touch gestures (zoom, drag).</div>
+      </div>
+      <div class="finding">
+        <div class="finding-label">Finding B</div>
+        <h4>TV Screen Ignored</h4>
+        <div class="friction">Almost nobody noticed the external TV screen. Users focused entirely on the kiosk screen or their printed ticket.</div>
+        <div class="fix"><strong>The Fix:</strong> Removed the TV and integrated "Bus Arriving" alerts directly into the main kiosk interface.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-label">Finding C</div>
+        <h4>Itinerary Uncertainty</h4>
+        <div class="friction">Users felt anxious when itinerary details were general. They wanted precise numbers: arrival times and stop counts.</div>
+        <div class="fix"><strong>The Fix:</strong> Replaced vague labels with exact arrival times and precise stop counts.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="hifi">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">High-Fidelity Design</h2>
+      <span class="sec-num">08</span>
+    </div>
+    <p class="prose reveal" style="margin-bottom:32px;">Version 2.0 addressed every major friction point. Here's what changed:</p>
+    <ul class="improve-list reveal">
+      <li>Interactive Map with zoom/drag capability for intuitive navigation.</li>
+      <li>Plain language labels, removing technical jargon.</li>
+      <li>Precise arrival times and stop counts displayed early.</li>
+      <li>Braille stickers and audio output for visually impaired users.</li>
+      <li>Simplified system, removing the external TV screen.</li>
+      <li>Redesigned Printable Card focusing on legibility and key data.</li>
+    </ul>
+    
+    <div class="img-row reveal" style="margin-top:40px;">
+      <div class="img-block">
+        <img src="hifi-kiosk.gif" alt="High Fidelity Kiosk Animated">
+        <div class="img-cap">Final High-Fidelity Kiosk UI</div>
+      </div>
+      <div class="img-block">
+        <img src="hifi-screen-1.png" alt="Screen 1">
+        <div class="img-cap">Language Selection Welcome Screen</div>
+      </div>
+    </div>
+    
+    <div class="img-block reveal" style="margin-top:28px;">
+      <img src="hifi-screen-2.png" alt="Screen 2">
+      <div class="img-cap">Split View: Interactive Map & Stops</div>
+    </div>
+  </div>
+
+  <div class="sec" id="impact">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Implementation & ICF Alignment</h2>
+      <span class="sec-num">09</span>
+    </div>
+    <div class="feature-grid reveal">
+      <div class="fcard">
+        <div class="fcard-num">ICF Alignment</div>
+        <h4>Digital Inclusion</h4>
+        <p>Directly supports Brantford's ICF goals by providing digital access to the 10% of riders without smartphones.</p>
+      </div>
+      <div class="fcard">
+        <div class="fcard-num">Scalability</div>
+        <h4>Low-Cost Deployment</h4>
+        <p>Can be installed using existing Ticket Vending Machine hardware shells, minimizing infrastructure costs.</p>
+      </div>
+      <div class="fcard">
+        <div class="fcard-num">Sustainability</div>
+        <h4>Low Maintenance</h4>
+        <p>Integrates with existing real-time data API. Only paper for receipts requires regular maintenance.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="reflection">
+    <div class="sec-header reveal">
+      <h2 class="sec-title">Reflection</h2>
+      <span class="sec-num">10</span>
+    </div>
+    <div class="reflection-grid reveal">
+      <div class="rcard">
+        <h4>User-Centred Design Requires Continuous Iteration</h4>
+        <p>We learned that our first idea is rarely the best one. Removing the external TV screen, which users completely ignored, taught us that good design is often about subtracting what doesn’t add value.</p>
+      </div>
+      <div class="rcard">
+        <h4>Real-World Testing Reveals Insights Interviews Cannot</h4>
+        <p>In the classroom, our prototype made sense. But in the busy bus terminal, we saw behaviors interviews missed, like users trusting physical maps over screens. Context changes everything.</p>
+      </div>
+      <div class="rcard">
+        <h4>Accessibility Must Be Designed from the Start</h4>
+        <p>Seeing seniors bypass the touchscreen for the physical keyboard proved that accessibility isn’t an “add-on.” For inclusivity to work, it has to be part of the foundation, not an afterthought.</p>
+      </div>
+      <div class="rcard">
+        <h4>Mixed Physical–Digital Solutions Are Powerful</h4>
+        <p>In a world racing towards “digital-only,” we found that physical elements still matter. The printed ticket and tactile keyboard provided a sense of security and trust that a screen alone could not match.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<a href="package-detail.html" class="next-proj">
+  <div>
+    <div class="next-label">Next Project</div>
+    <div class="next-name">Package Redesign →</div>
+  </div>
+  <div class="next-arrow">→</div>
+</a>
+
+<footer>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
+  <div class="ft-socials">
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  </div>
+  <div class="ft-line"></div>
+  <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
+</footer>
+
+<a href="#" class="back-top" id="back-top">↑</a>
+
+<script>
+  /* cursor */
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top = e.clientY + 'px';
+  });
+  // 这里加入了 .side-nav a，让侧边导航也能触发光标放大
+  document.querySelectorAll('a, .fcard, .rcard, .dropdown-menu, .side-nav a').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+
+  /* nav scroll */
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+    document.getElementById('back-top').classList.toggle('show', window.scrollY > 500);
+  });
+
+  /* reveal */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 80);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ── Side Navigation Active State (侧边导航滚动监听 & 显示隐藏逻辑) ── */
+  const sections = document.querySelectorAll('.sec');
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const sideNav = document.querySelector('.side-nav');
+  const overviewSec = document.getElementById('overview');
+
+  // 控制侧边栏的显示/隐藏：滑到 Overview 附近才显示
+  window.addEventListener('scroll', () => {
+    if (overviewSec && sideNav) {
+      if (window.scrollY > overviewSec.offsetTop - window.innerHeight * 0.6) {
+        sideNav.classList.add('show');
+      } else {
+        sideNav.classList.remove('show');
+      }
+    }
+  });
+
+  // 控制当前阅读章节的高亮显示
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.25 
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(sec => {
+    if (sec.getAttribute('id')) {
+      observer.observe(sec);
+    }
+  });
+</script>
+</body>
+</html>
