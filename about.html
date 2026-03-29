@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carol — About</title>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -60,10 +62,10 @@
     }
     #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
-    /* ── Theme Toggle Button (修改：自动适应黑白底色) ── */
+    /* ── Theme Toggle Button ── */
     .theme-toggle {
       background: transparent; 
-      border: 1px solid var(--border); /* 亮色模式下是灰色边框 */
+      border: 1px solid var(--border); 
       width: 44px; height: 44px; 
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -79,11 +81,10 @@
     
     .theme-toggle img {
       width: 20px; height: 20px; object-fit: contain;
-      filter: brightness(0); /* 亮色模式下，图标强行变纯黑色 */
+      filter: brightness(0); 
       transition: filter .3s;
     }
     
-    /* 亮色模式悬停：变黑底白图标 */
     .theme-toggle:hover {
       transform: scale(0.92);
       background-color: var(--black); 
@@ -93,14 +94,12 @@
       filter: brightness(0) invert(1);
     }
 
-    /* 暗黑模式下的按钮样式 */
     body.dark-mode .theme-toggle {
-      border-color: rgba(255, 255, 255, 0.3); /* 暗黑模式下是白色边框 */
+      border-color: rgba(255, 255, 255, 0.3); 
     }
     body.dark-mode .theme-toggle img {
-      filter: brightness(0) invert(1); /* 暗黑模式下，图标强行变纯白色 */
+      filter: brightness(0) invert(1); 
     }
-    /* 暗黑模式悬停：变白底黑图标 */
     body.dark-mode .theme-toggle:hover {
       background-color: var(--white);
       border-color: var(--white);
@@ -244,7 +243,7 @@
       animation: fadeUp .7s ease .65s forwards;
     }
     .hero-icon-btn {
-      width: 48px; height: 48px;
+      width: 56px; height: 56px;
       border-radius: 50%;
       background: var(--accent);
       display: flex; align-items: center; justify-content: center;
@@ -280,6 +279,93 @@
     }
 
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* ══════════════════════
+       FALLING TAGS SECTION
+    ══════════════════════ */
+    #falling-section {
+      position: relative;
+      width: 100%;
+      height: 80vh;
+      min-height: 700px; 
+      background: var(--white); /* 与上下区块完全一致的颜色 */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 修改：适配透明 PNG 的照片容器 */
+    .falling-bg-img {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 420px; /* 控制 PNG 的最大宽度，你可以根据图片大小调整 */
+      z-index: 1; /* 垫在最底层 */
+      pointer-events: none; /* 防止图片挡住你抓取背后的标签 */
+    }
+    
+    .falling-bg-img img {
+      width: 100%; height: auto; 
+      object-fit: contain; /* 保证 PNG 形状不被裁剪 */
+      display: block;
+      /* 核心魔法：使用 drop-shadow 沿着 PNG 的不规则边缘生成阴影 */
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));
+      transition: filter 0.5s ease, transform 0.5s ease;
+      opacity: 0.95; /* 微微半透明，让物理标签更有层次感 */
+    }
+    body.dark-mode .falling-bg-img img {
+      /* 暗黑模式下加深阴影 */
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    }
+
+    .falling-hint {
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .falling-tag {
+      position: absolute;
+      top: 0; left: 0;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-size: clamp(14px, 2vw, 22px);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      user-select: none;
+      cursor: grab;
+      white-space: nowrap;
+      z-index: 10; /* 在照片的上方 */
+    }
+    .falling-tag:active { cursor: grabbing; }
+
+    /* 标签配色体系 */
+    .tag-pink {
+      background: var(--accent); color: #fff; border: 2px solid var(--accent);
+    }
+    .tag-dark {
+      background: var(--black); color: var(--white); border: 2px solid var(--black);
+      transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    }
+    .tag-outline-pink {
+      background: transparent; color: var(--accent); border: 2px solid var(--accent);
+    }
+    .tag-outline-dark {
+      background: transparent; color: var(--black); border: 2px solid var(--black);
+      transition: color 0.5s ease, border-color 0.5s ease;
+      backdrop-filter: blur(4px);
+    }
 
     /* ══════════════════════
        CONTENT SECTIONS
@@ -389,7 +475,7 @@
     
     .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
     .ft-icon-btn {
-      width: 48px; height: 48px; border-radius: 50%;
+      width: 56px; height: 56px; border-radius: 50%;
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.3);
       display: flex; align-items: center; justify-content: center;
@@ -486,6 +572,13 @@
   </div>
 </section>
 
+<section id="falling-section">
+  <div class="falling-bg-img">
+    <img src="my-fun-pic.png" alt="Carol Chen Fun Pic">
+  </div>
+  <div class="falling-hint">This all me~</div>
+  </section>
+
 <div class="content-wrap">
 
   <div class="sec">
@@ -549,7 +642,8 @@
   <div class="sec">
     <div class="sec-header">
       <h2 class="sec-title">Skills & Tools</h2>
-      <span class="sec-num">03</span> </div>
+      <span class="sec-num">03</span>
+    </div>
     
     <div class="marquee-wrapper reveal">
       <div class="marquee-track">
@@ -601,41 +695,45 @@
   const themeBtn = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
   
-  // 图片路径配置
-  const sunIconPath = "image_df6b4a.png"; // 用于暗黑模式下，点它变亮
-  const moonIconPath = "image_df6b67.png"; // 用于亮色模式下，点它变暗
+  const sunIconPath = "image_df6b4a.png"; 
+  const moonIconPath = "image_df6b67.png"; 
 
-  // 1. 初始化检查（从 localStorage 读取状态）
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
-    themeIcon.src = sunIconPath; // 暗色模式下显示太阳图标
+    themeIcon.src = sunIconPath; 
   } else {
-    themeIcon.src = moonIconPath; // 亮色模式下显示月亮图标
+    themeIcon.src = moonIconPath; 
   }
 
-  // 2. 点击事件
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    
     if (document.body.classList.contains('dark-mode')) {
-      themeIcon.src = sunIconPath; // 切换到暗色后，换成太阳图标
+      themeIcon.src = sunIconPath; 
       localStorage.setItem('theme', 'dark'); 
     } else {
-      themeIcon.src = moonIconPath; // 切换到亮色后，换成月亮图标
+      themeIcon.src = moonIconPath; 
       localStorage.setItem('theme', 'light'); 
     }
   });
 
-  /* ── cursor ── */
+  /* ── Cursor ── */
   const cur = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
     cur.style.left = e.clientX + 'px';
     cur.style.top = e.clientY + 'px';
   });
-  /* 确保按钮和 logo 都会放大光标 */
-  document.querySelectorAll('a, .award-card, .dropdown-menu, .hero-icon-btn, .ft-icon-btn, .m-logo, .theme-toggle').forEach(el => {
-    el.addEventListener('mouseenter', () => cur.classList.add('big'));
-    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  
+  const cursorHoverElements = 'a, .award-card, .dropdown-menu, .hero-icon-btn, .ft-icon-btn, .m-logo, .theme-toggle, .falling-tag';
+  
+  document.body.addEventListener('mouseover', e => {
+    if(e.target.closest(cursorHoverElements)) {
+      cur.classList.add('big');
+    }
+  });
+  document.body.addEventListener('mouseout', e => {
+    if(e.target.closest(cursorHoverElements)) {
+      cur.classList.remove('big');
+    }
   });
 
   /* ── nav border on scroll ── */
@@ -654,6 +752,131 @@
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+
+  /* ── Matter.js 物理坠落标签精确坐标绑定 ── */
+  function initFallingTags() {
+    const container = document.getElementById('falling-section');
+    if (!container) return;
+
+    const tagsData = [
+      { text: "doge lover", cls: "tag-pink" },
+      { text: "Graphic Designer", cls: "tag-dark" },
+      { text: "UX designer", cls: "tag-outline-pink" },
+      { text: "Video Game", cls: "tag-pink" },
+      { text: "Movie", cls: "tag-outline-dark" },
+      { text: "Anime Lover", cls: "tag-dark" },
+      { text: "ENTP", cls: "tag-outline-pink" }
+    ];
+
+    const Engine = Matter.Engine,
+          Render = Matter.Render,
+          Runner = Matter.Runner,
+          MouseConstraint = Matter.MouseConstraint,
+          Mouse = Matter.Mouse,
+          World = Matter.World,
+          Bodies = Matter.Bodies;
+
+    const engine = Engine.create();
+    const world = engine.world;
+    engine.world.gravity.y = 1; 
+
+    let width = container.clientWidth;
+    let height = container.clientHeight;
+
+    const tagElements = [];
+    const tagBodies = [];
+
+    tagsData.forEach((tag, i) => {
+      // 1. 生成 DOM 并获取尺寸
+      const el = document.createElement('div');
+      el.className = `falling-tag ${tag.cls}`;
+      el.innerText = tag.text;
+      container.appendChild(el);
+      tagElements.push(el);
+
+      const rect = el.getBoundingClientRect();
+      
+      // 2. 将出生点设置在屏幕的正上方外侧，让它们有“落下来”的效果
+      const x = Math.random() * (width - rect.width - 40) + rect.width / 2 + 20;
+      const y = -100 - (Math.random() * 300); // 错开下落时间
+
+      // 3. 建立物理碰撞体
+      const body = Bodies.rectangle(x, y, rect.width, rect.height, {
+         restitution: 0.6, 
+         friction: 0.1,    
+         frictionAir: 0.02, 
+         chamfer: { radius: rect.height / 2 }, 
+         render: { visible: false } 
+      });
+      
+      Matter.Body.setAngle(body, (Math.random() - 0.5) * 0.4);
+      tagBodies.push(body);
+    });
+
+    World.add(world, tagBodies);
+
+    // 设置容器边界（地板和墙）
+    const wallOptions = { isStatic: true, render: { visible: false } };
+    const ground = Bodies.rectangle(width / 2, height + 50, width * 2, 100, wallOptions);
+    const leftWall = Bodies.rectangle(-50, height / 2, 100, height * 3, wallOptions);
+    const rightWall = Bodies.rectangle(width + 50, height / 2, 100, height * 3, wallOptions);
+    
+    World.add(world, [ground, leftWall, rightWall]);
+
+    // 鼠标抓取控制
+    const mouse = Mouse.create(container);
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: { visible: false }
+      }
+    });
+    World.add(world, mouseConstraint);
+
+    // 严禁物理引擎吃掉页面的正常滚动事件
+    mouseConstraint.mouse.element.removeEventListener("mousewheel", mouseConstraint.mouse.mousewheel);
+    mouseConstraint.mouse.element.removeEventListener("DOMMouseScroll", mouseConstraint.mouse.mousewheel);
+
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    // 4. 精确同步物理引擎坐标到 HTML DOM
+    function update() {
+      tagBodies.forEach((body, i) => {
+        const el = tagElements[i];
+        // 锁定中心点进行 translate 和 rotate
+        el.style.transform = `translate(-50%, -50%) rotate(${body.angle}rad)`;
+        el.style.left = `${body.position.x}px`;
+        el.style.top = `${body.position.y}px`;
+      });
+      requestAnimationFrame(update);
+    }
+    update();
+
+    window.addEventListener('resize', () => {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      Matter.Body.setPosition(ground, { x: width / 2, y: height + 50 });
+      Matter.Body.setPosition(rightWall, { x: width + 50, y: height / 2 });
+    });
+  }
+
+  // 保证用户滑动到这部分时，动画才开始播放
+  let tagsInitialized = false;
+  const fallObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !tagsInitialized) {
+      tagsInitialized = true;
+      initFallingTags();
+    }
+  }, { threshold: 0.1 });
+  
+  const fallSec = document.getElementById('falling-section');
+  if (fallSec) {
+    fallObserver.observe(fallSec);
+  }
+
 </script>
 </body>
 </html>
