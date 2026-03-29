@@ -15,6 +15,7 @@
       --gray: #aaa;
       --border: #e5e1db;
       --mid: #f0ede9;
+      --accent: #F14F9B; /* 新增品牌粉色变量 */
     }
 
     html { scroll-behavior: smooth; }
@@ -51,7 +52,8 @@
       transition: border-color .3s;
     }
     nav.scrolled { border-color: var(--border); }
-    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--black); text-decoration: none; }
+    /* 修改：Logo 使用粉色 */
+    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--accent); text-decoration: none; }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links > a, .nav-item-dropdown > a {
@@ -127,12 +129,10 @@
       gap: 14px;
       z-index: 90;
       align-items: flex-end;
-      /* 初始隐藏状态：透明且不可点击 */
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-    /* 显示状态：由 JS 控制 */
     .side-nav.show {
       opacity: 1;
       visibility: visible;
@@ -185,7 +185,6 @@
       background: var(--off);
     }
 
-    /* dot grid */
     #hero::before {
       content: '';
       position: absolute; inset: 0;
@@ -235,7 +234,6 @@
 
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    /* hero two-col layout */
     .hero-inner {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -245,7 +243,6 @@
     }
     .hero-left-col { display: flex; flex-direction: column; }
 
-    /* hero video */
     .hero-video-wrap {
       position: relative;
       width: 100%;
@@ -282,7 +279,6 @@
       padding: 0 10vw 120px;
     }
 
-    /* section */
     .sec {
       padding-top: 80px;
       border-top: 1px solid var(--border);
@@ -303,18 +299,15 @@
       text-transform: uppercase; color: var(--gray);
     }
 
-    /* prose */
     .prose {
       font-size: 16px; line-height: 1.8; color: #555; max-width: 680px;
     }
     .prose + .prose { margin-top: 20px; }
 
-    /* two-col text */
     .two-col {
       display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
     }
 
-    /* full-width image block */
     .img-block {
       width: 100%; border-radius: 16px; overflow: hidden;
       background: var(--mid); margin-top: 40px;
@@ -329,11 +322,9 @@
       background: var(--white);
     }
 
-    /* two-col images */
     .img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
     .img-row .img-block { margin-top: 0; }
 
-    /* ── video block ── */
     .video-block {
       display: flex;
       flex-direction: column;
@@ -344,7 +335,6 @@
       margin-top: 0;
       position: relative;
     }
-    
     .video-block video { 
       width: 100%; 
       display: block; 
@@ -352,7 +342,6 @@
       object-fit: contain; 
       background: transparent; 
     }
-    
     .video-block .vid-cap {
       margin-top: auto; 
       width: 100%;
@@ -362,15 +351,12 @@
       border-top: 1px solid var(--border);
       background: var(--white);
     }
-
-    /* video row: two side-by-side */
     .video-row {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 20px; margin-top: 40px;
       align-items: stretch; 
     }
 
-    /* quote / callout */
     .callout {
       margin: 36px 0;
       padding: 28px 32px;
@@ -387,7 +373,6 @@
       font-style: normal;
     }
 
-    /* user quote (smaller) */
     .uquote {
       display: flex; gap: 14px; align-items: flex-start;
       margin: 14px 0;
@@ -399,7 +384,6 @@
     }
     .uquote p { font-size: 15px; line-height: 1.65; color: #555; font-style: italic; }
 
-    /* key feature cards */
     .feature-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
       margin-top: 8px;
@@ -414,7 +398,6 @@
     .fcard h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; letter-spacing: -.01em; }
     .fcard p { font-size: 13px; line-height: 1.65; color: #666; }
 
-    /* finding rows */
     .finding {
       padding: 32px 0; border-bottom: 1px solid var(--border);
     }
@@ -431,7 +414,6 @@
     }
     .finding .fix strong { font-weight: 800; }
 
-    /* improvement list */
     .improve-list { list-style: none; margin-top: 8px; }
     .improve-list li {
       display: flex; gap: 14px; align-items: flex-start;
@@ -445,7 +427,6 @@
       flex-shrink: 0; margin-top: 1px;
     }
 
-    /* reflection */
     .reflection-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
     }
@@ -455,7 +436,6 @@
     .rcard h4 { font-size: 15px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em; }
     .rcard p { font-size: 14px; line-height: 1.7; color: #666; }
 
-    /* reveal */
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s, transform .65s; }
     .reveal.in { opacity: 1; transform: translateY(0); }
 
@@ -463,27 +443,42 @@
        FOOTER
     ══════════════════════ */
     footer {
-      background: var(--black); color: #fff;
+      background: var(--accent); /* 品牌粉色背景 */
+      color: #ffffff; 
       padding: 80px 10vw 56px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 18px;
     }
-    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
-    .ft-title { font-size: clamp(24px, 5vw, 38px); font-weight: 800; letter-spacing: -.03em; }
-    .ft-email {
-      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
-      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
-      transition: color .2s, border-color .2s;
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; color: #ffffff;}
+    
+    .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
+    .ft-icon-btn {
+      width: 48px; height: 48px; /* 修改：统一成 48px */
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15); 
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; cursor: none;
+      transition: transform .2s, background-color .3s, border-color .3s;
     }
-    .ft-email:hover { color: #fff; border-color: #fff; }
-    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
-    .ft-socials a {
-      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-      color: #444; text-decoration: none; transition: color .2s;
+    .ft-icon-btn img {
+      width: 24px; height: 24px; /* 修改：跟随外框等比例缩小 */
+      object-fit: contain;
+      filter: brightness(0) invert(1); 
+      transition: filter .3s;
     }
-    .ft-socials a:hover { color: #fff; }
-    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
-    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+    .ft-icon-btn:hover {
+      transform: scale(0.92);
+      background-color: #ffffff; 
+      border-color: #ffffff;
+    }
+    .ft-icon-btn:hover img {
+      filter: brightness(0); 
+    }
+
+    .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; transition: background 0.5s; }
+    .ft-copy { font-size: 11px; color: rgba(255, 255, 255, 0.9); letter-spacing: .08em; transition: color 0.5s; }
 
     /* back top */
     .back-top {
@@ -885,16 +880,22 @@
 
 </div>
 
-
-
 <footer>
   <div class="ft-label">Let's Connect</div>
   <div class="ft-title">Say Hello.</div>
-  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
-  <div class="ft-socials">
-    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
-    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  
+  <div class="ft-contact">
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="ft-icon-btn" target="_blank">
+      <img src="icon-linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="ft-icon-btn" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="mailto:YauchiTATA@Gmail.com" class="ft-icon-btn">
+      <img src="icon-mail.png" alt="Email">
+    </a>
   </div>
+
   <div class="ft-line"></div>
   <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
 </footer>
@@ -908,8 +909,8 @@
     cur.style.left = e.clientX + 'px';
     cur.style.top = e.clientY + 'px';
   });
-  // 这里加入了 .side-nav a，让侧边导航也能触发光标放大
-  document.querySelectorAll('a, .fcard, .rcard, .dropdown-menu, .side-nav a').forEach(el => {
+  // 修改：加入了 .ft-icon-btn，让底部按钮也能放大光标
+  document.querySelectorAll('a, .fcard, .rcard, .dropdown-menu, .side-nav a, .ft-icon-btn').forEach(el => {
     el.addEventListener('mouseenter', () => cur.classList.add('big'));
     el.addEventListener('mouseleave', () => cur.classList.remove('big'));
   });
