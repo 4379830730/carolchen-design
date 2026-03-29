@@ -8,36 +8,56 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Light Mode Variables */
     :root {
-      --black: #111;
+      --black: #111111;
       --white: #ffffff;
       --off: #f6f4f1;
-      --gray: #aaa;
+      --gray: #aaaaaa;
       --border: #e5e1db;
+      --dot: #d6d2cc;
+    }
+
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --black: #ffffff;
+      --white: #111111;
+      --off: #1a1a1a;
+      --gray: #888888;
+      --border: #333333;
+      --dot: #333333;
     }
 
     html { scroll-behavior: smooth; }
+    
+    /* 增加背景和颜色的全局丝滑过渡 */
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
       background: var(--white);
       color: var(--black);
       overflow-x: hidden;
       cursor: none;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    /* 所有主要容器加入过渡动画 */
+    #intro, #type-section, #projects, .pcard, footer, .dropdown-menu, .ftag, .go, .pcard-img {
+      transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.35s;
     }
 
    /* ── cursor ── */
     #cursor {
       position: fixed;
       width: 9px; height: 9px;
-      background: #fff; /* 改成白色，配合差值模式 */
+      background: #fff;
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%,-50%);
       transition: width .2s, height .2s, opacity .2s;
-      mix-blend-mode: difference; /* 改为智能反色模式 */
+      mix-blend-mode: difference;
     }
-    #cursor.big { width: 44px; height: 44px; opacity: 1; } /* 去掉透明度，让反色更清晰 */
+    #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
     /* ══════════════════════
        1. INTRO SCREEN
@@ -48,7 +68,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #fff;
+      background: var(--white);
       overflow: hidden;
     }
 
@@ -82,7 +102,7 @@
       flex-direction: column;
       justify-content: center;
       padding: 0 10vw;
-      background: #fff;
+      background: var(--white);
       overflow: hidden;
     }
 
@@ -90,10 +110,11 @@
     #type-section::before {
       content: '';
       position: absolute; inset: 0;
-      background-image: radial-gradient(circle, #d6d2cc 1px, transparent 1px);
+      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
       background-size: 38px 38px;
       opacity: 0.5;
       pointer-events: none;
+      transition: background-image 0.5s ease;
     }
 
     .type-eyebrow {
@@ -150,7 +171,6 @@
     .nav-item-dropdown {
       position: relative;
       display: inline-block;
-      /* 缩小距离，搭建更紧密的悬浮桥梁，防止菜单消失 */
       padding-bottom: 12px;
       margin-bottom: -12px;
     }
@@ -158,7 +178,7 @@
       position: absolute;
       top: 100%;
       right: -10px;
-      margin-top: 0; /* 移除上方间距，让菜单紧贴着文字 */
+      margin-top: 0;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -171,28 +191,28 @@
       min-width: 140px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.06);
       opacity: 0;
-      transform: translateY(-5px); /* 悬浮动画移动距离变短，更干脆 */
+      transform: translateY(-5px);
       pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      transition: opacity 0.25s ease, transform 0.25s ease, background 0.5s ease;
       z-index: 100;
     }
     .nav-item-dropdown:hover .dropdown-menu {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+      opacity: 1; transform: translateY(0); pointer-events: auto;
     }
+    /* Dark mode override for dropdown */
+    body.dark-mode .dropdown-menu {
+      background: rgba(17, 17, 17, 0.95);
+    }
+    body.dark-mode .dropdown-menu img {
+      filter: invert(1);
+    }
+    
     .dropdown-menu a {
-      display: flex !important;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      color: var(--black) !important;
-      text-decoration: none !important;
-      font-size: 13px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.04em !important;
-      text-transform: capitalize !important;
-      border-radius: 8px;
+      display: flex !important; align-items: center; gap: 12px;
+      padding: 10px 14px; color: var(--black) !important;
+      text-decoration: none !important; font-size: 13px !important;
+      font-weight: 500 !important; letter-spacing: 0.04em !important;
+      text-transform: capitalize !important; border-radius: 8px;
       transition: background 0.2s !important;
     }
     .dropdown-menu a::after { display: none !important; } 
@@ -216,11 +236,43 @@
       color: var(--black); text-decoration: none;
       border: 1.5px solid var(--black); padding: 13px 26px; border-radius: 40px;
       display: flex; align-items: center; gap: 10px;
-      transition: background .25s, color .25s; cursor: none;
+      transition: background .25s, color .25s, border-color 0.5s; cursor: none;
     }
-    .view-btn:hover { background: var(--black); color: #fff; }
+    .view-btn:hover { background: var(--black); color: var(--white); }
     .view-btn .arr { transition: transform .25s; }
     .view-btn:hover .arr { transform: translateX(4px); }
+
+    /* ── Theme Toggle Button (顶部居中暗黑模式开关) ── */
+    .theme-toggle {
+      position: fixed;
+      top: 36px; /* 贴齐顶部导航栏的高度 */
+      left: 50%;
+      background: var(--black);
+      color: var(--white);
+      border: 1px solid var(--border);
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none; 
+      z-index: 1000;
+      opacity: 0; pointer-events: none;
+      transform: translate(-50%, -10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: opacity 0.7s, transform 0.7s, background-color 0.5s, color 0.5s;
+    }
+    .theme-toggle.show { 
+      opacity: 1; 
+      pointer-events: auto; 
+      transform: translate(-50%, 0); 
+    }
+    .theme-toggle:hover { 
+      transform: translate(-50%, -3px); 
+    }
+    body.dark-mode .theme-toggle { 
+      box-shadow: 0 4px 12px rgba(255,255,255,0.08); 
+    }
 
     /* ══════════════════════
        3. PROJECTS
@@ -245,13 +297,14 @@
       border-radius: 20px; overflow: hidden;
       background: var(--white); border: 1px solid var(--border);
       display: flex; flex-direction: column;
-      transition: transform .35s, box-shadow .35s; cursor: none;
+      cursor: none;
     }
     .pcard:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.08); }
+    body.dark-mode .pcard:hover { box-shadow: 0 20px 56px rgba(0,0,0,.4); }
 
     .pcard-img {
       position: relative; width: 100%; height: 350px;
-      overflow: hidden; background: #ebe8e3;
+      overflow: hidden; background: var(--off);
     }
     .pcard-img img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .5s; }
     .pcard:hover .pcard-img img { transform: scale(1.05); }
@@ -263,11 +316,17 @@
       padding: 5px 14px; font-size: 11px; font-weight: 700;
       letter-spacing: .07em; text-transform: uppercase; color: var(--black);
     }
+    body.dark-mode .ftag {
+      background: rgba(17, 17, 17, 0.92); border-color: rgba(255, 255, 255, 0.1);
+    }
+
     .fnum {
       position: absolute; top: 12px; right: 18px;
       font-size: 46px; font-weight: 800;
-      color: rgba(255,255,255,.38); line-height: 1; user-select: none;
+      color: rgba(255,255,255,.5); line-height: 1; user-select: none;
+      transition: color 0.5s ease;
     }
+    body.dark-mode .fnum { color: rgba(255,255,255,.06); }
 
     .pcard-body {
       padding: 22px 24px;
@@ -278,42 +337,52 @@
     .chips { display: flex; gap: 6px; flex-wrap: wrap; }
     .chip {
       font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-      padding: 4px 11px; border-radius: 40px; border: 1px solid #d8d3cc; color: #999;
+      padding: 4px 11px; border-radius: 40px; border: 1px solid var(--border); color: var(--gray);
+      transition: border-color 0.5s ease, color 0.5s ease;
     }
     .go {
       flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
-      background: var(--black); color: #fff;
+      background: var(--black); color: var(--white);
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; text-decoration: none; cursor: none;
-      transition: transform .2s, background .2s;
+      transition: transform .2s, background .5s;
     }
-    .pcard:hover .go { transform: scale(1.1); background: #333; }
+    .pcard:hover .go { transform: scale(1.1); background: var(--gray); }
 
     /* ══════════════════════
        4. FOOTER
     ══════════════════════ */
     footer {
-      background: var(--black); color: #fff;
+      background: var(--black); color: var(--white);
       padding: 80px 10vw 56px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 18px;
     }
-    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
-    .ft-title { font-size: clamp(24px, 5vw, 38px); font-weight: 800; letter-spacing: -.03em; }
+    
+    /* Footer variables behavior */
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; transition: color 0.5s; }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
     .ft-email {
       font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
       letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
       transition: color .2s, border-color .2s;
     }
-    .ft-email:hover { color: #fff; border-color: #fff; }
+    .ft-email:hover { color: var(--white); border-color: var(--white); }
     .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
     .ft-socials a {
       font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
       color: #444; text-decoration: none; transition: color .2s;
     }
-    .ft-socials a:hover { color: #fff; }
-    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
-    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+    .ft-socials a:hover { color: var(--white); }
+    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; transition: background 0.5s; }
+    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; transition: color 0.5s; }
+
+    /* Dark Mode specific overrides for Footer */
+    body.dark-mode .ft-label { color: #aaa; }
+    body.dark-mode .ft-email { color: #666; border-color: #ddd; }
+    body.dark-mode .ft-socials a { color: #666; }
+    body.dark-mode .ft-line { background: #eee; }
+    body.dark-mode .ft-copy { color: #999; }
 
     /* reveal on scroll */
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s; }
@@ -323,6 +392,8 @@
 <body>
 
 <div id="cursor"></div>
+
+<button id="theme-toggle" class="theme-toggle">Dark Mode</button>
 
 <section id="intro">
   <canvas id="intro-canvas"></canvas>
@@ -461,14 +532,26 @@
 </footer>
 
 <script>
+/* ── Theme Toggle Logic ── */
+const themeBtn = document.getElementById('theme-toggle');
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  // 切换按钮文字
+  if (document.body.classList.contains('dark-mode')) {
+    themeBtn.textContent = 'Light Mode';
+  } else {
+    themeBtn.textContent = 'Dark Mode';
+  }
+});
+
 /* ── cursor ── */
 const cur = document.getElementById('cursor');
 document.addEventListener('mousemove', e => {
   cur.style.left = e.clientX + 'px';
   cur.style.top = e.clientY + 'px';
 });
-// 给新加入的下拉菜单也加上鼠标放大的效果
-document.querySelectorAll('a,.pcard,.dropdown-menu').forEach(el => {
+// 确保暗黑模式切换按钮也能触发鼠标变大
+document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
@@ -488,6 +571,10 @@ function drawWaves() {
   ctx.clearRect(0, 0, W, H);
   tick += 0.008;
 
+  // 智能识别当前是否是深色模式，改变波浪线颜色
+  const isDark = document.body.classList.contains('dark-mode');
+  const rgbColor = isDark ? '255, 255, 255' : '0, 0, 0';
+
   for (let i = 0; i < LINES; i++) {
     const t = i / (LINES - 1);
     const yBase = H * 0.15 + t * H * 0.7;
@@ -502,7 +589,7 @@ function drawWaves() {
       x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     const alpha = 0.07 + (1 - Math.abs(t - 0.5) * 2) * 0.07;
-    ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
+    ctx.strokeStyle = `rgba(${rgbColor}, ${alpha})`;
     ctx.lineWidth = 0.8;
     ctx.stroke();
   }
@@ -516,7 +603,7 @@ function drawWaves() {
     const drift = Math.sin(tick * 0.8 + i) * 5;
     ctx.save();
     ctx.translate(cx, cy + drift);
-    ctx.strokeStyle = 'rgba(0,0,0,0.14)';
+    ctx.strokeStyle = `rgba(${rgbColor}, 0.14)`;
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 6); ctx.stroke();
@@ -544,6 +631,10 @@ function typeNext() {
   if (ci >= fullText.length) {
     document.getElementById('nav').classList.add('show');
     document.getElementById('bot').classList.add('show');
+    
+    // 等打字机动画完成后，暗黑模式切换按钮在顶部居中浮现
+    document.getElementById('theme-toggle').classList.add('show');
+    
     return;
   }
   const ch = fullText[ci];
