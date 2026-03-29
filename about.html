@@ -243,7 +243,7 @@
       animation: fadeUp .7s ease .65s forwards;
     }
     .hero-icon-btn {
-      width: 48px; height: 48px;
+      width: 56px; height: 56px;
       border-radius: 50%;
       background: var(--accent);
       display: flex; align-items: center; justify-content: center;
@@ -288,35 +288,63 @@
       width: 100%;
       height: 80vh;
       min-height: 700px; 
-      background: var(--white); /* 与上下区块完全一致的颜色 */
+      background: var(--white);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* 修改：适配透明 PNG 的照片容器 */
+    /* ── 新增：两边的辅助文字样式 ── */
+    .falling-side-text {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22vw;
+      max-width: 280px;
+      font-size: 16px; /* 和自我介绍保持一致 */
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--text-p);
+      pointer-events: none; /* 允许鼠标穿透文字去抓取标签 */
+      z-index: 2; /* 在图片上方，标签下方 */
+      transition: color 0.5s ease;
+    }
+    .text-left {
+      left: 10vw;
+      text-align: right; /* 左边文字向右对齐，靠拢图片 */
+    }
+    .text-right {
+      right: 10vw;
+      text-align: left; /* 右边文字向左对齐，靠拢图片 */
+    }
+    
+    /* 手机端屏幕较小时隐藏这两段辅助文字，保证排版不乱 */
+    @media (max-width: 900px) {
+      .falling-side-text {
+        display: none;
+      }
+    }
+
     .falling-bg-img {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 80%;
-      max-width: 420px; /* 控制 PNG 的最大宽度，你可以根据图片大小调整 */
-      z-index: 1; /* 垫在最底层 */
-      pointer-events: none; /* 防止图片挡住你抓取背后的标签 */
+      max-width: 420px; 
+      z-index: 1; 
+      pointer-events: none; 
     }
     
     .falling-bg-img img {
       width: 100%; height: auto; 
-      object-fit: contain; /* 保证 PNG 形状不被裁剪 */
+      object-fit: contain; 
       display: block;
-      /* 核心魔法：使用 drop-shadow 沿着 PNG 的不规则边缘生成阴影 */
       filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));
       transition: filter 0.5s ease, transform 0.5s ease;
-      opacity: 0.95; /* 微微半透明，让物理标签更有层次感 */
+      opacity: 0.95; 
     }
     body.dark-mode .falling-bg-img img {
-      /* 暗黑模式下加深阴影 */
       filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
     }
 
@@ -346,7 +374,7 @@
       user-select: none;
       cursor: grab;
       white-space: nowrap;
-      z-index: 10; /* 在照片的上方 */
+      z-index: 10; 
     }
     .falling-tag:active { cursor: grabbing; }
 
@@ -573,11 +601,21 @@
 </section>
 
 <section id="falling-section">
+  
+  <div class="falling-side-text text-left">
+    <p>I love observing the world around me and turning those insights into playful, user-centric designs. Here are a few things that define my vibe.</p>
+  </div>
+
   <div class="falling-bg-img">
     <img src="my-fun-pic.png" alt="Carol Chen Fun Pic">
   </div>
+  
+  <div class="falling-side-text text-right">
+    <p>When I'm not designing, you can usually find me playing video games, watching movies, or hanging out with my doge. ENTP energy all the way!</p>
+  </div>
+
   <div class="falling-hint">This all me~</div>
-  </section>
+</section>
 
 <div class="content-wrap">
 
@@ -788,7 +826,6 @@
     const tagBodies = [];
 
     tagsData.forEach((tag, i) => {
-      // 1. 生成 DOM 并获取尺寸
       const el = document.createElement('div');
       el.className = `falling-tag ${tag.cls}`;
       el.innerText = tag.text;
@@ -797,11 +834,9 @@
 
       const rect = el.getBoundingClientRect();
       
-      // 2. 将出生点设置在屏幕的正上方外侧，让它们有“落下来”的效果
       const x = Math.random() * (width - rect.width - 40) + rect.width / 2 + 20;
-      const y = -100 - (Math.random() * 300); // 错开下落时间
+      const y = -100 - (Math.random() * 300); 
 
-      // 3. 建立物理碰撞体
       const body = Bodies.rectangle(x, y, rect.width, rect.height, {
          restitution: 0.6, 
          friction: 0.1,    
@@ -816,7 +851,6 @@
 
     World.add(world, tagBodies);
 
-    // 设置容器边界（地板和墙）
     const wallOptions = { isStatic: true, render: { visible: false } };
     const ground = Bodies.rectangle(width / 2, height + 50, width * 2, 100, wallOptions);
     const leftWall = Bodies.rectangle(-50, height / 2, 100, height * 3, wallOptions);
@@ -824,7 +858,6 @@
     
     World.add(world, [ground, leftWall, rightWall]);
 
-    // 鼠标抓取控制
     const mouse = Mouse.create(container);
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -835,18 +868,15 @@
     });
     World.add(world, mouseConstraint);
 
-    // 严禁物理引擎吃掉页面的正常滚动事件
     mouseConstraint.mouse.element.removeEventListener("mousewheel", mouseConstraint.mouse.mousewheel);
     mouseConstraint.mouse.element.removeEventListener("DOMMouseScroll", mouseConstraint.mouse.mousewheel);
 
     const runner = Runner.create();
     Runner.run(runner, engine);
 
-    // 4. 精确同步物理引擎坐标到 HTML DOM
     function update() {
       tagBodies.forEach((body, i) => {
         const el = tagElements[i];
-        // 锁定中心点进行 translate 和 rotate
         el.style.transform = `translate(-50%, -50%) rotate(${body.angle}rad)`;
         el.style.left = `${body.position.x}px`;
         el.style.top = `${body.position.y}px`;
@@ -863,7 +893,6 @@
     });
   }
 
-  // 保证用户滑动到这部分时，动画才开始播放
   let tagsInitialized = false;
   const fallObserver = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !tagsInitialized) {
