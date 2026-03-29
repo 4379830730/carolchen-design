@@ -238,13 +238,13 @@
       animation: fadeUp .7s ease .2s forwards;
     }
 
-    /* 修改：自我介绍标题换成像素字体并调整字号 */
+    /* 修改：自我介绍标题换成像素字体并调整字号及行高 */
     .hero-name {
       font-family: 'Jersey 10', sans-serif;
       font-size: clamp(60px, 8vw, 110px);
       font-weight: 400; 
       letter-spacing: 0.02em;
-      line-height: 1.05; margin-bottom: 28px;
+      line-height: 0.85; margin-bottom: 28px; /* 调整这里的 line-height 缩小行距 */
       opacity: 0; transform: translateY(16px);
       animation: fadeUp .8s ease .35s forwards;
     }
@@ -263,7 +263,7 @@
       animation: fadeUp .7s ease .65s forwards;
     }
     .hero-icon-btn {
-      width: 56px; height: 56px;
+      width: 48px; height: 48px;
       border-radius: 50%;
       background: var(--accent);
       display: flex; align-items: center; justify-content: center;
@@ -524,7 +524,7 @@
     
     .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
     .ft-icon-btn {
-      width: 56px; height: 56px; border-radius: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.3);
       display: flex; align-items: center; justify-content: center;
