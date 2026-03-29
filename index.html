@@ -228,7 +228,7 @@
     }
     #nav.show { opacity: 1; transform: translateY(0); }
     
-    /* 修改：左上角 Logo 改为品牌粉色 */
+    /* 左上角 Logo 改为品牌粉色 */
     .nav-logo { 
       font-size: 15px; font-weight: 800; letter-spacing: -.02em; 
       color: var(--accent); /* 粉色 */
@@ -335,11 +335,9 @@
       transform: translate(-50%, -15px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: opacity 0.7s, transform 0.7s, background-color 0.5s, color 0.5s;
-      /* 去除浏览器默认蓝框和点击高亮 */
       outline: none;
       -webkit-tap-highlight-color: transparent;
     }
-    /* 去除点击时的蓝框 */
     .theme-toggle:focus {
       outline: none;
     }
@@ -422,7 +420,7 @@
       transition: border-color 0.5s ease, color 0.5s ease;
     }
     
-    /* 修改：卡片箭头按钮默认背景变为粉色 */
+    /* 卡片箭头按钮默认背景变为粉色 */
     .go {
       flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
       background: var(--accent); /* 粉色 */
@@ -437,34 +435,46 @@
     /* ══════════════════════
        4. FOOTER
     ══════════════════════ */
+    /* 修改：与 About 页面一致的粉色背景和排版 */
     footer {
-      background: var(--black); color: var(--white);
+      background: var(--accent); 
+      color: #fff;
       padding: 80px 10vw 56px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 18px;
     }
-    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; transition: color 0.5s; }
-    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
-    .ft-email {
-      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
-      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
-      transition: color .2s, border-color .2s;
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+    
+    /* ── Footer 联系方式纯 Icon ── */
+    .ft-contact {
+      display: flex; gap: 16px; margin-top: 4px;
     }
-    .ft-email:hover { color: var(--white); border-color: var(--white); }
-    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
-    .ft-socials a {
-      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-      color: #444; text-decoration: none; transition: color .2s;
+    .ft-icon-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15); /* 半透明白色 */
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; cursor: none;
+      transition: transform .2s, background-color .3s, border-color .3s;
     }
-    .ft-socials a:hover { color: var(--white); }
-    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; transition: background 0.5s; }
-    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; transition: color 0.5s; }
+    .ft-icon-btn img {
+      width: 26px; height: 26px; object-fit: contain;
+      filter: brightness(0) invert(1); /* 保证图标是纯白色 */
+      transition: filter .3s;
+    }
+    /* 鼠标悬停交互效果 */
+    .ft-icon-btn:hover {
+      transform: scale(0.92);
+      background-color: var(--white); /* 变成纯白底 */
+      border-color: var(--white);
+    }
+    .ft-icon-btn:hover img {
+      filter: brightness(0); /* 图标变成黑色 */
+    }
 
-    body.dark-mode .ft-label { color: #aaa; }
-    body.dark-mode .ft-email { color: #666; border-color: #ddd; }
-    body.dark-mode .ft-socials a { color: #666; }
-    body.dark-mode .ft-line { background: #eee; }
-    body.dark-mode .ft-copy { color: #999; }
+    .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; transition: background 0.5s; }
+    .ft-copy { font-size: 11px; color: rgba(255, 255, 255, 0.9); letter-spacing: .08em; transition: color 0.5s; }
 
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s; }
     .reveal.in { opacity: 1; transform: translateY(0); }
@@ -613,12 +623,21 @@
 </section>
 
 <footer>
-   <div class="ft-title">Let's Connect.</div>
-  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
-  <div class="ft-socials">
-    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
-    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  
+  <div class="ft-contact">
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="ft-icon-btn" target="_blank">
+      <img src="icon-linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="ft-icon-btn" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="mailto:YauchiTATA@Gmail.com" class="ft-icon-btn">
+      <img src="icon-mail.png" alt="Email">
+    </a>
   </div>
+
   <div class="ft-line"></div>
   <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
 </footer>
@@ -641,7 +660,8 @@ document.addEventListener('mousemove', e => {
   cur.style.left = e.clientX + 'px';
   cur.style.top = e.clientY + 'px';
 });
-document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle').forEach(el => {
+/* 修改：将 .ft-icon-btn 添加到了鼠标放大的触发列表中 */
+document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle, .ft-icon-btn').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });

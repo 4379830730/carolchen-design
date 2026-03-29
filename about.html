@@ -14,6 +14,7 @@
       --off: #f6f4f1;
       --gray: #aaa;
       --border: #e5e1db;
+      --accent: #F14F9B; /* 品牌粉色 */
     }
 
     html { scroll-behavior: smooth; }
@@ -55,9 +56,10 @@
       transition: border-color .3s;
     }
     nav.scrolled { border-color: var(--border); }
+    
     .nav-logo {
       font-size: 15px; font-weight: 800;
-      letter-spacing: -.02em; color: var(--black); text-decoration: none;
+      letter-spacing: -.02em; color: var(--accent); text-decoration: none;
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -102,28 +104,19 @@
       z-index: 100;
     }
     .nav-item-dropdown:hover .dropdown-menu {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+      opacity: 1; transform: translateY(0); pointer-events: auto;
     }
     .dropdown-menu a {
-      display: flex !important;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      color: var(--black) !important;
-      text-decoration: none !important;
-      font-size: 13px !important;
-      font-weight: 500 !important;
-      letter-spacing: 0.04em !important;
-      text-transform: capitalize !important;
-      border-radius: 8px;
+      display: flex !important; align-items: center; gap: 12px;
+      padding: 10px 14px; color: var(--black) !important;
+      text-decoration: none !important; font-size: 13px !important;
+      font-weight: 500 !important; letter-spacing: 0.04em !important;
+      text-transform: capitalize !important; border-radius: 8px;
       transition: background 0.2s !important;
     }
     .dropdown-menu a::after { display: none !important; } 
     .dropdown-menu a:hover { background: var(--off); }
     .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
-
 
     /* ══════════════════════
        HERO
@@ -139,7 +132,6 @@
       overflow: hidden;
     }
 
-    /* dot grid bg */
     #hero::before {
       content: '';
       position: absolute; inset: 0;
@@ -174,15 +166,27 @@
       animation: fadeUp .8s ease .5s forwards;
     }
 
-    .hero-tags {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      margin-top: 28px;
+    .hero-contact {
+      display: flex; gap: 14px; margin-top: 32px;
       opacity: 0; transform: translateY(10px);
       animation: fadeUp .7s ease .65s forwards;
     }
-    .hero-tag {
-      font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-      padding: 6px 14px; border-radius: 40px; border: 1px solid var(--border); color: #888;
+    .hero-icon-btn {
+      width: 45px; height: 45px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; border: none;
+      transition: transform .2s, background-color .3s;
+    }
+    .hero-icon-btn img {
+      width: 26px; height: 26px; 
+      object-fit: contain;
+      filter: brightness(0) invert(1); 
+    }
+    .hero-icon-btn:hover {
+      transform: scale(0.92);
+      background-color: var(--black);
     }
 
     /* photo box */
@@ -193,28 +197,17 @@
     }
 
     .photo-frame {
-      width: 75%; 
-      max-width: 420px;
-      margin-left: auto;
-
-      aspect-ratio: 4/5;
-      border-radius: 20px;
-      overflow: hidden;
-      background: var(--off);
-      border: 1px solid var(--border);
-      position: relative;
+      width: 75%; max-width: 420px; margin-left: auto;
+      aspect-ratio: 4/5; border-radius: 20px;
+      overflow: hidden; background: var(--off);
+      border: 1px solid var(--border); position: relative;
     }
 
     .photo-frame img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
 
-    /* 已删除 .photo-badge 相关的 CSS 样式 */
-
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
     /* ══════════════════════
        CONTENT SECTIONS
@@ -225,11 +218,8 @@
       padding: 0 10vw 120px;
     }
 
-    /* section divider */
     .sec {
-      padding-top: 80px;
-      border-top: 1px solid var(--border);
-      margin-top: 80px;
+      padding-top: 80px; border-top: 1px solid var(--border); margin-top: 80px;
     }
     .sec:first-child { margin-top: 0; border-top: none; }
 
@@ -238,23 +228,18 @@
       align-items: baseline; margin-bottom: 48px;
     }
     .sec-title {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 800; letter-spacing: -.03em;
+      font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -.03em;
     }
     .sec-num {
       font-size: 12px; font-weight: 500; letter-spacing: .14em;
       text-transform: uppercase; color: var(--gray);
     }
 
-    /* ── timeline rows (Education & Experience) ── */
+    /* ── timeline rows ── */
     .timeline { display: flex; flex-direction: column; gap: 0; }
-
     .trow {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 32px;
-      padding: 32px 0;
-      border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 180px 1fr; gap: 32px;
+      padding: 32px 0; border-bottom: 1px solid var(--border);
       opacity: 0; transform: translateY(20px);
       transition: opacity .6s ease, transform .6s ease;
     }
@@ -266,13 +251,11 @@
       text-transform: uppercase; color: var(--gray);
       padding-top: 4px; line-height: 1.6;
     }
-
     .trow-body h3 {
-      font-size: 18px; font-weight: 800;
-      margin-bottom: 4px; letter-spacing: -.01em;
+      font-size: 18px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em;
     }
     .trow-body .sub {
-      font-size: 13px; font-weight: 500; color: var(--gray);
+      font-size: 14px; font-weight: 500; color: #F14F9B;
       margin-bottom: 10px; letter-spacing: .02em;
     }
     .trow-body p {
@@ -280,21 +263,12 @@
     }
 
     /* ── awards ── */
-    .awards-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
+    .awards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .award-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      background: var(--white);
-      display: flex; flex-direction: column; gap: 10px;
+      border: 1px solid var(--border); border-radius: 16px; padding: 28px;
+      background: var(--white); display: flex; flex-direction: column; gap: 10px;
       opacity: 0; transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease,
-                  box-shadow .3s ease;
+      transition: opacity .6s ease, transform .6s ease, box-shadow .3s ease;
     }
     .award-card.in { opacity: 1; transform: translateY(0); }
     .award-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.07); }
@@ -303,67 +277,94 @@
       font-size: 11px; font-weight: 700; letter-spacing: .14em;
       text-transform: uppercase; color: var(--gray);
     }
-    .award-name {
-      font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3;
-    }
-    .award-org {
-      font-size: 13px; color: var(--gray); font-weight: 500;
-    }
+    .award-name { font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3; }
+    .award-org { font-size: 13px; color: var(--gray); font-weight: 500; }
 
-    /* ── skills ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .skill-group {
-      background: var(--off);
-      border-radius: 16px;
-      padding: 28px;
+    /* ── 无边框彩色滑动 Logo 墙 ── */
+    .marquee-wrapper {
+      width: 100%;
+      overflow: hidden;
+      padding: 50px 0;
+      display: flex;
+      align-items: center;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
       opacity: 0; transform: translateY(20px);
       transition: opacity .6s ease, transform .6s ease;
     }
-    .skill-group.in { opacity: 1; transform: translateY(0); }
-
-    .skill-group-label {
-      font-size: 11px; font-weight: 700; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--gray);
-      margin-bottom: 18px;
+    .marquee-wrapper.in { opacity: 1; transform: translateY(0); }
+    
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 70px;
+      padding-left: 70px; 
+      width: max-content;
+      animation: marqueeScroll 20s linear infinite;
     }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .skill-tag {
-      font-size: 13px; font-weight: 700;
-      padding: 7px 14px; border-radius: 40px;
-      background: var(--white); border: 1px solid var(--border);
-      color: var(--black); letter-spacing: .01em;
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+    
+    @keyframes marqueeScroll {
+      to { transform: translateX(calc(-50% - 35px)); } 
+    }
+
+    .m-logo {
+      height: 56px; 
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: none;
+    }
+    .m-logo:hover {
+      transform: scale(1.15);
     }
 
     /* ══════════════════════
        FOOTER
     ══════════════════════ */
     footer {
-      background: var(--black); color: #fff;
+      background: var(--accent); /* 品牌粉色背景 */
+      color: #fff;
       padding: 80px 10vw 56px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 18px;
     }
-    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #555; }
-    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; }
-    .ft-email {
-      font-size: 15px; font-weight: 500; color: #888; text-decoration: none;
-      letter-spacing: .04em; border-bottom: 1px solid #333; padding-bottom: 2px;
-      transition: color .2s, border-color .2s;
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+    
+    /* 调整了标题的底部边距，让下面的 Icon 不会太远 */
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+    
+    /* ── 修改：Footer 联系方式纯 Icon ── */
+    .ft-contact {
+      display: flex; gap: 16px; margin-top: 4px;
     }
-    .ft-email:hover { color: #fff; border-color: #fff; }
-    .ft-socials { display: flex; gap: 28px; margin-top: 8px; }
-    .ft-socials a {
-      font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-      color: #444; text-decoration: none; transition: color .2s;
+    .ft-icon-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15); /* 半透明白色，非常高级 */
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; 
+      transition: transform .2s, background-color .3s, border-color .3s;
     }
-    .ft-socials a:hover { color: #fff; }
-    .ft-line { width: 100%; height: 1px; background: #1e1e1e; margin-top: 20px; }
-    .ft-copy { font-size: 11px; color: #3a3a3a; letter-spacing: .08em; }
+    .ft-icon-btn img {
+      width: 26px; height: 26px; object-fit: contain;
+      filter: brightness(0) invert(1); /* 保证图标是纯白色 */
+      transition: filter .3s;
+    }
+    /* 鼠标悬停交互效果 */
+    .ft-icon-btn:hover {
+      transform: scale(0.92);
+      background-color: var(--white); /* 变成纯白底 */
+      border-color: var(--white);
+    }
+    .ft-icon-btn:hover img {
+      filter: brightness(0); /* 图标变成黑色 */
+    }
+
+    .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; }
+    .ft-copy { font-size: 11px; color: rgba(255, 255, 255, 0.9); letter-spacing: .08em; }
 
     /* back to top */
     .back-top {
@@ -410,14 +411,20 @@
 <section id="hero">
   <div class="hero-left">
     <div class="hero-eyebrow">About Me</div>
-    <h1 class="hero-name">Hi, I'm<br>Carol.</h1>
+    <h1 class="hero-name">Hi, I'm<br><span style="color: var(--accent);">Carol Chen.</span></h1>
     <p class="hero-bio">
       With two years of experience in graphic design and a growing passion for UX, I turn complex problems into elegant, intuitive experiences. I care deeply about the intersection of beauty and function — design that doesn't just look good, but feels right.
     </p>
-    <div class="hero-tags">
-      <span class="hero-tag">UX Designer</span>
-      <span class="hero-tag">Graphic Designer</span>
-      <span class="hero-tag">Product Designer</span>
+    <div class="hero-contact">
+      <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="hero-icon-btn" target="_blank">
+        <img src="icon-linkedin.png" alt="LinkedIn">
+      </a>
+      <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="hero-icon-btn" target="_blank">
+        <img src="icon-instagram.png" alt="Instagram">
+      </a>
+      <a href="mailto:YauchiTATA@Gmail.com" class="hero-icon-btn">
+        <img src="icon-mail.png" alt="Email">
+      </a>
     </div>
   </div>
 
@@ -441,15 +448,23 @@
         <div class="trow-body">
           <h3>Wilfrid Laurier University</h3>
           <div class="sub">User Experience Design / Master of Msc</div>
-          <p>Brief description of the program, focus areas, or notable coursework. Replace this with your actual education details.</p>
+          
+        </div>
+      </div>
+      <div class="trow reveal">
+        <div class="trow-date">2024 — 2025</div>
+        <div class="trow-body">
+          <h3>Fanshawe College</h3>
+          <div class="sub">User Experience Design / certification</div>
+
         </div>
       </div>
       <div class="trow reveal">
         <div class="trow-date">2018 — 2022</div>
         <div class="trow-body">
           <h3>Guangdong Ocean University</h3>
-          <div class="sub">Diploma / Certificate</div>
-          <p>Brief description. Replace this with your actual education details.</p>
+          <div class="sub">Product Design / Bachelor's Degree</div>
+          
         </div>
       </div>
     </div>
@@ -462,19 +477,19 @@
     </div>
     <div class="timeline">
       <div class="trow reveal">
-        <div class="trow-date">2024 — Now</div>
+        <div class="trow-date">2023 — 2024</div>
         <div class="trow-body">
-          <h3>Company Name</h3>
-          <div class="sub">Job Title · Full-time / Internship</div>
-          <p>Brief description of your role and responsibilities. What did you design? What impact did you make? Replace with your real experience.</p>
+          <h3>EXTEND</h3>
+          <div class="sub">Graphic Designer · Full-time</div>
+          <p>In Extend, I was responsible for the content design, publishing and data analysis of P&G's recruitment website. Also responsible for the graphic design content of other brand advertisements.</p>
         </div>
       </div>
       <div class="trow reveal">
-        <div class="trow-date">2023 — 2024</div>
+        <div class="trow-date">2021 — 2022</div>
         <div class="trow-body">
-          <h3>Another Company</h3>
-          <div class="sub">Graphic Designer · Freelance</div>
-          <p>Brief description of the work you did. Types of clients, projects, or deliverables. Replace with your real experience.</p>
+          <h3>Beijing Xiaoxiong Bowang</h3>
+          <div class="sub">Graphic Designer · Internship</div>
+          <p>At the company I was mainly responsible for the output of design elements for the company's platform software.</p>
         </div>
       </div>
     </div>
@@ -488,8 +503,9 @@
     <div class="awards-grid">
       <div class="award-card reveal">
         <div class="award-year">2024</div>
-        <div class="award-name">Award Name Here</div>
-        <div class="award-org">Organizing Body / Competition</div>
+        <div class="award-name">UX Hackathon Champion
+CICan 2025</div>
+        <div class="award-org">Competition</div>
       </div>
       <div class="award-card reveal">
         <div class="award-year">2024</div>
@@ -511,37 +527,27 @@
 
   <div class="sec">
     <div class="sec-header">
-      <h2 class="sec-title">Skills</h2>
+      <h2 class="sec-title">Skills & Tools</h2>
       <span class="sec-num">04</span>
     </div>
-    <div class="skills-grid">
-      <div class="skill-group reveal">
-        <div class="skill-group-label">Design Tools</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Figma</span>
-          <span class="skill-tag">Illustrator</span>
-          <span class="skill-tag">Photoshop</span>
-          <span class="skill-tag">InDesign</span>
-          <span class="skill-tag">Procreate</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-label">UX Methods</div>
-        <div class="skill-tags">
-          <span class="skill-tag">User Research</span>
-          <span class="skill-tag">Wireframing</span>
-          <span class="skill-tag">Prototyping</span>
-          <span class="skill-tag">Usability Testing</span>
-          <span class="skill-tag">User Flow</span>
-        </div>
-      </div>
-      <div class="skill-group reveal">
-        <div class="skill-group-label">Languages</div>
-        <div class="skill-tags">
-          <span class="skill-tag">English</span>
-          <span class="skill-tag">Mandarin</span>
-          <span class="skill-tag">HTML / CSS</span>
-        </div>
+    
+    <div class="marquee-wrapper reveal">
+      <div class="marquee-track">
+        <img src="logo-figma.png" alt="Figma" class="m-logo">
+        <img src="logo-miro.png" alt="Miro" class="m-logo">
+        <img src="logo-ai.png" alt="Illustrator" class="m-logo">
+        <img src="logo-ps.png" alt="Photoshop" class="m-logo">
+        <img src="logo-github.png" alt="GitHub" class="m-logo">
+        <img src="logo-canva.png" alt="Canva" class="m-logo">
+        <img src="logo-capcut.png" alt="CapCut" class="m-logo">
+        
+        <img src="logo-figma.png" alt="Figma" class="m-logo">
+        <img src="logo-miro.png" alt="Miro" class="m-logo">
+        <img src="logo-ai.png" alt="Illustrator" class="m-logo">
+        <img src="logo-ps.png" alt="Photoshop" class="m-logo">
+        <img src="logo-github.png" alt="GitHub" class="m-logo">
+        <img src="logo-canva.png" alt="Canva" class="m-logo">
+        <img src="logo-capcut.png" alt="CapCut" class="m-logo">
       </div>
     </div>
   </div>
@@ -551,11 +557,19 @@
 <footer>
   <div class="ft-label">Let's Connect</div>
   <div class="ft-title">Say Hello.</div>
-  <a href="mailto:YauchiTATA@Gmail.com" class="ft-email">YauchiTATA@Gmail.com</a>
-  <div class="ft-socials">
-    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">Instagram</a>
-    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">LinkedIn</a>
+  
+  <div class="ft-contact">
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="ft-icon-btn" target="_blank">
+      <img src="icon-linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="ft-icon-btn" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="mailto:YauchiTATA@Gmail.com" class="ft-icon-btn">
+      <img src="icon-mail.png" alt="Email">
+    </a>
   </div>
+
   <div class="ft-line"></div>
   <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
 </footer>
@@ -569,8 +583,8 @@
     cur.style.left = e.clientX + 'px';
     cur.style.top = e.clientY + 'px';
   });
-  /* 添加 .dropdown-menu 让鼠标滑过下拉菜单时也放大 */
-  document.querySelectorAll('a, .award-card, .skill-group, .dropdown-menu').forEach(el => {
+  /* 确保底部的 icon 按钮也会放大光标 */
+  document.querySelectorAll('a, .award-card, .dropdown-menu, .hero-icon-btn, .ft-icon-btn, .m-logo').forEach(el => {
     el.addEventListener('mouseenter', () => cur.classList.add('big'));
     el.addEventListener('mouseleave', () => cur.classList.remove('big'));
   });
