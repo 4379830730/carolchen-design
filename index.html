@@ -335,6 +335,13 @@
       transform: translate(-50%, -15px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: opacity 0.7s, transform 0.7s, background-color 0.5s, color 0.5s;
+      /* 去除浏览器默认蓝框和点击高亮 */
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 去除点击时的蓝框 */
+    .theme-toggle:focus {
+      outline: none;
     }
     .theme-toggle.show { 
       opacity: 1; 
@@ -467,7 +474,7 @@
 
 <div id="cursor"></div>
 
-<button id="theme-toggle" class="theme-toggle">Dark Mode</button>
+<button id="theme-toggle" class="theme-toggle" tabindex="0">Dark Mode</button>
 
 <section id="intro">
   <canvas id="intro-canvas"></canvas>
@@ -510,7 +517,7 @@
     </div>
   </nav>
 
-  <div class="type-eyebrow" id="eyebrow">UX Designer &amp; Visual Thinker</div>
+  <div class="type-eyebrow" id="eyebrow">UX Designer</div>
   <div id="typed-text"><span class="t-cur"></span></div>
 
   <div id="bot">
@@ -774,7 +781,7 @@ typeObserver.observe(document.getElementById('type-section'));
 
 
 /* ── typewriter ── */
-const fullText = "HI, I am Carol Chen,\nWelcome to my\nDesign World_";
+const fullText = "HI, I am Carol Chen\nWelcome to my\nDesign World_";
 const typedEl = document.getElementById('typed-text');
 let ci = 0;
 
@@ -797,7 +804,7 @@ function typeNext() {
     s.style.opacity = '0';
     s.style.transition = 'opacity 0.06s';
     
-    // 修改：识别到索引 9 到 18 的字符（Carol Chen），赋予粉色
+    // 识别到索引 9 到 18 的字符（Carol Chen），赋予粉色
     if (ci >= 9 && ci <= 18) {
       s.style.color = '#F14F9B';
     }
