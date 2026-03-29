@@ -14,7 +14,7 @@
     /* Light Mode Variables */
     :root {
       --black: #111111;
-      --white: #ffffff;
+      --white: #F1F1F1;
       --off: #F1F1F1; 
       --gray: #aaaaaa;
       --border: #e5e1db;
@@ -73,17 +73,16 @@
       align-items: center;
       justify-content: center;
       background: var(--white);
-      padding: 65px 4vw 20px; 
+      padding: 30px 4vw 20px; 
     }
 
-    /* 修改：加粗背景线条并增加透明度，强化复古感 */
     #intro::before {
       content: '';
       position: absolute; inset: 0;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(240, 240, 240, 0.15),
-        rgba(240, 240, 240, 0.15) 3px,
+        rgba(241, 79, 155, 0.05),
+        rgba(241, 79, 155, 0.05) 4px,
         transparent 3px,
         transparent 8px
       );
@@ -129,7 +128,7 @@
     .arcade-score {
       font-family: 'Jersey 10', sans-serif;
       font-size: 42px; 
-      color: var(--accent);
+      color: var(--black); 
       line-height: 1;
       letter-spacing: 0.05em;
     }
@@ -147,19 +146,56 @@
       margin-bottom: 16px; 
     }
 
+    /* 真正的无缺口阶梯像素边框 */
     .arcade-frame {
       flex-grow: 1; 
-      border: 6px solid var(--accent);
+      border: 6px solid transparent; 
       position: relative;
       background: transparent;
       cursor: pointer; 
-      overflow: hidden;
+    }
+
+    .arcade-frame::before {
+      content: '';
+      position: absolute;
+      inset: -6px; 
+      background-image: 
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent)),
+        linear-gradient(var(--accent), var(--accent));
+      
+      background-size: 
+        calc(100% - 24px) 6px, 
+        calc(100% - 24px) 6px, 
+        6px calc(100% - 24px), 
+        6px calc(100% - 24px),
+        6px 6px, 6px 6px, 6px 6px, 6px 6px;
+      
+      background-position: 
+        50% 0, 
+        50% 100%, 
+        0 50%, 
+        100% 50%,
+        6px 6px, 
+        calc(100% - 6px) 6px, 
+        6px calc(100% - 6px), 
+        calc(100% - 6px) calc(100% - 6px);
+      
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 10;
     }
 
     #intro-canvas {
       position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
+      inset: 6px; 
+      width: calc(100% - 12px); 
+      height: calc(100% - 12px);
       opacity: 0.8;
     }
 
@@ -188,7 +224,33 @@
       letter-spacing: 0.02em;
     }
 
-    /* 修改：副标题区域布局重构，实现文本完美左对齐 */
+    /* ── 修改：控制鸭子和文字的布局 ── */
+    .name-with-gif {
+      display: inline-flex;
+      align-items: center; /* 垂直居中对齐 */
+      justify-content: center;
+      gap: 16px; /* 鸭子和 Carol 之间的距离 */
+      vertical-align: middle;
+    }
+
+    .pixel-duck {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-shadow: none; 
+    }
+
+    /* ── 修改：缩小了 GIF 尺寸并微调对齐 ── */
+    .pixel-gif {
+      height: 1.15em; /* 👈 从 1.5em 缩小到 1.15em */
+      width: auto;
+      object-fit: contain;
+      pointer-events: none; 
+      filter: drop-shadow(0px 0px 0px transparent); 
+      transform: translateY(-4px); /* 稍微往上移一点，达到视觉上的完美居中 */
+    }
+
     .arcade-center .intro-sub {
       font-family: 'Jersey 10', sans-serif;
       font-size: clamp(24px, 3vw, 38px); 
@@ -196,9 +258,9 @@
       line-height: 1.6;
       display: flex;
       flex-direction: column;
-      align-items: flex-start; /* 让文字左对齐 */
+      align-items: flex-start; 
       width: fit-content;
-      margin: 0 auto; /* 整体保持在屏幕居中 */
+      margin: 0 auto; 
     }
 
     .intro-sub-line {
@@ -207,7 +269,6 @@
     }
 
     .tri-icon {
-      /* 修改：使用绝对定位把三角形挪到文本框外边，不占据排版空间 */
       position: absolute;
       right: 100%;
       margin-right: 12px;
@@ -254,7 +315,7 @@
       font-family: 'Jersey 10', sans-serif; 
       font-size: clamp(48px, 7vw, 110px); 
       font-weight: 400; 
-      line-height: 1.1; 
+      line-height: 0.85; 
       letter-spacing: 0.02em; 
       color: var(--black);
       min-height: 3.8em;
@@ -439,9 +500,13 @@
       display: flex; justify-content: space-between; align-items: flex-end;
       margin-bottom: 52px;
     }
-    .proj-title {
-      font-size: clamp(38px, 5vw, 64px); font-weight: 800;
-      letter-spacing: -.03em; line-height: 1;
+.proj-title {
+      font-family: 'Jersey 10', sans-serif; /* 1. 改为复古像素字体 */
+      font-size: clamp(54px, 7vw, 86px);    /* 2. 稍微放大一点，因为像素字体视觉上偏小 */
+      font-weight: 400;                     /* 3. 去掉加粗，保持像素边缘干净 */
+      color: var(--accent);                 /* 4. 改为你的主题粉色 */
+      letter-spacing: 0.05em;               /* 5. 调整合适的字间距 */
+      line-height: 1;
     }
     .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
 
@@ -577,7 +642,15 @@
       <canvas id="intro-canvas"></canvas>
       
       <div class="arcade-center" id="arcade-center">
-        <div class="intro-name">Carol Chen</div>
+        <div class="intro-name">
+          <span class="name-with-gif">
+            <span class="pixel-duck">
+              <img src="pixel-duck.gif" alt="Pixel Duck" class="pixel-gif">
+            </span>
+            <span>Carol Chen</span>
+          </span>
+        </div>
+        
         <div class="intro-sub">
           <div class="intro-sub-line"><span class="tri-icon">▶</span> Let's Play Snake</div>
           <div class="intro-sub-line">Or Click to Next</div>
@@ -820,6 +893,7 @@ function placeFood() {
 
 function resize() { 
   const frame = document.getElementById('arcade-frame');
+  if(!frame) return;
   W = canvas.width = frame.clientWidth; 
   H = canvas.height = frame.clientHeight; 
   initSnake(); 
@@ -861,6 +935,7 @@ function drawPixelHeart(ctx, baseX, baseY, size) {
 }
 
 function drawSnake() {
+  if(!ctx) return;
   const pinkColor = '#F14F9B';
 
   ctx.clearRect(0, 0, W, H);
@@ -882,7 +957,11 @@ function drawSnake() {
       snake.pop(); 
   }
   
-  drawPixelHeart(ctx, food.x, food.y, gridSize);
+  let heartScale = 1.2; 
+  let heartSize = gridSize * heartScale;
+  let offset = (gridSize - heartSize) / 2; 
+  
+  drawPixelHeart(ctx, food.x + offset, food.y + offset, heartSize);
   
   ctx.fillStyle = pinkColor;
   snake.forEach((part, index) => {
@@ -899,7 +978,7 @@ gameLoop = setInterval(drawSnake, gameSpeed);
 
 /* ── 名字入场 ── */
 const arcadeCenter = document.getElementById('arcade-center');
-setTimeout(() => arcadeCenter.classList.add('show'), 400);
+if(arcadeCenter) setTimeout(() => arcadeCenter.classList.add('show'), 400);
 
 
 /* ── 滚动触发下一页打字机 ── */
@@ -908,11 +987,13 @@ let typeStarted = false;
 const typeObserver = new IntersectionObserver(entries => {
   if(entries[0].isIntersecting && !typeStarted) {
     typeStarted = true;
-    document.getElementById('eyebrow').classList.add('show');
+    const eb = document.getElementById('eyebrow');
+    if(eb) eb.classList.add('show');
     setTimeout(typeNext, 300);
   }
 }, { threshold: 0.3 }); 
-typeObserver.observe(document.getElementById('type-section'));
+const ts = document.getElementById('type-section');
+if(ts) typeObserver.observe(ts);
 
 
 /* ── typewriter ── */
@@ -921,15 +1002,18 @@ const typedEl = document.getElementById('typed-text');
 let ci = 0;
 
 function typeNext() {
+  if(!typedEl) return;
   if (ci >= fullText.length) {
-    document.getElementById('nav').classList.add('show');
-    document.getElementById('bot').classList.add('show');
+    const nv = document.getElementById('nav');
+    const bt = document.getElementById('bot');
+    if(nv) nv.classList.add('show');
+    if(bt) bt.classList.add('show');
     return;
   }
   const ch = fullText[ci];
   const cursor = typedEl.querySelector('.t-cur');
   if (ch === '\n') {
-    cursor.before(document.createElement('br'));
+    if(cursor) cursor.before(document.createElement('br'));
   } else {
     const s = document.createElement('span');
     s.textContent = ch;
@@ -940,7 +1024,7 @@ function typeNext() {
       s.style.color = '#F14F9B';
     }
     
-    cursor.before(s);
+    if(cursor) cursor.before(s);
     requestAnimationFrame(() => s.style.opacity = '1');
   }
   ci++;
@@ -959,4 +1043,3 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
-}
