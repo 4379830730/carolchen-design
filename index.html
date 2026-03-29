@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carol Chen — Design World</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
+  
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -12,11 +15,11 @@
     :root {
       --black: #111111;
       --white: #ffffff;
-      --off: #f6f4f1;
+      --off: #F1F1F1; 
       --gray: #aaaaaa;
       --border: #e5e1db;
       --dot: #d6d2cc;
-      --accent: #F14F9B; /* 品牌粉色 */
+      --accent: #F14F9B; 
     }
 
     /* Dark Mode Variables */
@@ -31,7 +34,6 @@
 
     html { scroll-behavior: smooth; }
     
-    /* 增加背景和颜色的全局丝滑过渡 */
     body {
       font-family: 'Bricolage Grotesque', sans-serif;
       background: var(--white);
@@ -41,7 +43,6 @@
       transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    /* 所有主要容器加入过渡动画 */
     #intro, #type-section, #projects, .pcard, footer, .dropdown-menu, .ftag, .go, .pcard-img {
       transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.35s;
     }
@@ -61,15 +62,97 @@
     #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
     /* ══════════════════════
-       1. INTRO SCREEN (SNAKE)
+       1. INTRO SCREEN (ARCADE SNAKE)
     ══════════════════════ */
     #intro {
       position: relative;
-      width: 100%; height: 100vh;
+      width: 100%; 
+      height: 100vh;
+      min-height: 760px; 
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--white);
+      padding: 65px 4vw 20px; 
+    }
+
+    /* 修改：加粗背景线条并增加透明度，强化复古感 */
+    #intro::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(241, 79, 155, 0.08),
+        rgba(241, 79, 155, 0.08) 3px,
+        transparent 3px,
+        transparent 8px
+      );
+      background-size: 100% 8px;
+      pointer-events: none;
+      z-index: 1;
+      animation: scanlines 12s linear infinite, flicker 4s infinite;
+    }
+
+    @keyframes scanlines {
+      from { background-position: 0 0; }
+      to { background-position: 0 600px; }
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      3% { opacity: 0.4; }
+      6% { opacity: 1; }
+      7% { opacity: 0.6; }
+      8% { opacity: 1; }
+      50% { opacity: 1; }
+      51% { opacity: 0.7; }
+      52% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    .arcade-wrapper {
+      width: 100%;
+      max-width: 1400px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+    }
+
+    .arcade-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 4px; 
+    }
+
+    .arcade-score {
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 42px; 
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .arcade-hearts {
+      display: flex;
+      gap: 10px;
+      padding-bottom: 4px;
+    }
+
+    .arcade-line {
+      width: 100%;
+      height: 6px;
+      background-color: var(--accent);
+      margin-bottom: 16px; 
+    }
+
+    .arcade-frame {
+      flex-grow: 1; 
+      border: 6px solid var(--accent);
+      position: relative;
+      background: transparent;
+      cursor: pointer; 
       overflow: hidden;
     }
 
@@ -80,90 +163,59 @@
       opacity: 0.8;
     }
 
-    .intro-name {
-      position: relative;
-      z-index: 2;
-      font-size: clamp(40px, 8vw, 120px); 
-      font-weight: 800;
-      letter-spacing: -0.045em;
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 1.1s ease, transform 1.1s ease, color 0.5s ease;
-      user-select: none;
-      pointer-events: none;
-      color: var(--black);
-    }
-    .intro-name.show { opacity: 1; transform: translateY(0); }
-
-    /* ── Snake Score UI ── */
-    .snake-score-wrapper {
+    .arcade-center {
       position: absolute;
-      right: 5vw;
-      top: 50%;
-      transform: translateY(-50%);
-      text-align: right;
-      z-index: 10;
-      pointer-events: none;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -40%); 
+      text-align: center;
+      pointer-events: none; 
       opacity: 0;
-      animation: fadeUp 1s ease 0.5s forwards;
+      transition: opacity 1.1s ease, transform 1.1s ease;
+      width: 100%;
     }
-    .score-label {
-      font-size: 11px; font-weight: 700; letter-spacing: .2em; 
-      text-transform: uppercase; color: var(--gray);
-      margin-bottom: 8px; display: block;
-      transition: color 0.5s;
-    }
-    .score-val {
-      font-size: 54px; font-weight: 800; color: var(--black);
-      line-height: 1; transition: color 0.5s;
-    }
-
-    /* ── Click/Scroll Hint ── */
-    .scroll-hint {
-      position: absolute;
-      top: 65%; 
-      left: 50%;
+    .arcade-center.show {
+      opacity: 1;
       transform: translate(-50%, -50%);
+    }
+
+    .arcade-center .intro-name {
+      font-family: 'Jersey 10', sans-serif;
+      font-size: clamp(60px, 8vw, 96px); 
+      color: var(--accent);
+      text-shadow: 4px 4px 0px var(--black); 
+      line-height: 1;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+
+    /* 修改：副标题区域布局重构，实现文本完美左对齐 */
+    .arcade-center .intro-sub {
+      font-family: 'Jersey 10', sans-serif;
+      font-size: clamp(24px, 3vw, 38px); 
+      color: var(--black);
+      line-height: 1.6;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      z-index: 10;
-      opacity: 0;
-      animation: fadeUpCenter 1s ease 1s forwards;
-      pointer-events: none; 
+      align-items: flex-start; /* 让文字左对齐 */
+      width: fit-content;
+      margin: 0 auto; /* 整体保持在屏幕居中 */
     }
-    .scroll-hint span {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gray);
-      transition: color 0.3s;
-    }
-    #intro:hover .scroll-hint span { color: var(--black); }
-    
-    .mouse-icon {
-      width: 24px; height: 36px;
-      border: 1.5px solid var(--gray);
-      border-radius: 12px;
+
+    .intro-sub-line {
       position: relative;
-      transition: border-color 0.3s;
+      display: block;
     }
-    #intro:hover .mouse-icon { border-color: var(--black); }
-    .mouse-icon::after {
-      content: ''; position: absolute;
-      top: 6px; left: 50%; transform: translateX(-50%);
-      width: 2px; height: 6px; background: var(--gray);
-      border-radius: 2px;
-      animation: scrollWheel 1.5s infinite;
-      transition: background 0.3s;
+
+    .tri-icon {
+      /* 修改：使用绝对定位把三角形挪到文本框外边，不占据排版空间 */
+      position: absolute;
+      right: 100%;
+      margin-right: 12px;
+      color: var(--accent);
+      font-size: 28px;
+      top: 50%;
+      transform: translateY(-50%); 
     }
-    #intro:hover .mouse-icon::after { background: var(--black); }
-    
-    @keyframes scrollWheel { 0% { top: 6px; opacity: 1; } 100% { top: 18px; opacity: 0; } }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(-50%); } }
-    @keyframes fadeUpCenter { to { opacity: 1; transform: translate(-50%, 0); } }
 
     /* ══════════════════════
        2. TYPE SCREEN
@@ -179,7 +231,6 @@
       overflow: hidden;
     }
 
-    /* dot grid */
     #type-section::before {
       content: '';
       position: absolute; inset: 0;
@@ -200,9 +251,12 @@
 
     #typed-text {
       position: relative; z-index: 1;
-      font-size: clamp(38px, 5.6vw, 76px);
-      font-weight: 800; line-height: 1.18;
-      letter-spacing: -0.03em; color: var(--black);
+      font-family: 'Jersey 10', sans-serif; 
+      font-size: clamp(48px, 7vw, 110px); 
+      font-weight: 400; 
+      line-height: 1.1; 
+      letter-spacing: 0.02em; 
+      color: var(--black);
       min-height: 3.8em;
     }
 
@@ -228,11 +282,23 @@
     }
     #nav.show { opacity: 1; transform: translateY(0); }
     
-    /* 左上角 Logo 改为品牌粉色 */
     .nav-logo { 
-      font-size: 15px; font-weight: 800; letter-spacing: -.02em; 
-      color: var(--accent); /* 粉色 */
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 36px; 
+      font-weight: 400; 
+      letter-spacing: 0.05em; 
+      color: var(--accent); 
       text-decoration: none; 
+      display: flex;
+      align-items: center;
+      gap: 10px; 
+      line-height: 1;
+      margin-top: -6px; 
+    }
+    .nav-logo svg {
+      width: 26px; 
+      height: 26px;
+      transform: translateY(-2px); 
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -293,10 +359,10 @@
     .dropdown-menu a:hover { background: var(--off); }
     .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
 
-    /* ── Theme Toggle Button (主页纯图标版本) ── */
+    /* ── Theme Toggle Button ── */
     .theme-toggle {
       background: transparent; 
-      border: 1px solid var(--border); /* 亮色模式下是灰色边框 */
+      border: 1px solid var(--border); 
       width: 44px; height: 44px; 
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -312,11 +378,10 @@
     
     .theme-toggle img {
       width: 20px; height: 20px; object-fit: contain;
-      filter: brightness(0); /* 亮色模式下，图标强行变纯黑色 */
+      filter: brightness(0); 
       transition: filter .3s;
     }
     
-    /* 亮色模式悬停：变黑底白图标 */
     .theme-toggle:hover {
       transform: scale(0.92);
       background-color: var(--black); 
@@ -326,14 +391,12 @@
       filter: brightness(0) invert(1);
     }
 
-    /* 暗黑模式下的按钮样式 */
     body.dark-mode .theme-toggle {
-      border-color: rgba(255, 255, 255, 0.3); /* 暗黑模式下是白色边框 */
+      border-color: rgba(255, 255, 255, 0.3); 
     }
     body.dark-mode .theme-toggle img {
-      filter: brightness(0) invert(1); /* 暗黑模式下，图标强行变纯白色 */
+      filter: brightness(0) invert(1); 
     }
-    /* 暗黑模式悬停：变白底黑图标 */
     body.dark-mode .theme-toggle:hover {
       background-color: var(--white);
       border-color: var(--white);
@@ -432,22 +495,19 @@
       transition: border-color 0.5s ease, color 0.5s ease;
     }
     
-    /* 卡片箭头按钮默认背景变为粉色 */
     .go {
       flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
-      background: var(--accent); /* 粉色 */
+      background: var(--accent); 
       color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; text-decoration: none; cursor: none;
       transition: transform .2s, background .5s;
     }
-    /* 悬停时变为黑白色增强互动感 */
     .pcard:hover .go { transform: scale(1.1); background: var(--black); color: var(--white); }
 
     /* ══════════════════════
        4. FOOTER
     ══════════════════════ */
-    /* 品牌粉色背景和排版 */
     footer {
       background: var(--accent); 
       color: #fff;
@@ -458,31 +518,29 @@
     .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
     .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
     
-    /* ── Footer 联系方式纯 Icon ── */
     .ft-contact {
       display: flex; gap: 16px; margin-top: 4px;
     }
     .ft-icon-btn {
       width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15); /* 半透明白色 */
+      background: rgba(255, 255, 255, 0.15); 
       border: 1px solid rgba(255, 255, 255, 0.3);
       display: flex; align-items: center; justify-content: center;
       text-decoration: none; cursor: none;
       transition: transform .2s, background-color .3s, border-color .3s;
     }
     .ft-icon-btn img {
-      width: 26px; height: 26px; object-fit: contain;
-      filter: brightness(0) invert(1); /* 保证图标是纯白色 */
+      width: 24px; height: 24px; object-fit: contain;
+      filter: brightness(0) invert(1); 
       transition: filter .3s;
     }
-    /* 鼠标悬停交互效果 */
     .ft-icon-btn:hover {
       transform: scale(0.92);
-      background-color: var(--white); /* 变成纯白底 */
+      background-color: var(--white); 
       border-color: var(--white);
     }
     .ft-icon-btn:hover img {
-      filter: brightness(0); /* 图标变成黑色 */
+      filter: brightness(0); 
     }
 
     .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; transition: background 0.5s; }
@@ -497,24 +555,47 @@
 <div id="cursor"></div>
 
 <section id="intro">
-  <canvas id="intro-canvas"></canvas>
-  
-  <div class="intro-name" id="intro-name">Carol Chen.</div>
-  
-  <div class="snake-score-wrapper">
-    <span class="score-label">Snake Score</span>
-    <span class="score-val" id="snake-score">0</span>
-  </div>
-
-  <div class="scroll-hint" id="scroll-hint">
-    <span>Play Snake or Click to Continue</span>
-    <div class="mouse-icon"></div>
+  <div class="arcade-wrapper">
+    <div class="arcade-top-bar">
+      <div class="arcade-score">Score: <span id="snake-score">00</span></div>
+      <div class="arcade-hearts">
+        <svg width="32" height="32" viewBox="0 0 10 10" shape-rendering="crispEdges">
+          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+        </svg>
+        <svg width="32" height="32" viewBox="0 0 10 10" shape-rendering="crispEdges">
+          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+        </svg>
+        <svg width="32" height="32" viewBox="0 0 10 10" shape-rendering="crispEdges">
+          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+        </svg>
+      </div>
+    </div>
+    
+    <div class="arcade-line"></div>
+    
+    <div class="arcade-frame" id="arcade-frame">
+      <canvas id="intro-canvas"></canvas>
+      
+      <div class="arcade-center" id="arcade-center">
+        <div class="intro-name">Carol Chen</div>
+        <div class="intro-sub">
+          <div class="intro-sub-line"><span class="tri-icon">▶</span> Let's Play Snake</div>
+          <div class="intro-sub-line">Or Click to Next</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="type-section">
   <nav id="nav">
-    <a href="#" class="nav-logo">Carol.</a>
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
+        <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+      </svg>
+      Carol.
+    </a>
+    
     <div class="nav-links">
       <a href="#projects">Work</a>
       <a href="about.html">About</a>
@@ -657,31 +738,28 @@
 </footer>
 
 <script>
-  /* ── Theme Toggle Logic (加入图标切换和跨页面记忆逻辑) ── */
+  /* ── Theme Toggle Logic ── */
   const themeBtn = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
   
-  // 图片路径配置
-  const sunIconPath = "image_df6b4a.png"; // 用于暗黑模式下，点它变亮
-  const moonIconPath = "image_df6b67.png"; // 用于亮色模式下，点它变暗
+  const sunIconPath = "image_df6b4a.png"; 
+  const moonIconPath = "image_df6b67.png"; 
 
-  // 1. 初始化检查（从 localStorage 读取状态）
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
-    themeIcon.src = sunIconPath; // 暗色模式下显示太阳图标
+    themeIcon.src = sunIconPath; 
   } else {
-    themeIcon.src = moonIconPath; // 亮色模式下显示月亮图标
+    themeIcon.src = moonIconPath; 
   }
 
-  // 2. 点击事件
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     
     if (document.body.classList.contains('dark-mode')) {
-      themeIcon.src = sunIconPath; // 切换到暗色后，换成太阳图标
+      themeIcon.src = sunIconPath; 
       localStorage.setItem('theme', 'dark'); 
     } else {
-      themeIcon.src = moonIconPath; // 切换到亮色后，换成月亮图标
+      themeIcon.src = moonIconPath; 
       localStorage.setItem('theme', 'light'); 
     }
   });
@@ -692,14 +770,14 @@ document.addEventListener('mousemove', e => {
   cur.style.left = e.clientX + 'px';
   cur.style.top = e.clientY + 'px';
 });
-/* 修改：将 theme-toggle 添加到了鼠标放大的触发列表中 */
+
 document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle, .ft-icon-btn').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
 
-/* ── 点击首屏任意位置跳转下一页 ── */
-document.getElementById('intro').addEventListener('click', () => {
+/* ── 点击游戏机边框跳转下一页 ── */
+document.getElementById('arcade-frame').addEventListener('click', () => {
   document.getElementById('type-section').scrollIntoView({ behavior: 'smooth' });
 });
 
@@ -708,17 +786,16 @@ const canvas = document.getElementById('intro-canvas');
 const ctx = canvas.getContext('2d');
 let W, H;
 
-let gridSize = 30; // 贪吃蛇方块大小
+let gridSize = 40; 
 let snake = [];
 let food = {};
 let dx = gridSize;
 let dy = 0;
 let score = 0;
-let gameSpeed = 100; // 速度 (越小越快)
+let gameSpeed = 100; 
 let gameLoop;
 
 function initSnake() {
-  // 初始蛇的位置 (放在屏幕中间偏左)
   snake = [
     { x: Math.floor(W/2/gridSize)*gridSize - gridSize*2, y: Math.floor(H/2/gridSize)*gridSize },
     { x: Math.floor(W/2/gridSize)*gridSize - gridSize*3, y: Math.floor(H/2/gridSize)*gridSize },
@@ -727,7 +804,7 @@ function initSnake() {
   dx = gridSize;
   dy = 0;
   score = 0;
-  document.getElementById('snake-score').textContent = score;
+  document.getElementById('snake-score').textContent = score.toString().padStart(2, '0');
   placeFood();
 }
 
@@ -736,30 +813,29 @@ function placeFood() {
     x: Math.floor(Math.random() * (W / gridSize)) * gridSize,
     y: Math.floor(Math.random() * (H / gridSize)) * gridSize
   };
-  // 防止食物刷在蛇身上
   snake.forEach(part => {
     if(part.x === food.x && part.y === food.y) placeFood();
   });
 }
 
 function resize() { 
-  W = canvas.width = window.innerWidth; 
-  H = canvas.height = window.innerHeight; 
-  initSnake(); // 屏幕缩放时重置游戏防止坐标错乱
+  const frame = document.getElementById('arcade-frame');
+  W = canvas.width = frame.clientWidth; 
+  H = canvas.height = frame.clientHeight; 
+  initSnake(); 
 }
-resize();
+setTimeout(resize, 100);
 window.addEventListener('resize', resize);
 
-// WASD + 箭头 键盘控制逻辑
+// 键盘控制
 document.addEventListener('keydown', e => {
   if (window.scrollY < 50) {
     const k = e.key.toLowerCase();
     const isDirKey = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k);
     
     if (isDirKey) {
-      e.preventDefault(); // 当在首屏玩游戏时，阻止方向键的默认滚动行为
+      e.preventDefault(); 
       
-      // 防止直接反向掉头咬到自己
       if((k === 'arrowup' || k === 'w') && dy === 0) { dx = 0; dy = -gridSize; }
       else if((k === 'arrowdown' || k === 's') && dy === 0) { dx = 0; dy = gridSize; }
       else if((k === 'arrowleft' || k === 'a') && dx === 0) { dx = -gridSize; dy = 0; }
@@ -768,67 +844,74 @@ document.addEventListener('keydown', e => {
   }
 });
 
+function drawPixelHeart(ctx, baseX, baseY, size) {
+  ctx.fillStyle = '#F14F9B';
+  const p = size / 10; 
+  const pixels = [
+    [2,2], [3,2], [6,2], [7,2],
+    [1,3], [2,3], [3,3], [4,3], [5,3], [6,3], [7,3], [8,3],
+    [1,4], [2,4], [3,4], [4,4], [5,4], [6,4], [7,4], [8,4],
+    [2,5], [3,5], [4,5], [5,5], [6,5], [7,5],
+    [3,6], [4,6], [5,6], [6,6],
+    [4,7], [5,7]
+  ];
+  pixels.forEach(([x, y]) => {
+    ctx.fillRect(baseX + x * p, baseY + y * p, Math.ceil(p), Math.ceil(p)); 
+  });
+}
+
 function drawSnake() {
-  const pinkColor = '#F14F9B'; // 贪吃蛇和食物使用的粉色
+  const pinkColor = '#F14F9B';
 
   ctx.clearRect(0, 0, W, H);
   
-  // 计算新蛇头的位置
   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
   
-  // 撞墙检测 (Game Over)
   if (head.x >= W || head.x < 0 || head.y >= H || head.y < 0) {
-    initSnake(); // 撞墙后重置游戏
-    return; // 结束当前帧绘制，避免把蛇画到屏幕外面
+    initSnake(); 
+    return; 
   }
   
-  snake.unshift(head); // 添加新蛇头
+  snake.unshift(head); 
   
-  // 吃食物检测
   if (head.x === food.x && head.y === food.y) {
       score += 10;
-      document.getElementById('snake-score').textContent = score;
+      document.getElementById('snake-score').textContent = score.toString().padStart(2, '0');
       placeFood();
   } else {
-      snake.pop(); // 没吃到食物就移除尾巴
+      snake.pop(); 
   }
   
-  // 画食物 (粉色正方形)
-  ctx.fillStyle = pinkColor;
-  ctx.fillRect(food.x + 3, food.y + 3, gridSize - 6, gridSize - 6);
+  drawPixelHeart(ctx, food.x, food.y, gridSize);
   
-  // 画蛇 (粉色方块)
   ctx.fillStyle = pinkColor;
   snake.forEach((part, index) => {
-      ctx.fillRect(part.x + 1, part.y + 1, gridSize - 2, gridSize - 2);
+      ctx.fillRect(part.x + 2, part.y + 2, gridSize - 4, gridSize - 4);
       
-      // 撞自己检测 (Game Over 重置)
       if(index !== 0 && part.x === head.x && part.y === head.y) {
           initSnake();
       }
   });
 }
 
-// 启动游戏循环
 gameLoop = setInterval(drawSnake, gameSpeed);
 
 
 /* ── 名字入场 ── */
-const introName = document.getElementById('intro-name');
-setTimeout(() => introName.classList.add('show'), 400);
+const arcadeCenter = document.getElementById('arcade-center');
+setTimeout(() => arcadeCenter.classList.add('show'), 400);
 
 
 /* ── 滚动触发下一页打字机 ── */
 let typeStarted = false;
 
-// 使用监听器：当用户真实滚动到打字区域时才开始打字
 const typeObserver = new IntersectionObserver(entries => {
   if(entries[0].isIntersecting && !typeStarted) {
     typeStarted = true;
     document.getElementById('eyebrow').classList.add('show');
     setTimeout(typeNext, 300);
   }
-}, { threshold: 0.3 }); // 滚动到 30% 露出来时触发
+}, { threshold: 0.3 }); 
 typeObserver.observe(document.getElementById('type-section'));
 
 
@@ -839,7 +922,6 @@ let ci = 0;
 
 function typeNext() {
   if (ci >= fullText.length) {
-    // 打字完成后显示导航栏和底部信息
     document.getElementById('nav').classList.add('show');
     document.getElementById('bot').classList.add('show');
     return;
@@ -854,7 +936,6 @@ function typeNext() {
     s.style.opacity = '0';
     s.style.transition = 'opacity 0.06s';
     
-    // 识别到索引 9 到 18 的字符（Carol Chen），赋予粉色
     if (ci >= 9 && ci <= 18) {
       s.style.color = '#F14F9B';
     }
@@ -867,7 +948,7 @@ function typeNext() {
   setTimeout(typeNext, speed);
 }
 
-/* ── scroll reveal (下方卡片滑动浮现) ── */
+/* ── scroll reveal ── */
 const io = new IntersectionObserver(entries => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 100);
@@ -878,3 +959,4 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
+}
