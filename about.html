@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carol — About</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
   
   <style>
@@ -125,9 +127,24 @@
     nav.scrolled { border-color: var(--border); }
     body.dark-mode nav { background: rgba(17,17,17,0.88); }
     
-    .nav-logo {
-      font-size: 15px; font-weight: 800;
-      letter-spacing: -.02em; color: var(--accent); text-decoration: none;
+    /* 修改：统一左上角 Logo 样式 */
+    .nav-logo { 
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 36px; 
+      font-weight: 400; 
+      letter-spacing: 0.05em; 
+      color: var(--accent); 
+      text-decoration: none; 
+      display: flex;
+      align-items: center;
+      gap: 10px; 
+      line-height: 1;
+      margin-top: -6px; 
+    }
+    .nav-logo svg {
+      width: 26px; 
+      height: 26px;
+      transform: translateY(-2px); 
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -221,9 +238,12 @@
       animation: fadeUp .7s ease .2s forwards;
     }
 
+    /* 修改：自我介绍标题换成像素字体并调整字号 */
     .hero-name {
-      font-size: clamp(52px, 7vw, 96px);
-      font-weight: 800; letter-spacing: -.04em;
+      font-family: 'Jersey 10', sans-serif;
+      font-size: clamp(60px, 8vw, 110px);
+      font-weight: 400; 
+      letter-spacing: 0.02em;
       line-height: 1.05; margin-bottom: 28px;
       opacity: 0; transform: translateY(16px);
       animation: fadeUp .8s ease .35s forwards;
@@ -295,31 +315,29 @@
       justify-content: center;
     }
 
-    /* ── 新增：两边的辅助文字样式 ── */
     .falling-side-text {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       width: 22vw;
       max-width: 280px;
-      font-size: 16px; /* 和自我介绍保持一致 */
+      font-size: 16px; 
       font-weight: 400;
       line-height: 1.75;
       color: var(--text-p);
-      pointer-events: none; /* 允许鼠标穿透文字去抓取标签 */
-      z-index: 2; /* 在图片上方，标签下方 */
+      pointer-events: none; 
+      z-index: 2; 
       transition: color 0.5s ease;
     }
     .text-left {
       left: 10vw;
-      text-align: right; /* 左边文字向右对齐，靠拢图片 */
+      text-align: right; 
     }
     .text-right {
       right: 10vw;
-      text-align: left; /* 右边文字向左对齐，靠拢图片 */
+      text-align: left; 
     }
     
-    /* 手机端屏幕较小时隐藏这两段辅助文字，保证排版不乱 */
     @media (max-width: 900px) {
       .falling-side-text {
         display: none;
@@ -353,23 +371,26 @@
       top: 90px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--accent);
       pointer-events: none;
       z-index: 2;
     }
 
+    /* 修改：掉落标签换成像素字体 */
     .falling-tag {
       position: absolute;
       top: 0; left: 0;
       padding: 12px 28px;
       border-radius: 40px;
-      font-size: clamp(14px, 2vw, 22px);
-      font-weight: 800;
-      letter-spacing: 0.02em;
+      font-family: 'Jersey 10', sans-serif;
+      font-size: clamp(20px, 3vw, 32px); /* 加大字号以适应像素字体 */
+      font-weight: 400; /* 去掉加粗 */
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       user-select: none;
       cursor: grab;
@@ -547,7 +568,13 @@
 <div id="cursor"></div>
 
 <nav id="main-nav">
-  <a href="index.html" class="nav-logo">Carol.</a>
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
+      <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+    </svg>
+    Carol.
+  </a>
+  
   <div class="nav-links">
     <a href="index.html#projects">Work</a>
     <a href="about.html" class="active">About</a>
@@ -615,7 +642,7 @@
   </div>
 
   <div class="falling-hint">This all me~</div>
-</section>
+  </section>
 
 <div class="content-wrap">
 
