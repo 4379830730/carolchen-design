@@ -293,6 +293,55 @@
     .dropdown-menu a:hover { background: var(--off); }
     .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
 
+    /* ── Theme Toggle Button (主页纯图标版本) ── */
+    .theme-toggle {
+      background: transparent; 
+      border: 1px solid var(--border); /* 亮色模式下是灰色边框 */
+      width: 44px; height: 44px; 
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; border: none;
+      cursor: none; 
+      margin-left: 12px;
+      padding: 0;
+      transition: transform .2s, background-color .3s, border-color .3s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:focus { outline: none; }
+    
+    .theme-toggle img {
+      width: 20px; height: 20px; object-fit: contain;
+      filter: brightness(0); /* 亮色模式下，图标强行变纯黑色 */
+      transition: filter .3s;
+    }
+    
+    /* 亮色模式悬停：变黑底白图标 */
+    .theme-toggle:hover {
+      transform: scale(0.92);
+      background-color: var(--black); 
+      border-color: var(--black);
+    }
+    .theme-toggle:hover img {
+      filter: brightness(0) invert(1);
+    }
+
+    /* 暗黑模式下的按钮样式 */
+    body.dark-mode .theme-toggle {
+      border-color: rgba(255, 255, 255, 0.3); /* 暗黑模式下是白色边框 */
+    }
+    body.dark-mode .theme-toggle img {
+      filter: brightness(0) invert(1); /* 暗黑模式下，图标强行变纯白色 */
+    }
+    /* 暗黑模式悬停：变白底黑图标 */
+    body.dark-mode .theme-toggle:hover {
+      background-color: var(--white);
+      border-color: var(--white);
+    }
+    body.dark-mode .theme-toggle:hover img {
+      filter: brightness(0);
+    }
+
     /* bottom bar */
     #bot {
       position: absolute;
@@ -315,43 +364,6 @@
     .view-btn:hover { background: var(--black); color: var(--white); }
     .view-btn .arr { transition: transform .25s; }
     .view-btn:hover .arr { transform: translateX(4px); }
-
-    /* ── Theme Toggle Button ── */
-    .theme-toggle {
-      position: fixed;
-      top: 36px; 
-      left: 50%;
-      background: var(--black);
-      color: var(--white);
-      border: 1px solid var(--border);
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: none; 
-      z-index: 1000;
-      opacity: 0; pointer-events: none;
-      transform: translate(-50%, -15px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: opacity 0.7s, transform 0.7s, background-color 0.5s, color 0.5s;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .theme-toggle:focus {
-      outline: none;
-    }
-    .theme-toggle.show { 
-      opacity: 1; 
-      pointer-events: auto; 
-      transform: translate(-50%, 0); 
-    }
-    .theme-toggle:hover { 
-      transform: translate(-50%, -3px); 
-    }
-    body.dark-mode .theme-toggle { 
-      box-shadow: 0 4px 12px rgba(255,255,255,0.08); 
-    }
 
     /* ══════════════════════
        3. PROJECTS
@@ -435,7 +447,7 @@
     /* ══════════════════════
        4. FOOTER
     ══════════════════════ */
-    /* 修改：与 About 页面一致的粉色背景和排版 */
+    /* 品牌粉色背景和排版 */
     footer {
       background: var(--accent); 
       color: #fff;
@@ -484,8 +496,6 @@
 
 <div id="cursor"></div>
 
-<button id="theme-toggle" class="theme-toggle" tabindex="0">Dark Mode</button>
-
 <section id="intro">
   <canvas id="intro-canvas"></canvas>
   
@@ -523,6 +533,10 @@
           </a>
         </div>
       </div>
+
+      <button id="theme-toggle" class="theme-toggle" tabindex="0" aria-label="Toggle theme">
+        <img id="theme-icon" src="image_df6b67.png" alt="Theme icon">
+      </button>
       
     </div>
   </nav>
@@ -643,16 +657,34 @@
 </footer>
 
 <script>
-/* ── Theme Toggle Logic ── */
-const themeBtn = document.getElementById('theme-toggle');
-themeBtn.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  if (document.body.classList.contains('dark-mode')) {
-    themeBtn.textContent = 'Light Mode';
+  /* ── Theme Toggle Logic (加入图标切换和跨页面记忆逻辑) ── */
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  // 图片路径配置
+  const sunIconPath = "image_df6b4a.png"; // 用于暗黑模式下，点它变亮
+  const moonIconPath = "image_df6b67.png"; // 用于亮色模式下，点它变暗
+
+  // 1. 初始化检查（从 localStorage 读取状态）
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.src = sunIconPath; // 暗色模式下显示太阳图标
   } else {
-    themeBtn.textContent = 'Dark Mode';
+    themeIcon.src = moonIconPath; // 亮色模式下显示月亮图标
   }
-});
+
+  // 2. 点击事件
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+      themeIcon.src = sunIconPath; // 切换到暗色后，换成太阳图标
+      localStorage.setItem('theme', 'dark'); 
+    } else {
+      themeIcon.src = moonIconPath; // 切换到亮色后，换成月亮图标
+      localStorage.setItem('theme', 'light'); 
+    }
+  });
 
 /* ── Cursor ── */
 const cur = document.getElementById('cursor');
@@ -660,7 +692,7 @@ document.addEventListener('mousemove', e => {
   cur.style.left = e.clientX + 'px';
   cur.style.top = e.clientY + 'px';
 });
-/* 修改：将 .ft-icon-btn 添加到了鼠标放大的触发列表中 */
+/* 修改：将 theme-toggle 添加到了鼠标放大的触发列表中 */
 document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle, .ft-icon-btn').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
@@ -807,11 +839,9 @@ let ci = 0;
 
 function typeNext() {
   if (ci >= fullText.length) {
+    // 打字完成后显示导航栏和底部信息
     document.getElementById('nav').classList.add('show');
     document.getElementById('bot').classList.add('show');
-    
-    // 打字机完成后，暗黑模式切换按钮在顶部居中浮现
-    document.getElementById('theme-toggle').classList.add('show');
     return;
   }
   const ch = fullText[ci];

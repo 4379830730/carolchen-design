@@ -8,13 +8,27 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Light Mode Variables */
     :root {
-      --black: #111;
+      --black: #111111;
       --white: #ffffff;
       --off: #f6f4f1;
-      --gray: #aaa;
+      --gray: #aaaaaa;
       --border: #e5e1db;
+      --dot: #d6d2cc;
       --accent: #F14F9B; /* 品牌粉色 */
+      --text-p: #555555;
+    }
+
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --black: #ffffff;
+      --white: #111111;
+      --off: #1a1a1a;
+      --gray: #888888;
+      --border: #333333;
+      --dot: #333333;
+      --text-p: #aaaaaa;
     }
 
     html { scroll-behavior: smooth; }
@@ -24,6 +38,12 @@
       color: var(--black);
       overflow-x: hidden;
       cursor: none;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    /* 容器过渡动画 */
+    nav, .award-card, .marquee-wrapper, .photo-frame, .trow, .dropdown-menu {
+      transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.35s;
     }
 
    /* ── cursor ── */
@@ -40,6 +60,55 @@
     }
     #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
+    /* ── Theme Toggle Button (修改：自动适应黑白底色) ── */
+    .theme-toggle {
+      background: transparent; 
+      border: 1px solid var(--border); /* 亮色模式下是灰色边框 */
+      width: 44px; height: 44px; 
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; border: none;
+      cursor: none; 
+      margin-left: 12px;
+      padding: 0;
+      transition: transform .2s, background-color .3s, border-color .3s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:focus { outline: none; }
+    
+    .theme-toggle img {
+      width: 20px; height: 20px; object-fit: contain;
+      filter: brightness(0); /* 亮色模式下，图标强行变纯黑色 */
+      transition: filter .3s;
+    }
+    
+    /* 亮色模式悬停：变黑底白图标 */
+    .theme-toggle:hover {
+      transform: scale(0.92);
+      background-color: var(--black); 
+      border-color: var(--black);
+    }
+    .theme-toggle:hover img {
+      filter: brightness(0) invert(1);
+    }
+
+    /* 暗黑模式下的按钮样式 */
+    body.dark-mode .theme-toggle {
+      border-color: rgba(255, 255, 255, 0.3); /* 暗黑模式下是白色边框 */
+    }
+    body.dark-mode .theme-toggle img {
+      filter: brightness(0) invert(1); /* 暗黑模式下，图标强行变纯白色 */
+    }
+    /* 暗黑模式悬停：变白底黑图标 */
+    body.dark-mode .theme-toggle:hover {
+      background-color: var(--white);
+      border-color: var(--white);
+    }
+    body.dark-mode .theme-toggle:hover img {
+      filter: brightness(0);
+    }
+
     /* ── NAV ── */
     nav {
       position: fixed;
@@ -53,9 +122,9 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid transparent;
-      transition: border-color .3s;
     }
     nav.scrolled { border-color: var(--border); }
+    body.dark-mode nav { background: rgba(17,17,17,0.88); }
     
     .nav-logo {
       font-size: 15px; font-weight: 800;
@@ -100,12 +169,13 @@
       opacity: 0;
       transform: translateY(-5px);
       pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 100;
     }
     .nav-item-dropdown:hover .dropdown-menu {
       opacity: 1; transform: translateY(0); pointer-events: auto;
     }
+    body.dark-mode .dropdown-menu { background: rgba(17, 17, 17, 0.95); }
+    body.dark-mode .dropdown-menu img { filter: invert(1); }
+
     .dropdown-menu a {
       display: flex !important; align-items: center; gap: 12px;
       padding: 10px 14px; color: var(--black) !important;
@@ -135,10 +205,11 @@
     #hero::before {
       content: '';
       position: absolute; inset: 0;
-      background-image: radial-gradient(circle, #d6d2cc 1px, transparent 1px);
+      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
       background-size: 38px 38px;
       opacity: 0.45;
       pointer-events: none;
+      transition: background-image 0.5s ease;
     }
 
     .hero-left { position: relative; z-index: 1; }
@@ -161,9 +232,10 @@
 
     .hero-bio {
       font-size: 16px; font-weight: 400; line-height: 1.75;
-      color: #555; max-width: 460px;
+      color: var(--text-p); max-width: 460px;
       opacity: 0; transform: translateY(12px);
       animation: fadeUp .8s ease .5s forwards;
+      transition: color 0.5s ease;
     }
 
     .hero-contact {
@@ -172,7 +244,7 @@
       animation: fadeUp .7s ease .65s forwards;
     }
     .hero-icon-btn {
-      width: 45px; height: 45px;
+      width: 48px; height: 48px;
       border-radius: 50%;
       background: var(--accent);
       display: flex; align-items: center; justify-content: center;
@@ -241,7 +313,6 @@
       display: grid; grid-template-columns: 180px 1fr; gap: 32px;
       padding: 32px 0; border-bottom: 1px solid var(--border);
       opacity: 0; transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease;
     }
     .trow.in { opacity: 1; transform: translateY(0); }
     .trow:last-child { border-bottom: none; }
@@ -255,30 +326,13 @@
       font-size: 18px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em;
     }
     .trow-body .sub {
-      font-size: 14px; font-weight: 500; color: #F14F9B;
+      font-size: 14px; font-weight: 500; color: var(--accent);
       margin-bottom: 10px; letter-spacing: .02em;
     }
     .trow-body p {
-      font-size: 14px; line-height: 1.7; color: #666; max-width: 560px;
+      font-size: 14px; line-height: 1.7; color: var(--text-p); max-width: 560px;
+      transition: color 0.5s ease;
     }
-
-    /* ── awards ── */
-    .awards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .award-card {
-      border: 1px solid var(--border); border-radius: 16px; padding: 28px;
-      background: var(--white); display: flex; flex-direction: column; gap: 10px;
-      opacity: 0; transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease, box-shadow .3s ease;
-    }
-    .award-card.in { opacity: 1; transform: translateY(0); }
-    .award-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.07); }
-
-    .award-year {
-      font-size: 11px; font-weight: 700; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--gray);
-    }
-    .award-name { font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.3; }
-    .award-org { font-size: 13px; color: var(--gray); font-weight: 500; }
 
     /* ── 无边框彩色滑动 Logo 墙 ── */
     .marquee-wrapper {
@@ -290,7 +344,6 @@
       -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
       mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
       opacity: 0; transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease;
     }
     .marquee-wrapper.in { opacity: 1; transform: translateY(0); }
     
@@ -325,42 +378,36 @@
        FOOTER
     ══════════════════════ */
     footer {
-      background: var(--accent); /* 品牌粉色背景 */
-      color: #fff;
+      background: var(--accent);
+      color: #ffffff; 
       padding: 80px 10vw 56px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 18px;
     }
     .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; color: #ffffff;}
     
-    /* 调整了标题的底部边距，让下面的 Icon 不会太远 */
-    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
-    
-    /* ── 修改：Footer 联系方式纯 Icon ── */
-    .ft-contact {
-      display: flex; gap: 16px; margin-top: 4px;
-    }
+    .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
     .ft-icon-btn {
       width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15); /* 半透明白色，非常高级 */
+      background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.3);
       display: flex; align-items: center; justify-content: center;
-      text-decoration: none; 
+      text-decoration: none; cursor: none;
       transition: transform .2s, background-color .3s, border-color .3s;
     }
     .ft-icon-btn img {
       width: 26px; height: 26px; object-fit: contain;
-      filter: brightness(0) invert(1); /* 保证图标是纯白色 */
+      filter: brightness(0) invert(1);
       transition: filter .3s;
     }
-    /* 鼠标悬停交互效果 */
     .ft-icon-btn:hover {
       transform: scale(0.92);
-      background-color: var(--white); /* 变成纯白底 */
-      border-color: var(--white);
+      background-color: #ffffff;
+      border-color: #ffffff;
     }
     .ft-icon-btn:hover img {
-      filter: brightness(0); /* 图标变成黑色 */
+      filter: brightness(0);
     }
 
     .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; }
@@ -370,15 +417,15 @@
     .back-top {
       position: fixed; bottom: 36px; right: 36px;
       width: 44px; height: 44px; border-radius: 50%;
-      background: var(--black); color: #fff;
+      background: var(--black); color: var(--white);
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; text-decoration: none; cursor: none;
       opacity: 0; transform: translateY(10px);
-      transition: opacity .35s, transform .35s, background .2s;
+      transition: opacity .35s, transform .35s, background-color 0.5s, color 0.5s;
       z-index: 50;
     }
     .back-top.show { opacity: 1; transform: translateY(0); }
-    .back-top:hover { background: #333; }
+    .back-top:hover { transform: translateY(0) scale(1.1); }
   </style>
 </head>
 <body>
@@ -405,6 +452,10 @@
         </a>
       </div>
     </div>
+    
+    <button id="theme-toggle" class="theme-toggle" tabindex="0" aria-label="Toggle theme">
+      <img id="theme-icon" src="image_df6b67.png" alt="Theme icon">
+    </button>
   </div>
 </nav>
 
@@ -497,39 +548,8 @@
 
   <div class="sec">
     <div class="sec-header">
-      <h2 class="sec-title">Awards</h2>
-      <span class="sec-num">03</span>
-    </div>
-    <div class="awards-grid">
-      <div class="award-card reveal">
-        <div class="award-year">2024</div>
-        <div class="award-name">UX Hackathon Champion
-CICan 2025</div>
-        <div class="award-org">Competition</div>
-      </div>
-      <div class="award-card reveal">
-        <div class="award-year">2024</div>
-        <div class="award-name">Another Award Name</div>
-        <div class="award-org">Organizing Body / Competition</div>
-      </div>
-      <div class="award-card reveal">
-        <div class="award-year">2023</div>
-        <div class="award-name">Award Name Here</div>
-        <div class="award-org">Organizing Body / Competition</div>
-      </div>
-      <div class="award-card reveal">
-        <div class="award-year">2023</div>
-        <div class="award-name">Award Name Here</div>
-        <div class="award-org">Organizing Body / Competition</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-header">
       <h2 class="sec-title">Skills & Tools</h2>
-      <span class="sec-num">04</span>
-    </div>
+      <span class="sec-num">03</span> </div>
     
     <div class="marquee-wrapper reveal">
       <div class="marquee-track">
@@ -577,14 +597,43 @@ CICan 2025</div>
 <a href="#" class="back-top" id="back-top">↑</a>
 
 <script>
+  /* ── Theme Toggle Logic ── */
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  // 图片路径配置
+  const sunIconPath = "image_df6b4a.png"; // 用于暗黑模式下，点它变亮
+  const moonIconPath = "image_df6b67.png"; // 用于亮色模式下，点它变暗
+
+  // 1. 初始化检查（从 localStorage 读取状态）
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.src = sunIconPath; // 暗色模式下显示太阳图标
+  } else {
+    themeIcon.src = moonIconPath; // 亮色模式下显示月亮图标
+  }
+
+  // 2. 点击事件
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+      themeIcon.src = sunIconPath; // 切换到暗色后，换成太阳图标
+      localStorage.setItem('theme', 'dark'); 
+    } else {
+      themeIcon.src = moonIconPath; // 切换到亮色后，换成月亮图标
+      localStorage.setItem('theme', 'light'); 
+    }
+  });
+
   /* ── cursor ── */
   const cur = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
     cur.style.left = e.clientX + 'px';
     cur.style.top = e.clientY + 'px';
   });
-  /* 确保底部的 icon 按钮也会放大光标 */
-  document.querySelectorAll('a, .award-card, .dropdown-menu, .hero-icon-btn, .ft-icon-btn, .m-logo').forEach(el => {
+  /* 确保按钮和 logo 都会放大光标 */
+  document.querySelectorAll('a, .award-card, .dropdown-menu, .hero-icon-btn, .ft-icon-btn, .m-logo, .theme-toggle').forEach(el => {
     el.addEventListener('mouseenter', () => cur.classList.add('big'));
     el.addEventListener('mouseleave', () => cur.classList.remove('big'));
   });
