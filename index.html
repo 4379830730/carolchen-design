@@ -143,11 +143,10 @@
       width: 100%;
       height: 6px;
       background-color: var(--accent);
-      margin-top: 5px; /* 👈 新加这行，让线往下沉，远离分数 */
+      margin-top: 5px; 
       margin-bottom:20px; 
     }
 
-    /* 真正的无缺口阶梯像素边框 */
     .arcade-frame {
       flex-grow: 1; 
       border: 6px solid transparent; 
@@ -217,7 +216,8 @@
 
     .arcade-center .intro-name {
       font-family: 'Jersey 10', sans-serif;
-      font-size: clamp(60px, 8vw, 96px); 
+      /* 👇 修复：把下限 60px 改成了 36px，手机端就不会爆开了 */
+      font-size: clamp(36px, 8vw, 96px); 
       color: var(--accent);
       text-shadow: 4px 4px 0px var(--black); 
       line-height: 1;
@@ -225,14 +225,12 @@
       letter-spacing: 0.02em;
     }
 
-    /* ── 修改：控制鸭子和文字的布局 ── */
    .name-with-gif {
       display: inline-flex;
       align-items: center; 
       justify-content: center;
       gap: 16px; 
       vertical-align: middle;
-      /* 👇 新加这一行：把整个盒子往左拉 30 像素，抵消鸭子的宽度 */
       transform: translateX(-30px); 
     }
 
@@ -244,29 +242,27 @@
       text-shadow: none; 
     }
 
-    /* ── 调整gif尺寸的位置 ── */
     .pixel-gif {
-      height: 0.8em; /* 👈 这里调大小的 */
+      height: 0.8em; 
       width: auto;
       object-fit: contain;
       pointer-events: none; 
       filter: drop-shadow(0px 0px 0px transparent); 
-      transform: translateY(-4px); /* 稍微往上移一点，达到视觉上的完美居中 */
+      transform: translateY(-4px); 
     }
 
-/* 提示语固定到底部 */
     .intro-sub {
       position: absolute;
-      bottom: 30px; /* 👈 控制距离底部的空间，觉得太高可以改成 20px */
+      bottom: 30px; 
       left: 50%;
       transform: translateX(-50%);
       font-family: 'Jersey 10', sans-serif;
-      font-size: 22px; /* 👈 字体缩小了，原来是 clamp(24px, 3vw, 38px) */
+      font-size: 22px; 
       color: var(--black);
       line-height: 1.4;
       display: flex;
       flex-direction: column;
-      align-items: center; /* 让两行字居中对齐 */
+      align-items: center; 
       text-align: center;
       pointer-events: none;
       opacity: 0;
@@ -281,14 +277,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px; /* 👈 控制 PNG 图标和文字的距离 */
+      gap: 10px; 
     }
 
-    /* 自定义 PNG 图标的大小 */
+    /* 👇 修复：给自定义 PNG 图标加固定高度，并微调垂直对齐 */
     .tri-icon-img {
-      width: 14px; /* 👈 如果你的图标太大或太小，调这个数字 */
-      height: auto;
+      width: 16px; 
+      height: 16px;
       object-fit: contain;
+      transform: translateY(-2px); /* 向上微移，和文字对齐 */
     }
 
     /* ══════════════════════
@@ -326,7 +323,8 @@
     #typed-text {
       position: relative; z-index: 1;
       font-family: 'Jersey 10', sans-serif; 
-      font-size: clamp(48px, 7vw, 110px); 
+      /* 👇 修复：下限 48px 改成 36px，适应窄手机 */
+      font-size: clamp(36px, 8vw, 110px); 
       font-weight: 400; 
       line-height: 0.85; 
       letter-spacing: 0.02em; 
@@ -344,7 +342,6 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-    /* nav */
     #nav {
       position: absolute;
       top: 44px; left: 0; right: 0;
@@ -356,7 +353,7 @@
     }
     #nav.show { opacity: 1; transform: translateY(0); }
     
-.nav-logo { 
+    .nav-logo { 
       font-family: 'Jersey 10', sans-serif;
       font-size: 36px; 
       font-weight: 400; 
@@ -368,12 +365,12 @@
       gap: 10px; 
       line-height: 1;
       transform: translateY(3px); 
-      margin-left: -36px; /* 👈 新加这行：抵消爱心(26px)和间距(10px)，让Carol字母对齐 */
+      margin-left: -36px; 
     }
     .nav-logo svg {
       width: 26px; 
       height: 26px;
-      transform: translateY(-2px); /* 👈 让像素爱心和首字母 C 完美对齐 */
+      transform: translateY(-2px); 
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -387,13 +384,12 @@
     }
     .nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
 
-    /* ── Contact Dropdown Menu ── */
     .nav-item-dropdown {
       position: relative;
-      display: flex;         /* 👈 强制内部也居中 */
+      display: flex;         
       align-items: center;
-      padding: 12px 0;       /* 👈 改成上下对称加宽，维持中心点不变 */
-      margin: -12px 0;       /* 👈 上下对称抵消 */
+      padding: 12px 0;       
+      margin: -12px 0;       
     }
     .dropdown-menu {
       position: absolute;
@@ -435,7 +431,6 @@
     .dropdown-menu a:hover { background: var(--off); }
     .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
 
-    /* ── Theme Toggle Button ── */
     .theme-toggle {
       background: transparent; 
       border: 1px solid var(--border); 
@@ -467,21 +462,11 @@
       filter: brightness(0) invert(1);
     }
 
-    body.dark-mode .theme-toggle {
-      border-color: rgba(255, 255, 255, 0.3); 
-    }
-    body.dark-mode .theme-toggle img {
-      filter: brightness(0) invert(1); 
-    }
-    body.dark-mode .theme-toggle:hover {
-      background-color: var(--white);
-      border-color: var(--white);
-    }
-    body.dark-mode .theme-toggle:hover img {
-      filter: brightness(0);
-    }
+    body.dark-mode .theme-toggle { border-color: rgba(255, 255, 255, 0.3); }
+    body.dark-mode .theme-toggle img { filter: brightness(0) invert(1); }
+    body.dark-mode .theme-toggle:hover { background-color: var(--white); border-color: var(--white); }
+    body.dark-mode .theme-toggle:hover img { filter: brightness(0); }
 
-    /* bottom bar */
     #bot {
       position: absolute;
       bottom: 40px; left: 0; right: 0;
@@ -515,35 +500,27 @@
       display: flex; justify-content: space-between; align-items: flex-end;
       margin-bottom: 52px;
     }
-.proj-title {
-      font-family: 'Jersey 10', sans-serif; /* 1. 改为复古像素字体 */
-      font-size: clamp(54px, 7vw, 86px);    /* 2. 稍微放大一点，因为像素字体视觉上偏小 */
-      font-weight: 400;                     /* 3. 去掉加粗，保持像素边缘干净 */
-      color: var(--accent);                 /* 4. 改为你的主题粉色 */
-      letter-spacing: 0.05em;               /* 5. 调整合适的字间距 */
+    .proj-title {
+      font-family: 'Jersey 10', sans-serif; 
+      font-size: clamp(40px, 7vw, 86px);    
+      font-weight: 400;                     
+      color: var(--accent);                 
+      letter-spacing: 0.05em;               
       line-height: 1;
     }
     .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
 
-.bento { 
+    .bento { 
       display: grid; 
       grid-template-columns: 1fr 1fr; 
-      gap: 48px;             /* 保持宽间距，画面更透气 */
+      gap: 48px;             
       max-width: 1080px;     
       margin: 0 auto;        
     }
 
-/* 👇 🌟 新加这段：当屏幕宽度小于 900px（平板/手机）时生效 */
     @media (max-width: 900px) {
-      .bento {
-        grid-template-columns: 1fr; /* 强制变成 1 列 */
-        gap: 32px; /* 手机上间距可以稍微缩小一点，显得紧凑 */
-      }
-      
-      /* 可选：手机屏幕较小，可以把卡片里图片的高度也稍微缩小一点 */
-      .pcard-img {
-        height: 220px; 
-      }
+      .bento { grid-template-columns: 1fr; gap: 32px; }
+      .pcard-img { height: 220px; }
     }
 
     .pcard {
@@ -551,25 +528,17 @@
       background: var(--white); 
       display: flex; flex-direction: column;
       cursor: none;
-      /* 保持复古黑边框，但默认把阴影设为透明 */
       border: 1.5px solid var(--black); 
-      box-shadow: 0px 0px 0px transparent; /* 👈 默认状态没有投影 */
+      box-shadow: 0px 0px 0px transparent; 
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
-    /* 👇 只有鼠标悬停时，才向左上浮起，并“长”出粉色硬投影 */
-    .pcard:hover { 
-      transform: translate(-6px, -6px); 
-      box-shadow: 12px 12px 0px var(--accent); 
-    }
-    
-    body.dark-mode .pcard:hover { 
-      box-shadow: 12px 12px 0px var(--accent); 
-    }
+    .pcard:hover { transform: translate(-6px, -6px); box-shadow: 12px 12px 0px var(--accent); }
+    body.dark-mode .pcard:hover { box-shadow: 12px 12px 0px var(--accent); }
 
     .pcard-img {
       position: relative; width: 100%; 
-      height: 280px;         /* 保持卡片缩小的高度 */
+      height: 280px;         
       overflow: hidden; background: var(--off);
       border-bottom: 2px solid var(--black); 
     }
@@ -583,9 +552,7 @@
       padding: 5px 14px; font-size: 11px; font-weight: 700;
       letter-spacing: .07em; text-transform: uppercase; color: var(--black);
     }
-    body.dark-mode .ftag {
-      background: rgba(17, 17, 17, 0.92); border-color: rgba(255, 255, 255, 0.1);
-    }
+    body.dark-mode .ftag { background: rgba(17, 17, 17, 0.92); border-color: rgba(255, 255, 255, 0.1); }
 
     .fnum {
       position: absolute; top: 12px; right: 18px;
@@ -595,10 +562,7 @@
     }
     body.dark-mode .fnum { color: rgba(255,255,255,.06); }
 
-    .pcard-body {
-      padding: 22px 24px;
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
-    }
+    .pcard-body { padding: 22px 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
     .pcard-left h3 { font-size: 19px; font-weight: 800; margin: 0 0 4px; }
     .pcard-left p { font-size: 13px; color: var(--gray); margin: 0 0 11px; line-height: 1.5; }
     .chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -610,8 +574,7 @@
     
     .go {
       flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
-      background: var(--accent); 
-      color: #fff;
+      background: var(--accent); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; text-decoration: none; cursor: none;
       transition: transform .2s, background .5s;
@@ -622,95 +585,59 @@
        4. FOOTER
     ══════════════════════ */
     footer {
-      background: var(--accent); 
-      color: #fff;
-      padding: 80px 10vw 56px;
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center; gap: 18px;
+      background: var(--accent); color: #fff; padding: 80px 10vw 56px;
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;
     }
     .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
     .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
-    
-    .ft-contact {
-      display: flex; gap: 16px; margin-top: 4px;
-    }
+    .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
     .ft-icon-btn {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15); 
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      display: flex; align-items: center; justify-content: center;
-      text-decoration: none; cursor: none;
-      transition: transform .2s, background-color .3s, border-color .3s;
+      width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); 
+      border: 1px solid rgba(255, 255, 255, 0.3); display: flex; align-items: center; justify-content: center;
+      text-decoration: none; cursor: none; transition: transform .2s, background-color .3s, border-color .3s;
     }
-    .ft-icon-btn img {
-      width: 24px; height: 24px; object-fit: contain;
-      filter: brightness(0) invert(1); 
-      transition: filter .3s;
-    }
-    .ft-icon-btn:hover {
-      transform: scale(0.92);
-      background-color: var(--white); 
-      border-color: var(--white);
-    }
-    .ft-icon-btn:hover img {
-      filter: brightness(0); 
-    }
-
+    .ft-icon-btn img { width: 24px; height: 24px; object-fit: contain; filter: brightness(0) invert(1); transition: filter .3s; }
+    .ft-icon-btn:hover { transform: scale(0.92); background-color: var(--white); border-color: var(--white); }
+    .ft-icon-btn:hover img { filter: brightness(0); }
     .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; transition: background 0.5s; }
     .ft-copy { font-size: 11px; color: rgba(255, 255, 255, 0.9); letter-spacing: .08em; transition: color 0.5s; }
 
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s; }
     .reveal.in { opacity: 1; transform: translateY(0); }
-/* ══════════════════════
-       手机端导航栏适配 (Mobile Nav)
+
+    /* ══════════════════════
+       手机端整体适配 (核心修复区)
     ══════════════════════ */
     @media (max-width: 768px) {
-      /* 1. 缩小导航栏左右的内边距，给文字留出更多空间 */
-      #nav, nav {
-        padding: 20px 5vw !important;
+      /* 1. 隐藏鼠标白点 */
+      #cursor { display: none !important; }
+      body, a, button, .pcard, .theme-toggle, .ft-icon-btn, .go, .dropdown-menu { cursor: auto !important; }
+
+      /* 2. 同步边距：解决打字页 Logo 和文字不对齐的问题 */
+      #type-section, #bot, #nav, nav {
+        padding-left: 6vw !important;
+        padding-right: 6vw !important;
       }
-      
-      /* 2. 缩小左侧 Logo 的字体和像素爱心大小 */
+      #nav, nav {
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+      }
+
+      /* 3. 修复顶部的 Logo 边距 */
       .nav-logo {
         font-size: 28px !important;
         gap: 6px !important;
+        margin-left: -26px !important; /* 让它在 6vw 的内边距下刚好对齐文字 */
       }
-      .nav-logo svg {
-        width: 20px !important;
-        height: 20px !important;
-      }
-      
-      /* 3. 缩小右侧菜单链接之间的距离，以及字体大小 */
-      .nav-links {
-        gap: 14px !important;
-      }
-      .nav-links > a, .nav-item-dropdown > a {
-        font-size: 10px !important;
-        letter-spacing: 0.08em !important;
-      }
-      
-      /* 4. 稍微缩小月亮/太阳的主题切换按钮 */
-      .theme-toggle {
-        width: 32px !important;
-        height: 32px !important;
-        margin-left: 4px !important;
-      }
-      .theme-toggle img {
-        width: 16px !important;
-        height: 16px !important;
-      }
-    }
-/* ══════════════════════
-       手机端隐藏自定义光标
-    ══════════════════════ */
-    @media (max-width: 768px) {
-      /* 1. 彻底隐藏那个跟随的白点 */
-      #cursor {
-        display: none !important;
-      }
-      /* 2. 恢复网页原本的默认光标状态（覆盖之前的 cursor: none） */
-      body, a, button, .pcard, .theme-toggle, .ft-icon-btn, .go, .dropdown-menu {
-        cursor: auto !important;
+      .nav-logo svg { width: 20px !important; height: 20px !important; }
+      .nav-links { gap: 14px !important; }
+      .nav-links > a, .nav-item-dropdown > a { font-size: 10px !important; letter-spacing: 0.08em !important; }
+      .theme-toggle { width: 32px !important; height: 32px !important; margin-left: 4px !important; }
+      .theme-toggle img { width: 16px !important; height: 16px !important; }
+
+      /* 4. 修复第一页（蛇）的鸭子偏移过多的问题 */
+      .name-with-gif {
+        transform: translateX(-12px) !important; /* 手机上鸭子变小了，不需要偏移那么多 */
       }
     }
   </style>
@@ -741,7 +668,7 @@
     <div class="arcade-frame" id="arcade-frame">
       <canvas id="intro-canvas"></canvas>
       
-<div class="arcade-center" id="arcade-center">
+      <div class="arcade-center" id="arcade-center">
         <div class="intro-name">
           <span class="name-with-gif">
             <span class="pixel-duck">
@@ -971,7 +898,6 @@ let gameSpeed = 100;
 let gameLoop;
 
 function initSnake() {
-  // 👇 重新计算出生高度：在屏幕正中间的基础上，往下加上 3 个格子的高度（大概90像素）
   let startY = Math.floor(H / 2 / gridSize) * gridSize + (gridSize * 3);
 
   snake = [
@@ -1006,7 +932,6 @@ function resize() {
 setTimeout(resize, 100);
 window.addEventListener('resize', resize);
 
-// 键盘控制
 document.addEventListener('keydown', e => {
   if (window.scrollY < 50) {
     const k = e.key.toLowerCase();
