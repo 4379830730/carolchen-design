@@ -139,14 +139,11 @@
       align-items: center;
       gap: 10px; 
       line-height: 1;
-      transform: translateY(3px); 
-      margin-left: -36px; /* 👈 新加这行：抵消爱心(26px)和间距(10px)，让Carol字母对齐 */
+      margin-left: -36px; 
     }
-
     .nav-logo svg {
       width: 26px; 
       height: 26px;
-      transform: translateY(-2px); 
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -162,11 +159,12 @@
     .nav-links > a.active::after { width: 100%; }
 
     /* ── Contact Dropdown Menu ── */
-    .nav-item-dropdown {
+.nav-item-dropdown {
       position: relative;
-      display: inline-block;
-      padding-bottom: 12px;
-      margin-bottom: -12px;
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      margin: -12px 0;
     }
     .dropdown-menu {
       position: absolute;
@@ -578,6 +576,50 @@
     }
     .back-top.show { opacity: 1; transform: translateY(0); }
     .back-top:hover { transform: translateY(0) scale(1.1); }
+/* ══════════════════════
+       手机端全面适配 (Mobile Responsive)
+    ══════════════════════ */
+    @media (max-width: 900px) {
+      /* 1. Hero 区域：文字和照片从左右两列变成上下排列 */
+      #hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 140px 7vw 80px; /* 调整内边距 */
+      }
+      .photo-frame {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto; /* 让照片在手机上居中 */
+      }
+      
+      /* 2. Timeline 履历区域：时间从左侧变到上方 */
+      .trow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 24px 0;
+      }
+      .trow-date {
+        padding-top: 0;
+        color: var(--accent); /* 在手机上时间用粉色高亮更好看 */
+      }
+    }
+
+    @media (max-width: 768px) {
+      /* 3. 导航栏缩小适配 (和主页同步) */
+      #nav, nav { padding: 20px 5vw !important; }
+      .nav-logo { font-size: 28px !important; gap: 6px !important; margin-left: -26px !important; }
+      .nav-logo svg { width: 20px !important; height: 20px !important; }
+      .nav-links { gap: 14px !important; }
+      .nav-links > a, .nav-item-dropdown > a { font-size: 10px !important; letter-spacing: 0.08em !important; }
+      .theme-toggle { width: 32px !important; height: 32px !important; margin-left: 4px !important; }
+      .theme-toggle img { width: 16px !important; height: 16px !important; }
+
+      /* 4. 隐藏手机端烦人的光标圆点 */
+      #cursor { display: none !important; }
+      body, a, button, .theme-toggle, .ft-icon-btn, .dropdown-menu, .falling-tag, .m-logo { 
+        cursor: auto !important; 
+      }
+    }
   </style>
 </head>
 <body>
