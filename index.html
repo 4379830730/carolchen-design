@@ -129,10 +129,20 @@
 
     .arcade-score {
       font-family: 'Jersey 10', sans-serif;
-      font-size: 42px; 
+      font-size: 48px; 
       color: var(--black); 
       line-height: 1;
       letter-spacing: 0.05em;
+    }
+
+/* 让最高分绝对居中，并变成主题粉色 */
+    .best-score {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 4px; /* 和原版的底部对齐 */
+      color: var(--accent); /* 粉色 */
+      white-space: nowrap; /* 强制不换行 */
     }
 
     .arcade-hearts {
@@ -667,6 +677,11 @@
         filter: brightness(0) invert(1) !important; /* 暗色模式强制保持白色太阳 */
       }
     }
+
+/* 字体从 24px 改大到 32px，爱心从 22px 改大到 28px */
+      .arcade-score { font-size: 32px !important; }
+      .arcade-hearts svg { width: 28px !important; height: 28px !important; }
+
   </style>
 </head>
 <body>
@@ -675,8 +690,12 @@
 
 <section id="intro">
   <div class="arcade-wrapper">
-    <div class="arcade-top-bar">
+<div class="arcade-top-bar" style="position: relative;">
+      
       <div class="arcade-score">Score: <span id="snake-score">00</span></div>
+      
+      <div class="arcade-score best-score">Best: <span id="high-score">00</span></div>
+
       <div class="arcade-hearts">
         <svg width="32" height="32" viewBox="0 0 10 10" shape-rendering="crispEdges">
           <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
@@ -688,6 +707,7 @@
           <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
         </svg>
       </div>
+      
     </div>
     
     <div class="arcade-line"></div>
@@ -924,6 +944,9 @@ let food = {};
 let dx = gridSize;
 let dy = 0;
 let score = 0;
+// 👇 新加：读取本地最高分
+let highScore = localStorage.getItem('carolSnakeBest') || 0; 
+document.getElementById('high-score').textContent = highScore.toString().padStart(2, '0');
 let gameSpeed = 100; 
 let gameLoop;
 
@@ -1002,7 +1025,15 @@ function drawSnake() {
   
   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
   
-  if (head.x >= W || head.x < 0 || head.y >= H || head.y < 0) {
+ if (head.x >= W || head.x < 0 || head.y >= H || head.y < 0) {
+    // 👇 新加：死掉时检查是否破纪录，如果破了就保存
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem('carolSnakeBest', highScore);
+      document.getElementById('high-score').textContent = highScore.toString().padStart(2, '0');
+    }
+
+
     initSnake(); 
     return; 
   }
