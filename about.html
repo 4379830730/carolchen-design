@@ -128,7 +128,7 @@
     body.dark-mode nav { background: rgba(17,17,17,0.88); }
     
     /* 修改：统一左上角 Logo 样式 */
-    .nav-logo { 
+.nav-logo { 
       font-family: 'Jersey 10', sans-serif;
       font-size: 36px; 
       font-weight: 400; 
@@ -139,8 +139,10 @@
       align-items: center;
       gap: 10px; 
       line-height: 1;
-      margin-top: -6px; 
+      transform: translateY(3px); 
+      margin-left: -36px; /* 👈 新加这行：抵消爱心(26px)和间距(10px)，让Carol字母对齐 */
     }
+
     .nav-logo svg {
       width: 26px; 
       height: 26px;
