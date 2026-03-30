@@ -461,31 +461,92 @@
     }
 
     /* ── timeline rows ── */
-    .timeline { display: flex; flex-direction: column; gap: 0; }
-    .trow {
-      display: grid; grid-template-columns: 180px 1fr; gap: 32px;
-      padding: 32px 0; border-bottom: 1px solid var(--border);
+   /* ── 🌟 全新 Visual Timeline 样式 ── */
+    .visual-timeline {
+      position: relative;
+      padding-left: 36px;
+      margin-top: 20px;
+    }
+    
+    /* 左侧贯穿的垂直线 */
+    .visual-timeline::before {
+      content: '';
+      position: absolute;
+      top: 10px; 
+      bottom: 0; 
+      left: 6px; 
+      width: 2px;
+      background: var(--black); 
+      transition: background 0.5s ease;
+    }
+    body.dark-mode .visual-timeline::before {
+      background: var(--white);
+    }
+    
+    .v-item {
+      position: relative;
+      margin-bottom: 56px;
       opacity: 0; transform: translateY(20px);
     }
-    .trow.in { opacity: 1; transform: translateY(0); }
-    .trow:last-child { border-bottom: none; }
+    .v-item.in {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .v-item:last-child { margin-bottom: 0; }
+    
+    /* 时间线上的小圆点 */
+    .v-dot {
+      position: absolute;
+      left: -36px; /* 精确对齐垂直线 */
+      top: 6px;
+      width: 14px; 
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 1.5px solid var(--black);
+      z-index: 2;
+      transition: transform 0.3s ease, border-color 0.5s ease;
+    }
+    body.dark-mode .v-dot { border-color: var(--white); }
+    .v-item:hover .v-dot { transform: scale(1.4); } /* 鼠标移上去圆点会放大 */
 
-    .trow-date {
-      font-size: 12px; font-weight: 500; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--gray);
-      padding-top: 4px; line-height: 1.6;
+    /* 像素风年份 */
+    .v-date {
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      line-height: 1;
+      letter-spacing: 0.05em;
     }
-    .trow-body h3 {
-      font-size: 18px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.01em;
+    
+    /* 履历内容卡片 (带复古悬停交互) */
+    .v-content {
+      background: var(--white);
+      border: 1.5px solid var(--black);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.5s ease;
+      box-shadow: 0px 0px 0px transparent; /* 默认没有阴影 */
     }
-    .trow-body .sub {
-      font-size: 14px; font-weight: 500; color: var(--accent);
-      margin-bottom: 10px; letter-spacing: .02em;
+    body.dark-mode .v-content {
+      border-color: var(--border);
+      background: var(--off);
     }
-    .trow-body p {
-      font-size: 14px; line-height: 1.7; color: var(--text-p); max-width: 560px;
-      transition: color 0.5s ease;
+    
+    /* 悬停时卡片向左上浮起，并长出粉色硬阴影 */
+    .v-item:hover .v-content {
+      transform: translate(-6px, -6px);
+      box-shadow: 10px 10px 0px var(--accent);
+      border-color: var(--black);
     }
+    body.dark-mode .v-item:hover .v-content {
+      border-color: var(--accent);
+    }
+    
+    .v-content h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.01em; }
+    .v-sub { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; }
+    .v-content p { font-size: 14px; line-height: 1.6; color: var(--text-p); margin-top: 12px; }
 
     /* ── 无边框彩色滑动 Logo 墙 ── */
     .marquee-wrapper {
@@ -595,16 +656,7 @@
         margin: 0 auto; /* 让照片在手机上居中 */
       }
       
-      /* 2. Timeline 履历区域：时间从左侧变到上方 */
-      .trow {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        padding: 24px 0;
-      }
-      .trow-date {
-        padding-top: 0;
-        color: var(--accent); /* 在手机上时间用粉色高亮更好看 */
-      }
+      
     }
 
     @media (max-width: 768px) {
@@ -708,59 +760,57 @@
 
 <div class="content-wrap">
 
-  <div class="sec">
+<div class="sec">
     <div class="sec-header">
-      <h2 class="sec-title">Education</h2>
+      <h2 class="sec-title">My Journey</h2>
       <span class="sec-num">01</span>
     </div>
-    <div class="timeline">
-      <div class="trow reveal">
-        <div class="trow-date">2025 — 2027</div>
-        <div class="trow-body">
+    
+    <div class="visual-timeline">
+      <div class="v-item reveal">
+        <div class="v-dot"></div>
+        <div class="v-date">2025 — Present</div>
+        <div class="v-content">
           <h3>Wilfrid Laurier University</h3>
-          <div class="sub">User Experience Design / Master of Msc</div>
-          
+          <div class="v-sub">User Experience Design / Master of Msc</div>
         </div>
       </div>
-      <div class="trow reveal">
-        <div class="trow-date">2024 — 2025</div>
-        <div class="trow-body">
+      
+      <div class="v-item reveal">
+        <div class="v-dot"></div>
+        <div class="v-date">2024 — 2025</div>
+        <div class="v-content">
           <h3>Fanshawe College</h3>
-          <div class="sub">User Experience Design / certification</div>
-
+          <div class="v-sub">User Experience Design / Certification</div>
         </div>
       </div>
-      <div class="trow reveal">
-        <div class="trow-date">2018 — 2022</div>
-        <div class="trow-body">
-          <h3>Guangdong Ocean University</h3>
-          <div class="sub">Product Design / Bachelor's Degree</div>
-          
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="sec">
-    <div class="sec-header">
-      <h2 class="sec-title">Experience</h2>
-      <span class="sec-num">02</span>
-    </div>
-    <div class="timeline">
-      <div class="trow reveal">
-        <div class="trow-date">2023 — 2024</div>
-        <div class="trow-body">
+      <div class="v-item reveal">
+        <div class="v-dot"></div>
+        <div class="v-date">2023 — 2024</div>
+        <div class="v-content">
           <h3>EXTEND</h3>
-          <div class="sub">Graphic Designer · Full-time</div>
-          <p>In Extend, I was responsible for the content design, publishing and data analysis of P&G's recruitment website. Also responsible for the graphic design content of other brand advertisements.</p>
+          <div class="v-sub">Graphic Designer · Full-time</div>
+          <p>Responsible for content design, publishing and data analysis of P&G's recruitment website. Also responsible for the graphic design content of other brand advertisements.</p>
         </div>
       </div>
-      <div class="trow reveal">
-        <div class="trow-date">2021 — 2022</div>
-        <div class="trow-body">
+      
+      <div class="v-item reveal">
+        <div class="v-dot"></div>
+        <div class="v-date">2021 — 2022</div>
+        <div class="v-content">
           <h3>Beijing Xiaoxiong Bowang</h3>
-          <div class="sub">Graphic Designer · Internship</div>
-          <p>At the company I was mainly responsible for the output of design elements for the company's platform software.</p>
+          <div class="v-sub">Graphic Designer · Internship</div>
+          <p>Mainly responsible for the output of design elements for the company's platform software.</p>
+        </div>
+      </div>
+      
+      <div class="v-item reveal">
+        <div class="v-dot"></div>
+        <div class="v-date">2018 — 2022</div>
+        <div class="v-content">
+          <h3>Guangdong Ocean University</h3>
+          <div class="v-sub">Product Design / Bachelor's Degree</div>
         </div>
       </div>
     </div>
@@ -769,7 +819,7 @@
   <div class="sec">
     <div class="sec-header">
       <h2 class="sec-title">Skills & Tools</h2>
-      <span class="sec-num">03</span>
+      <span class="sec-num">02</span>
     </div>
     
     <div class="marquee-wrapper reveal">
