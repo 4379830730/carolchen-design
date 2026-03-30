@@ -251,13 +251,14 @@
       transform: translateY(-4px); 
     }
 
-    .intro-sub {
+   .intro-sub {
       position: absolute;
       bottom: 30px; 
       left: 50%;
       transform: translateX(-50%);
       font-family: 'Jersey 10', sans-serif;
-      font-size: 22px; 
+      /* 👇 1. 字体稍微缩小到 18px 或 20px，确保手机屏幕能在一行放下 */
+      font-size: 20px; 
       color: var(--black);
       line-height: 1.4;
       display: flex;
@@ -267,25 +268,33 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 1.1s ease;
+      /* 👇 2. 核心魔法：强制文字在一行显示，绝对不换行 */
+      white-space: nowrap; 
     }
     
     .intro-sub.show {
       opacity: 1;
     }
 
-    .intro-sub-line {
+   .intro-sub-line {
       display: flex;
-      align-items: center;
+      /* 👇 3. 因为只有一行了，改回 center，图标就会和整行文字完美居中对齐 */
+      align-items: center; 
       justify-content: center;
-      gap: 10px; 
+      gap: 8px; 
+    }
+    .intro-text {
+      text-align: left; /* 👈 关键 2：文字左对齐，确保每一行的开头都对齐，L 紧贴图标 */
     }
 
-    /* 👇 修复：给自定义 PNG 图标加固定高度，并微调垂直对齐 */
-    .tri-icon-img {
-      width: 16px; 
-      height: 16px;
+
+    /* 自定义 PNG 图标的大小 */
+.tri-icon-img {
+      width: 14px; 
+      height: 14px;
       object-fit: contain;
-      transform: translateY(-2px); /* 向上微移，和文字对齐 */
+      /* 👇 4. 微微往上抬一点点（因为像素字体视觉重心偏下），达到视觉上的完美居中 */
+      transform: translateY(-1px); 
     }
 
     /* ══════════════════════
@@ -679,10 +688,13 @@
         </div>
       </div>
       
-      <div class="intro-sub" id="intro-sub">
+     <div class="intro-sub" id="intro-sub">
         <div class="intro-sub-line">
           <img src="your-icon.png" alt="Play Icon" class="tri-icon-img"> 
-          Let's Play Snake or Click to Next</div>
+          <div class="intro-text">
+            Let's Play Snake or Click to Next
+          </div>
+        </div>
       </div>
 
     </div>
