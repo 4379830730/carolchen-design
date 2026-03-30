@@ -143,7 +143,8 @@
       width: 100%;
       height: 6px;
       background-color: var(--accent);
-      margin-bottom: 16px; 
+      margin-top: 5px; /* 👈 新加这行，让线往下沉，远离分数 */
+      margin-bottom:20px; 
     }
 
     /* 真正的无缺口阶梯像素边框 */
@@ -241,9 +242,9 @@
       text-shadow: none; 
     }
 
-    /* ── 修改：缩小了 GIF 尺寸并微调对齐 ── */
+    /* ── 调整gif尺寸的位置 ── */
     .pixel-gif {
-      height: 1.15em; /* 👈 从 1.5em 缩小到 1.15em */
+      height: 0.8em; /* 👈 这里调大小的 */
       width: auto;
       object-fit: contain;
       pointer-events: none; 
@@ -343,7 +344,7 @@
     }
     #nav.show { opacity: 1; transform: translateY(0); }
     
-    .nav-logo { 
+     .nav-logo { 
       font-family: 'Jersey 10', sans-serif;
       font-size: 36px; 
       font-weight: 400; 
@@ -354,12 +355,12 @@
       align-items: center;
       gap: 10px; 
       line-height: 1;
-      margin-top: -6px; 
+      transform: translateY(3px); /* 👈 让整个 Logo 微微下沉，和右边文字处在同一水平线 */
     }
     .nav-logo svg {
       width: 26px; 
       height: 26px;
-      transform: translateY(-2px); 
+      transform: translateY(-2px); /* 👈 让像素爱心和首字母 C 完美对齐 */
     }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
@@ -376,9 +377,10 @@
     /* ── Contact Dropdown Menu ── */
     .nav-item-dropdown {
       position: relative;
-      display: inline-block;
-      padding-bottom: 12px;
-      margin-bottom: -12px;
+      display: flex;         /* 👈 强制内部也居中 */
+      align-items: center;
+      padding: 12px 0;       /* 👈 改成上下对称加宽，维持中心点不变 */
+      margin: -12px 0;       /* 👈 上下对称抵消 */
     }
     .dropdown-menu {
       position: absolute;
@@ -510,20 +512,53 @@
     }
     .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
 
-    .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.bento { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 48px;             /* 保持宽间距，画面更透气 */
+      max-width: 1080px;     
+      margin: 0 auto;        
+    }
+
+/* 👇 🌟 新加这段：当屏幕宽度小于 900px（平板/手机）时生效 */
+    @media (max-width: 900px) {
+      .bento {
+        grid-template-columns: 1fr; /* 强制变成 1 列 */
+        gap: 32px; /* 手机上间距可以稍微缩小一点，显得紧凑 */
+      }
+      
+      /* 可选：手机屏幕较小，可以把卡片里图片的高度也稍微缩小一点 */
+      .pcard-img {
+        height: 220px; 
+      }
+    }
 
     .pcard {
       border-radius: 20px; overflow: hidden;
-      background: var(--white); border: 1px solid var(--border);
+      background: var(--white); 
       display: flex; flex-direction: column;
       cursor: none;
+      /* 保持复古黑边框，但默认把阴影设为透明 */
+      border: 1.5px solid var(--black); 
+      box-shadow: 0px 0px 0px transparent; /* 👈 默认状态没有投影 */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .pcard:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.08); }
-    body.dark-mode .pcard:hover { box-shadow: 0 20px 56px rgba(0,0,0,.4); }
+    
+    /* 👇 只有鼠标悬停时，才向左上浮起，并“长”出粉色硬投影 */
+    .pcard:hover { 
+      transform: translate(-6px, -6px); 
+      box-shadow: 12px 12px 0px var(--accent); 
+    }
+    
+    body.dark-mode .pcard:hover { 
+      box-shadow: 12px 12px 0px var(--accent); 
+    }
 
     .pcard-img {
-      position: relative; width: 100%; height: 350px;
+      position: relative; width: 100%; 
+      height: 280px;         /* 保持卡片缩小的高度 */
       overflow: hidden; background: var(--off);
+      border-bottom: 2px solid var(--black); 
     }
     .pcard-img img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .5s; }
     .pcard:hover .pcard-img img { transform: scale(1.05); }
@@ -613,6 +648,45 @@
 
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s, transform .7s; }
     .reveal.in { opacity: 1; transform: translateY(0); }
+/* ══════════════════════
+       手机端导航栏适配 (Mobile Nav)
+    ══════════════════════ */
+    @media (max-width: 768px) {
+      /* 1. 缩小导航栏左右的内边距，给文字留出更多空间 */
+      #nav, nav {
+        padding: 20px 5vw !important;
+      }
+      
+      /* 2. 缩小左侧 Logo 的字体和像素爱心大小 */
+      .nav-logo {
+        font-size: 28px !important;
+        gap: 6px !important;
+      }
+      .nav-logo svg {
+        width: 20px !important;
+        height: 20px !important;
+      }
+      
+      /* 3. 缩小右侧菜单链接之间的距离，以及字体大小 */
+      .nav-links {
+        gap: 14px !important;
+      }
+      .nav-links > a, .nav-item-dropdown > a {
+        font-size: 10px !important;
+        letter-spacing: 0.08em !important;
+      }
+      
+      /* 4. 稍微缩小月亮/太阳的主题切换按钮 */
+      .theme-toggle {
+        width: 32px !important;
+        height: 32px !important;
+        margin-left: 4px !important;
+      }
+      .theme-toggle img {
+        width: 16px !important;
+        height: 16px !important;
+      }
+    }
   </style>
 </head>
 <body>
