@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brantford Bus Kiosk — Carol</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -52,8 +54,26 @@
       transition: border-color .3s;
     }
     nav.scrolled { border-color: var(--border); }
-    /* 修改：Logo 使用粉色 */
-    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: -.02em; color: var(--accent); text-decoration: none; }
+    
+    /* 修改：统一左上角 Logo 样式为像素风 */
+    .nav-logo { 
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 36px; 
+      font-weight: 400; 
+      letter-spacing: 0.05em; 
+      color: var(--accent); 
+      text-decoration: none; 
+      display: flex;
+      align-items: center;
+      gap: 10px; 
+      line-height: 1;
+      margin-top: -6px; 
+    }
+    .nav-logo svg {
+      width: 26px; 
+      height: 26px;
+      transform: translateY(-2px); 
+    }
     
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links > a, .nav-item-dropdown > a {
@@ -514,7 +534,12 @@
 </div>
 
 <nav id="main-nav">
-  <a href="index.html" class="nav-logo">Carol.</a>
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
+      <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+    </svg>
+    Carol.
+  </a>
   <div class="nav-links">
     <a href="index.html#projects">Work</a>
     <a href="about.html">About</a>
