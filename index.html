@@ -648,6 +648,22 @@
       .name-with-gif {
         transform: translateX(-12px) !important; /* 手机上鸭子变小了，不需要偏移那么多 */
       }
+/* 👇 新加：5. 修复手机端点击后 Hover 状态卡住，导致太阳图标变黑的问题 */
+      .theme-toggle:hover {
+        background-color: transparent !important;
+        border-color: var(--border) !important;
+      }
+      .theme-toggle:hover img {
+        filter: brightness(0) !important; /* 亮色模式保持黑色月亮 */
+      }
+      
+      body.dark-mode .theme-toggle:hover {
+        background-color: transparent !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+      }
+      body.dark-mode .theme-toggle:hover img {
+        filter: brightness(0) invert(1) !important; /* 暗色模式强制保持白色太阳 */
+      }
     }
   </style>
 </head>
