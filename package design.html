@@ -196,8 +196,8 @@
       z-index: 2;
     }
 
-    /* 🌟 修改：详情打开时，左侧占 35%，给右侧大图留出更多空间 */
-    .detail-open #card-stage { width: 35%; }
+    /* 🌟 修改：详情打开时，左侧缩小为 28%，进一步给右侧让位 */
+    .detail-open #card-stage { width: 28%; }
 
     /* 3D 容器 */
     #card-swap {
@@ -295,23 +295,27 @@
     .pkg-card:hover .pkg-card-cta { opacity: 1; transform: translateY(0); }
 
 
-    /* ── RIGHT: detail panel ── */
+/* ── RIGHT: detail panel ── */
     #detail-panel {
       width: 0%; 
       height: 100%;
       position: relative;
       display: flex;
       flex-direction: column;
-      background: var(--white);
-      border-left: 1px solid transparent;
+      background: transparent; /* 👈 核心修改：改为透明底 */
+      border-left: none; /* 👈 核心修改：去掉中间的分割线 */
       opacity: 0;
       pointer-events: none;
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease, background-color 0.5s;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
       z-index: 10;
     }
-    /* 🌟 修改：右侧完全放给图片画廊，占 65% */
+
+  /* 🌟 修改：右侧占比 */
     .detail-open #detail-panel {
-      width: 65%; opacity: 1; pointer-events: all; border-left-color: var(--border);
+      width: 72%; /* (保持你之前改的宽度) */
+      opacity: 1; 
+      pointer-events: all; 
+      /* 删除了之前的 border-left-color，让它彻底无痕融合 */
     }
 
     /* 🌟 修改：关闭按钮悬浮在图片上 */
@@ -327,9 +331,12 @@
     }
     #close-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
 
-    /* image gallery */
+/* image gallery */
     #gallery-wrap {
-      flex: 1; position: relative; overflow: hidden; background: #111111; 
+      flex: 1; 
+      position: relative; 
+      overflow: hidden; 
+      background: transparent; /* 👈 核心修改：去掉画廊的底色，变成完全透明 */
     }
     #gallery-track {
       display: flex; height: 100%; will-change: transform; transition: transform .5s cubic-bezier(.4,0,.2,1);
@@ -337,8 +344,18 @@
     .g-slide {
       flex-shrink: 0; width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center;
     }
+   /* 🌟 修改：画框模式，四周留白 */
     .g-slide img {
-      width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none;
+      max-width: 82%;  /* 👈 左右留出各 9% 的空白 */
+      max-height: 82%; /* 👈 上下留出各 9% 的空白 */
+      object-fit: contain; 
+      display: block; 
+      user-select: none; 
+      -webkit-user-drag: none;
+      
+      /* 👇 下面这两个是附加的高级效果，让图片看起来更像一张真实的卡片/画布 */
+      border-radius: 8px; /* 给图片加一点点圆角 */
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5); /* 给图片加一层深邃的投影，产生悬浮感 */
     }
 
     /* gallery nav */
@@ -358,9 +375,17 @@
     #g-dots {
       position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 10;
     }
-    .g-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.4); cursor: none; transition: background .2s, transform .2s; }
-    .g-dot.on { background: var(--accent); transform: scale(1.4); }
-
+    .g-dot { 
+      width: 8px; height: 8px; border-radius: 50%; 
+      background: var(--black); /* 👈 用主题变量，浅色模式是黑色，暗色模式自动变白 */
+      opacity: 0.15;            /* 👈 未选中时降低透明度 */
+      cursor: none; transition: background .2s, transform .2s, opacity .2s; 
+    }
+    .g-dot.on { 
+      background: var(--accent); /* 👈 选中时是粉色 */
+      opacity: 1; 
+      transform: scale(1.4); 
+    }
     /* 手机端适配 */
     @media (max-width: 768px) {
       #cursor { display: none !important; }
@@ -436,7 +461,7 @@
 
   <div id="intro-text">
     <div class="intro-text-inner">
-      <div class="intro-eyebrow">Interactive Showcase</div>
+     
       <h1 class="intro-title">Package<br>Design.</h1>
       <p class="intro-desc">Packaging that tells a story.</p>
       <p class="intro-subdesc">Click on any project card to explore the details.</p>
@@ -508,7 +533,7 @@
         { src: 'pkg1-img1.jpg' }, // 👈 这里换成了你的本地图片
         { src: 'pkg1-img2.jpg' },
         { src: 'pkg1-img3.jpg' },
-        { src: 'pkg1-img4.jpg' },
+      
       ],
     },
     {
@@ -519,7 +544,7 @@
       images: [
         { src: 'pkg2-img1.jpg' },
         { src: 'pkg2-img2.jpg' },
-        { src: 'pkg2-img3.jpg' },
+ 
       ],
     },
     {
@@ -530,7 +555,7 @@
       images: [
         { src: 'pkg3-img1.jpg' },
         { src: 'pkg3-img2.jpg' },
-        { src: 'pkg3-img3.jpg' },
+      
       ],
     },
   ];
@@ -631,22 +656,22 @@
     document.getElementById('p-title').innerHTML = p.name.replace('\n', '<br>');
     document.getElementById('p-desc').textContent = p.desc;
 
-    /* 构建纯净版大图画廊 */
+   /* 🌟 修改：构建透明底的大图画廊 */
     gIndex = 0;
     const track = document.getElementById('gallery-track');
     track.innerHTML = p.images.map((img, i) => `
-      <div class="g-slide" style="background:${p.bg}">
+      <div class="g-slide">
         <img src="${img.src}" alt="slide ${i+1}" draggable="false">
       </div>
     `).join('');
-    track.style.transition = 'none';
-    track.style.transform = 'translateX(0)';
 
+    /* 👇 补上这三行代码：根据图片数量动态生成小圆点 */
     const dots = document.getElementById('g-dots');
     dots.innerHTML = p.images.map((_, i) => `<div class="g-dot${i===0?' on':''}" onclick="gGoTo(${i})"></div>`).join('');
 
     /* 触发分屏魔法动画 */
     appSection.classList.add('detail-open');
+
 
     /* 核心修复：打开详情时，将第一张卡片回正并完美居中，隐藏背后的卡片 */
     const frontIdx = order[0];
