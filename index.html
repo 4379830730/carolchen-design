@@ -10,6 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
   
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,7 +36,7 @@
     body.dark-mode {
       --black: #ffffff;
       --white: #111111;
-      --off: #1a1a1a;
+   --off: #111111;
       --gray: #888888;
       --border: #333333;
       --dot: #333333;
@@ -45,7 +53,7 @@
       transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    #intro, #type-section, #projects, .pcard, footer, .dropdown-menu, .ftag, .go, .pcard-img {
+    #type-section, #projects, .pcard, footer, .dropdown-menu, .ftag, .go, .pcard-img {
       transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.35s;
     }
 
@@ -64,247 +72,7 @@
     #cursor.big { width: 44px; height: 44px; opacity: 1; }
 
     /* ══════════════════════
-       1. INTRO SCREEN (ARCADE SNAKE)
-    ══════════════════════ */
-    #intro {
-      position: relative;
-      width: 100%; 
-      height: 100vh;
-      min-height: 760px; 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--white);
-      padding: 30px 4vw 20px; 
-    }
-
-    #intro::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(241, 79, 155, 0.05),
-        rgba(241, 79, 155, 0.05) 4px,
-        transparent 3px,
-        transparent 8px
-      );
-      background-size: 100% 8px;
-      pointer-events: none;
-      z-index: 1;
-      animation: scanlines 12s linear infinite, flicker 4s infinite;
-    }
-
-    @keyframes scanlines {
-      from { background-position: 0 0; }
-      to { background-position: 0 600px; }
-    }
-
-    @keyframes flicker {
-      0% { opacity: 1; }
-      3% { opacity: 0.4; }
-      6% { opacity: 1; }
-      7% { opacity: 0.6; }
-      8% { opacity: 1; }
-      50% { opacity: 1; }
-      51% { opacity: 0.7; }
-      52% { opacity: 1; }
-      100% { opacity: 1; }
-    }
-
-    .arcade-wrapper {
-      width: 100%;
-      max-width: 1400px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      z-index: 2;
-    }
-
-    .arcade-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding-bottom: 4px; 
-    }
-
-    /* 电脑端字体：现在可以自由变大了！ */
-    .arcade-score {
-      font-family: 'Jersey 10', sans-serif;
-      font-size: 52px; 
-      color: var(--black); 
-      line-height: 1;
-      letter-spacing: 0.05em;
-    }
-
-    /* 让最高分绝对居中，并变成主题粉色 */
-    .best-score {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 4px; /* 和原版的底部对齐 */
-      color: var(--accent); /* 粉色 */
-      white-space: nowrap; /* 强制不换行 */
-    }
-
-    .arcade-hearts {
-      display: flex;
-      gap: 10px;
-      padding-bottom: 4px;
-    }
-
-    .arcade-line {
-      width: 100%;
-      height: 6px;
-      background-color: var(--accent);
-      margin-top: 5px; 
-      margin-bottom:20px; 
-    }
-
-    .arcade-frame {
-      flex-grow: 1; 
-      border: 6px solid transparent; 
-      position: relative;
-      background: transparent;
-      cursor: pointer; 
-    }
-
-    .arcade-frame::before {
-      content: '';
-      position: absolute;
-      inset: -6px; 
-      background-image: 
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent)),
-        linear-gradient(var(--accent), var(--accent));
-      
-      background-size: 
-        calc(100% - 24px) 6px, 
-        calc(100% - 24px) 6px, 
-        6px calc(100% - 24px), 
-        6px calc(100% - 24px),
-        6px 6px, 6px 6px, 6px 6px, 6px 6px;
-      
-      background-position: 
-        50% 0, 
-        50% 100%, 
-        0 50%, 
-        100% 50%,
-        6px 6px, 
-        calc(100% - 6px) 6px, 
-        6px calc(100% - 6px), 
-        calc(100% - 6px) calc(100% - 6px);
-      
-      background-repeat: no-repeat;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    #intro-canvas {
-      position: absolute;
-      inset: 6px; 
-      width: calc(100% - 12px); 
-      height: calc(100% - 12px);
-      opacity: 0.8;
-    }
-
-    .arcade-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -40%); 
-      text-align: center;
-      pointer-events: none; 
-      opacity: 0;
-      transition: opacity 1.1s ease, transform 1.1s ease;
-      width: 100%;
-    }
-    .arcade-center.show {
-      opacity: 1;
-      transform: translate(-50%, -50%);
-    }
-
-    .arcade-center .intro-name {
-      font-family: 'Jersey 10', sans-serif;
-      font-size: clamp(36px, 8vw, 96px); 
-      color: var(--accent);
-      text-shadow: 4px 4px 0px var(--black); 
-      line-height: 1;
-      margin-bottom: 24px;
-      letter-spacing: 0.02em;
-    }
-
-   .name-with-gif {
-      display: inline-flex;
-      align-items: center; 
-      justify-content: center;
-      gap: 16px; 
-      vertical-align: middle;
-      transform: translateX(-30px); 
-    }
-
-    .pixel-duck {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      text-shadow: none; 
-    }
-
-    .pixel-gif {
-      height: 0.8em; 
-      width: auto;
-      object-fit: contain;
-      pointer-events: none; 
-      filter: drop-shadow(0px 0px 0px transparent); 
-      transform: translateY(-4px); 
-    }
-
-   .intro-sub {
-      position: absolute;
-      bottom: 30px; 
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Jersey 10', sans-serif;
-      font-size: 24px; 
-      color: var(--black);
-      line-height: 1.4;
-      display: flex;
-      flex-direction: column;
-      align-items: center; 
-      text-align: center;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 1.1s ease;
-      white-space: nowrap; 
-    }
-    
-    .intro-sub.show {
-      opacity: 1;
-    }
-
-   .intro-sub-line {
-      display: flex;
-      align-items: center; 
-      justify-content: center;
-      gap: 8px; 
-    }
-    .intro-text {
-      text-align: left; 
-    }
-
-    .tri-icon-img {
-      width: 18px; 
-      height: 18px;
-      object-fit: contain;
-      transform: translateY(-1px); 
-    }
-
-    /* ══════════════════════
-       2. TYPE SCREEN
+       1. TYPE SCREEN (LANDING)
     ══════════════════════ */
     #type-section {
       position: relative;
@@ -327,6 +95,24 @@
       transition: background-image 0.5s ease;
     }
 
+    /* 👇 新增：限制左侧文字宽度，为 3D 留出空间 */
+    #type-left-content {
+      position: relative;
+      z-index: 10;
+      max-width: 55vw; 
+    }
+
+/* 👇 修改：3D 画布容器铺满全屏，打破边缘框框 */
+    #voxel-canvas-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 5;
+      pointer-events: none; /* 让鼠标穿透，不阻挡其他操作 */
+    }
+
     .type-eyebrow {
       font-size: 11px; font-weight: 500;
       letter-spacing: 0.22em; text-transform: uppercase;
@@ -338,7 +124,7 @@
     #typed-text {
       position: relative; z-index: 1;
       font-family: 'Jersey 10', sans-serif; 
-      font-size: clamp(36px, 8vw, 110px); 
+     font-size: clamp(28px, 6vw, 80px);
       font-weight: 400; 
       line-height: 0.85; 
       letter-spacing: 0.02em; 
@@ -504,7 +290,7 @@
     .view-btn:hover .arr { transform: translateX(4px); }
 
     /* ══════════════════════
-       3. PROJECTS
+       2. PROJECTS
     ══════════════════════ */
     #projects {
       background: var(--off);
@@ -596,7 +382,7 @@
     .pcard:hover .go { transform: scale(1.1); background: var(--black); color: var(--white); }
 
     /* ══════════════════════
-       4. FOOTER
+       3. FOOTER
     ══════════════════════ */
     footer {
       background: var(--accent); color: #fff; padding: 80px 10vw 56px;
@@ -649,12 +435,7 @@
       .theme-toggle { width: 32px !important; height: 32px !important; margin-left: 4px !important; }
       .theme-toggle img { width: 16px !important; height: 16px !important; }
 
-      /* 4. 修复第一页（蛇）的鸭子偏移过多的问题 */
-      .name-with-gif {
-        transform: translateX(-12px) !important; 
-      }
-
-      /* 5. 修复手机端点击后 Hover 状态卡住的问题 */
+      /* 4. 修复手机端点击后 Hover 状态卡住的问题 */
       .theme-toggle:hover {
         background-color: transparent !important;
         border-color: var(--border) !important;
@@ -671,67 +452,21 @@
         filter: brightness(0) invert(1) !important;
       }
 
-      /* 6. 缩小手机端的计分板和爱心，防止它们在窄屏幕上重叠 */
-      /* 注意：这个必须放在 @media 里面！ */
-      .arcade-score { font-size: 32px !important; }
-      .arcade-hearts svg { width: 28px !important; height: 28px !important; }
+      /* 5. 手机端 3D 画布退到文字后方当背景 */
+      #type-left-content { max-width: 100%; }
+      #voxel-canvas-container {
+        right: 0;
+        top: 20%;
+        width: 100%;
+        height: 50vh;
+        opacity: 0.25; /* 半透明化，不阻挡文字阅读 */
+      }
     }
   </style>
 </head>
 <body>
 
 <div id="cursor"></div>
-
-<section id="intro">
-  <div class="arcade-wrapper">
-    <div class="arcade-top-bar" style="position: relative;">
-      
-      <div class="arcade-score">Score: <span id="snake-score">00</span></div>
-      
-      <div class="arcade-score best-score">Best: <span id="high-score">00</span></div>
-
-      <div class="arcade-hearts">
-        <svg width="38" height="38" viewBox="0 0 10 10" shape-rendering="crispEdges">
-          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
-        </svg>
-        <svg width="38" height="38" viewBox="0 0 10 10" shape-rendering="crispEdges">
-          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
-        </svg>
-        <svg width="38" height="38" viewBox="0 0 10 10" shape-rendering="crispEdges">
-          <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
-        </svg>
-      </div>
-      
-    </div>
-    
-    <div class="arcade-line"></div>
-    
-    <div class="arcade-frame" id="arcade-frame">
-      <canvas id="intro-canvas"></canvas>
-      
-      <div class="arcade-center" id="arcade-center">
-        <div class="intro-name">
-          <span class="name-with-gif">
-            <span class="pixel-duck">
-              <img src="pixel-duck.gif" alt="Pixel Duck" class="pixel-gif">
-            </span>
-            <span>Carol Chen</span>
-          </span>
-        </div>
-      </div>
-      
-      <div class="intro-sub" id="intro-sub">
-        <div class="intro-sub-line">
-          <img src="your-icon.png" alt="Play Icon" class="tri-icon-img"> 
-          <div class="intro-text">
-            Let's Play Snake or Click to Next
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
 
 <section id="type-section">
   <nav id="nav">
@@ -768,7 +503,11 @@
     </div>
   </nav>
 
-  <div id="typed-text"><span class="t-cur"></span></div>
+  <div id="type-left-content">
+    <div id="typed-text"><span class="t-cur"></span></div>
+  </div>
+
+  <div id="voxel-canvas-container"></div>
 
   <div id="bot">
     <div class="bot-role">UX Designer &nbsp;·&nbsp; Open to opportunities</div>
@@ -899,7 +638,6 @@
 
   themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    
     if (document.body.classList.contains('dark-mode')) {
       themeIcon.src = sunIconPath; 
       localStorage.setItem('theme', 'dark'); 
@@ -920,157 +658,6 @@ document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle, .ft-icon-bt
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
-
-/* ── 点击游戏机边框跳转下一页 ── */
-document.getElementById('arcade-frame').addEventListener('click', () => {
-  document.getElementById('type-section').scrollIntoView({ behavior: 'smooth' });
-});
-
-/* ── Canvas: Snake Game ── */
-const canvas = document.getElementById('intro-canvas');
-const ctx = canvas.getContext('2d');
-let W, H;
-
-let gridSize = 30; 
-let snake = [];
-let food = {};
-let dx = gridSize;
-let dy = 0;
-let score = 0;
-let highScore = localStorage.getItem('carolSnakeBest') || 0; 
-document.getElementById('high-score').textContent = highScore.toString().padStart(2, '0');
-let gameSpeed = 100; 
-let gameLoop;
-
-function initSnake() {
-  let startY = Math.floor(H / 2 / gridSize) * gridSize + (gridSize * 3);
-
-  snake = [
-    { x: Math.floor(W/2/gridSize)*gridSize - gridSize*2, y: startY },
-    { x: Math.floor(W/2/gridSize)*gridSize - gridSize*3, y: startY },
-    { x: Math.floor(W/2/gridSize)*gridSize - gridSize*4, y: startY }
-  ];
-  dx = gridSize;
-  dy = 0;
-  score = 0;
-  document.getElementById('snake-score').textContent = score.toString().padStart(2, '0');
-  placeFood();
-}
-
-function placeFood() {
-  food = {
-    x: Math.floor(Math.random() * (W / gridSize)) * gridSize,
-    y: Math.floor(Math.random() * (H / gridSize)) * gridSize
-  };
-  snake.forEach(part => {
-    if(part.x === food.x && part.y === food.y) placeFood();
-  });
-}
-
-function resize() { 
-  const frame = document.getElementById('arcade-frame');
-  if(!frame) return;
-  W = canvas.width = frame.clientWidth; 
-  H = canvas.height = frame.clientHeight; 
-  initSnake(); 
-}
-setTimeout(resize, 100);
-window.addEventListener('resize', resize);
-
-document.addEventListener('keydown', e => {
-  if (window.scrollY < 50) {
-    const k = e.key.toLowerCase();
-    const isDirKey = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(k);
-    
-    if (isDirKey) {
-      e.preventDefault(); 
-      
-      if((k === 'arrowup' || k === 'w') && dy === 0) { dx = 0; dy = -gridSize; }
-      else if((k === 'arrowdown' || k === 's') && dy === 0) { dx = 0; dy = gridSize; }
-      else if((k === 'arrowleft' || k === 'a') && dx === 0) { dx = -gridSize; dy = 0; }
-      else if((k === 'arrowright' || k === 'd') && dx === 0) { dx = gridSize; dy = 0; }
-    }
-  }
-});
-
-function drawPixelHeart(ctx, baseX, baseY, size) {
-  ctx.fillStyle = '#F14F9B';
-  const p = size / 10; 
-  const pixels = [
-    [2,2], [3,2], [6,2], [7,2],
-    [1,3], [2,3], [3,3], [4,3], [5,3], [6,3], [7,3], [8,3],
-    [1,4], [2,4], [3,4], [4,4], [5,4], [6,4], [7,4], [8,4],
-    [2,5], [3,5], [4,5], [5,5], [6,5], [7,5],
-    [3,6], [4,6], [5,6], [6,6],
-    [4,7], [5,7]
-  ];
-  pixels.forEach(([x, y]) => {
-    ctx.fillRect(baseX + x * p, baseY + y * p, Math.ceil(p), Math.ceil(p)); 
-  });
-}
-
-function drawSnake() {
-  if(!ctx) return;
-  const pinkColor = '#F14F9B';
-
-  ctx.clearRect(0, 0, W, H);
-  
-  const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-  
-  // 撞墙逻辑：保存最高分
-  if (head.x >= W || head.x < 0 || head.y >= H || head.y < 0) {
-    if (score > highScore) {
-      highScore = score;
-      localStorage.setItem('carolSnakeBest', highScore);
-      document.getElementById('high-score').textContent = highScore.toString().padStart(2, '0');
-    }
-    initSnake(); 
-    return; 
-  }
-  
-  snake.unshift(head); 
-  
-  if (head.x === food.x && head.y === food.y) {
-      score += 10;
-      document.getElementById('snake-score').textContent = score.toString().padStart(2, '0');
-      placeFood();
-  } else {
-      snake.pop(); 
-  }
-  
-  let heartScale = 1.2; 
-  let heartSize = gridSize * heartScale;
-  let offset = (gridSize - heartSize) / 2; 
-  
-  drawPixelHeart(ctx, food.x + offset, food.y + offset, heartSize);
-  
-  ctx.fillStyle = pinkColor;
-  snake.forEach((part, index) => {
-      ctx.fillRect(part.x + 2, part.y + 2, gridSize - 4, gridSize - 4);
-      
-      // 咬到自己逻辑：保存最高分
-      if(index !== 0 && part.x === head.x && part.y === head.y) {
-          if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('carolSnakeBest', highScore);
-            document.getElementById('high-score').textContent = highScore.toString().padStart(2, '0');
-          }
-          initSnake();
-      }
-  });
-}
-
-gameLoop = setInterval(drawSnake, gameSpeed);
-
-
-/* ── 名字入场 ── */
-const arcadeCenter = document.getElementById('arcade-center');
-const introSub = document.getElementById('intro-sub');
-setTimeout(() => {
-  if(arcadeCenter) arcadeCenter.classList.add('show');
-  if(introSub) introSub.classList.add('show');
-}, 400);
-
 
 /* ── 滚动触发下一页打字机 ── */
 let typeStarted = false;
@@ -1132,5 +719,163 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 </script>
+
+<script type="module">
+  import * as THREE from 'three';
+
+  const container = document.getElementById('voxel-canvas-container');
+  if (container) {
+    const scene = new THREE.Scene();
+    
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = 22; // 调整相机距离
+
+    // 开启 alpha: true 让背景完全透明，不影响你的主题色
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    // 👇 绘制经典的像素爱心网格 (1 = 有方块, 0 = 空)
+    const heart2D = [
+      [0,1,1,0,0,0,1,1,0],
+      [1,1,1,1,0,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,1,0],
+      [0,0,1,1,1,1,1,0,0],
+      [0,0,0,1,1,1,0,0,0],
+      [0,0,0,0,1,0,0,0,0],
+    ];
+
+    // 将整个 3D 模型放进一个组合里，方便整体旋转
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // 基础的 3D 小方块
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    
+    // 计算总方块数：我们要铺 3 层厚度，让它变成真正的 3D 体素
+    let blocksPerLayer = 0;
+    heart2D.forEach(row => blocksPerLayer += row.filter(v => v).length);
+    const depthLayers = 3; 
+    const totalBlocks = blocksPerLayer * depthLayers;
+
+    const material = new THREE.MeshStandardMaterial({ 
+      roughness: 0.2, 
+      metalness: 0.1 
+    });
+    
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, totalBlocks);
+    
+    const dummy = new THREE.Object3D();
+    const colorPink = new THREE.Color('#F14F9B');
+    const colorBlack = new THREE.Color('#222222'); // 使用深灰替代纯黑，确保在暗色模式依然有立体感
+    
+    const offsetX = -4; // 居中偏移
+    const offsetY = 3.5;
+
+    let i = 0;
+    // 构建 3 层厚度
+    for(let z = -1; z <= 1; z++) {
+      for(let y = 0; y < heart2D.length; y++) {
+        for(let x = 0; x < heart2D[y].length; x++) {
+          if (heart2D[y][x] === 1) {
+            dummy.position.set(x + offsetX, -y + offsetY, z);
+            dummy.updateMatrix();
+            instancedMesh.setMatrixAt(i, dummy.matrix);
+            
+            // 随机分配颜色：80%粉色，20%黑色，营造复古冲突感
+            if (Math.random() > 0.2) {
+                instancedMesh.setColorAt(i, colorPink);
+            } else {
+                instancedMesh.setColorAt(i, colorBlack);
+            }
+            i++;
+          }
+        }
+      }
+    }
+    group.add(instancedMesh);
+
+    // 增加一些周围悬浮的“魔法像素碎片”
+    const particleCount = 30;
+    const particleGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+    const particleMesh = new THREE.InstancedMesh(particleGeo, material, particleCount);
+    const pDummy = new THREE.Object3D();
+    const particlesData = [];
+
+    for(let j = 0; j < particleCount; j++) {
+      particlesData.push({
+        x: (Math.random() - 0.5) * 18,
+        y: (Math.random() - 0.5) * 18,
+        z: (Math.random() - 0.5) * 18,
+        rx: Math.random() * Math.PI,
+        ry: Math.random() * Math.PI,
+        speed: 0.01 + Math.random() * 0.02
+      });
+      // 粒子颜色
+      particleMesh.setColorAt(j, Math.random() > 0.3 ? colorPink : colorBlack);
+    }
+    group.add(particleMesh);
+
+    // 打光：让方块有真实的边缘和立体感
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+    dirLight1.position.set(10, 20, 15);
+    scene.add(dirLight1);
+    
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight2.position.set(-10, -10, -10);
+    scene.add(dirLight2);
+
+    // 核心动画循环
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      // 👇 核心魔法在这里：电脑端向右平移的距离
+      // 把原来的 9 改成了 14。如果觉得还不够右，可以改成 16 或 18！
+      const isMobile = window.innerWidth <= 768;
+      const targetX = isMobile ? 0 : 8; 
+
+      // 1. 让大爱心平滑自转和上下浮动
+      group.rotation.y = time * 0.6; 
+      group.rotation.x = Math.sin(time * 0.5) * 0.2;
+      group.position.y = Math.sin(time * 2) * 0.8;
+      
+      // 👇 确保有这一行！它负责把爱心推向右边
+      group.position.x = targetX; 
+
+      // 2. 让周围的魔法碎片往上飘，并自带旋转
+      particlesData.forEach((p, idx) => {
+        p.y += p.speed;
+        p.rx += p.speed;
+        p.ry += p.speed;
+        // 粒子飘出屏幕后重生
+        if (p.y > 16) p.y = -16; 
+        pDummy.position.set(p.x, p.y, p.z);
+        pDummy.rotation.set(p.rx, p.ry, 0);
+        pDummy.updateMatrix();
+        particleMesh.setMatrixAt(idx, pDummy.matrix);
+      });
+      particleMesh.instanceMatrix.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 监听窗口大小变化，防止拉伸变形
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  }
+</script>
+
 </body>
 </html>
