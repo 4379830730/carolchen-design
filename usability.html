@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Research Participants Overview</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .meta-info p {
+            margin: 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .meta-info strong {
+            color: #555;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ffffff;
+            color: #666;
+            font-weight: 600;
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .p-id {
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Resources Grid */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .resource-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .resource-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: #444;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background-color: #333;
+        }
+
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            td {
+                padding-left: 50%;
+                position: relative;
+            }
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 20px;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Participants</h1>
+        <div class="meta-info">
+            <p><strong>Sample Size:</strong> 5 people</p>
+            <p><strong>Recruitment Method:</strong> Recruited from the online community who are Uber Eats users (Aged 20-25)</p>
+            <p><strong>Testing Method:</strong> Remote moderated testing (via Zoom)</p>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Age</th>
+                    <th>Occupation</th>
+                    <th>User Characteristics (Frequency)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="p-id" data-label="ID">P1</td>
+                    <td data-label="Age">20</td>
+                    <td data-label="Occupation">Student</td>
+                    <td data-label="Frequency">Low-frequency users, approximately 1 to 2 times a month.</td>
+                </tr>
+                <tr>
+                    <td class="p-id" data-label="ID">P2</td>
+                    <td data-label="Age">22</td>
+                    <td data-label="Occupation">Student</td>
+                    <td data-label="Frequency">High-frequency users, 2 to 3 times a week.</td>
+                </tr>
+                <tr>
+                    <td class="p-id" data-label="ID">P3</td>
+                    <td data-label="Age">22</td>
+                    <td data-label="Occupation">Freelancer</td>
+                    <td data-label="Frequency">High-frequency users, 2 to 3 times a week.</td>
+                </tr>
+                <tr>
+                    <td class="p-id" data-label="ID">P4</td>
+                    <td data-label="Age">21</td>
+                    <td data-label="Occupation">Student</td>
+                    <td data-label="Frequency">High-frequency users, 1 to 3 times a week.</td>
+                </tr>
+                <tr>
+                    <td class="p-id" data-label="ID">P5</td>
+                    <td data-label="Age">25</td>
+                    <td data-label="Occupation">Freelancer</td>
+                    <td data-label="Frequency">For medium and low-frequency users, it is currently about once a week or 2 to 3 times a month.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Project Resources</h2>
+    <div class="resources-grid">
+        <div class="resource-card">
+            <div class="resource-info">
+                <h3>Facilitator Guide</h3>
+            </div>
+            <a href="https://docs.google.com/document/d/1hshOFXXz2E3hvKkwHGqiAMu1oMFXUJLSiIZqBCJXd5c/edit?usp=drive_link" target="_blank" class="btn">- Click for data</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="resource-info">
+                <h3>Participants Tracker</h3>
+            </div>
+            <a href="https://docs.google.com/spreadsheets/d/1uQUFjBdK5hAG5DHFEnc5lNpmitgIyhno/edit?usp=drive_link&ouid=117034288396369304487&rtpof=true&sd=true" target="_blank" class="btn">- Click for data</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="resource-info">
+                <h3>Original Consent Form</h3>
+            </div>
+            <a href="https://docs.google.com/document/d/1s4hbdEVZ5vEFaorSjogq3c13yTubGxpN/edit?usp=drive_link&ouid=117034288396369304487&rtpof=true&sd=true" target="_blank" class="btn">- Click for data</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="resource-info">
+                <h3>Notes & Affinity Map</h3>
+            </div>
+            <a href="https://www.figma.com/board/DIxaOfV1OB1NzEH4ZlTM2c/Uber-Eats-Notes?node-id=19-198&t=5cCrciZZ2CWTvERX-1" target="_blank" class="btn">- Click for data</a>
+        </div>
+    </div>
+
+</body>
+</html>

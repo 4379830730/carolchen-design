@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uber Eats UX Final Research Report — Carol</title>
+<link rel="icon" type="image/png" href="favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Jersey+10&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+/* ── PORTFOLIO STANDARD VARIABLES ── */
+:root {
+  /* Uber Eats 专属变量 */
+  --green:#06C167; --dark:#050505; --dark2:#050505; --dark3:#050505; --card:#FFFFFF; --bg:#F5F5F5; --text:#0F0F0F; --muted:#6B6B80; --border:#E0E0E0;
+  --theme-f1: #1C40CF; /* Blue */
+  --theme-f2: #FCBE1D; /* Yellow */
+  --theme-f3: #00CF41; /* Green */
+  
+  /* 标准导航栏/底部所需的变量 */
+  --black: #111111;
+  --white: #F1F1F1;
+  --off: #F1F1F1; 
+  --gray: #aaaaaa;
+  --gray-dark: #666666;
+  --dot: #d6d2cc;
+  --accent: #06C167; /* 🌟 专属亮点：将此页面的统一主题色设为 Uber Eats 绿 */
+}
+
+body.dark-mode {
+  --black: #ffffff;
+  --white: #111111;
+  --off: #111111;
+  --gray: #888888;
+  --gray-dark: #aaaaaa;
+  --border: #333333;
+  --dot: #333333;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden; cursor: none; transition: background-color 0.5s ease, color 0.5s ease;}
+
+/* ── 统一光标 (Cursor) ── */
+#cursor {
+  position: fixed; width: 9px; height: 9px;
+  background: #fff; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, opacity .2s;
+  mix-blend-mode: difference;
+}
+#cursor.big { width: 44px; height: 44px; opacity: 1; }
+
+/* ── 统一导航栏 (NAV) ── */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; padding: 30px 10vw;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 200; background: rgba(241,241,241,0.8); backdrop-filter: blur(10px);
+  transition: background 0.5s;
+}
+body.dark-mode #nav { background: rgba(17,17,17,0.8); }
+.nav-logo { 
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 32px; font-weight: 800; 
+  letter-spacing: -0.02em; color: var(--accent); text-decoration: none; 
+  display: flex; align-items: center; gap: 10px; margin-left: -36px;
+}
+.nav-logo svg { width: 26px; height: 26px; }
+
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links > a, .nav-item-dropdown > a {
+  font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+.nav-links > a::after, .nav-item-dropdown > a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: var(--black); transition: width .3s;
+}
+.nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
+
+.nav-item-dropdown { position: relative; display: flex; align-items: center; padding: 12px 0; margin: -12px 0; }
+.dropdown-menu {
+  position: absolute; top: 100%; right: -10px; margin-top: 0;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: 14px; padding: 10px;
+  display: flex; flex-direction: column; gap: 4px; min-width: 140px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.06); opacity: 0; transform: translateY(-5px); pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.5s ease; z-index: 100;
+}
+.nav-item-dropdown:hover .dropdown-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+body.dark-mode .dropdown-menu { background: rgba(17, 17, 17, 0.95); }
+body.dark-mode .dropdown-menu img { filter: invert(1); }
+.dropdown-menu a {
+  display: flex !important; align-items: center; gap: 12px; padding: 10px 14px; color: var(--black) !important;
+  text-decoration: none !important; font-size: 13px !important; font-weight: 500 !important;
+  text-transform: capitalize !important; border-radius: 8px; transition: background 0.2s !important;
+}
+.dropdown-menu a::after { display: none !important; } 
+.dropdown-menu a:hover { background: var(--off); }
+.dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
+
+.theme-toggle {
+  background: transparent; border: 1px solid var(--border); width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; text-decoration: none; border: none;
+  cursor: none; margin-left: 12px; padding: 0; transition: transform .2s, background-color .3s, border-color .3s; outline: none;
+}
+.theme-toggle img { width: 20px; height: 20px; object-fit: contain; filter: brightness(0); transition: filter .3s; }
+.theme-toggle:hover { transform: scale(0.92); background-color: var(--black); border-color: var(--black); }
+.theme-toggle:hover img { filter: brightness(0) invert(1); }
+body.dark-mode .theme-toggle { border-color: rgba(255, 255, 255, 0.3); }
+body.dark-mode .theme-toggle img { filter: brightness(0) invert(1); }
+body.dark-mode .theme-toggle:hover { background-color: var(--white); border-color: var(--white); }
+body.dark-mode .theme-toggle:hover img { filter: brightness(0); }
+
+/* ── 统一底部 (FOOTER) ── */
+footer {
+  background: var(--black); color: #fff; padding: 80px 10vw 56px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;
+}
+.ft-label { font-family: 'Bricolage Grotesque', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); }
+.ft-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; color: #fff; }
+.ft-contact { display: flex; gap: 16px; margin-top: 4px; }
+.ft-icon-btn {
+  width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); 
+  border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center;
+  text-decoration: none; cursor: none; transition: transform .2s, background-color .3s, border-color .3s;
+}
+.ft-icon-btn img { width: 24px; height: 24px; object-fit: contain; filter: brightness(0) invert(1); }
+.ft-icon-btn:hover { transform: scale(0.92); background-color: var(--accent); border-color: var(--accent); }
+.ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.1); margin-top: 20px; }
+.ft-copy { font-family: 'Bricolage Grotesque', sans-serif; font-size: 11px; color: rgba(255, 255, 255, 0.5); letter-spacing: .08em; }
+
+
+/* ── UBER EATS REPORT 核心样式保留区 ── */
+section{padding:90px 2.5rem 70px;position:relative;}
+.container{max-width:1160px;margin:0 auto;width:100%;}
+#hero{background:var(--dark);min-height:100vh;display:flex;align-items:center;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;}
+.hero-content{position:relative;z-index:2;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:1.8rem;animation:fadeUp .8s ease both;}
+.eyebrow-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--theme-f3);}
+.eyebrow-line{width:40px;height:1px;background:var(--theme-f3);}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,9vw,8.5rem);line-height:.9;color:#fff;letter-spacing:2px;animation:fadeUp .8s .12s ease both;}
+.hero-title span { color: var(--theme-f3); }
+.hero-author{margin-top:2.8rem;padding-top:1.6rem;border-top:1px solid rgba(255,255,255,0.1);animation:fadeUp .8s .24s ease both;}
+.hero-author-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.3px;margin-bottom:6px;}
+.hero-author-detail{font-size:15px;font-weight:400;color:rgba(255,255,255,0.6);line-height:1.7;}
+.hero-author-tag{display:inline-flex;align-items:center;gap:8px;margin-top:1rem;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--theme-f3);}
+.hero-author-tag::before{content:'';width:20px;height:1px;background:var(--theme-f3);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.sec-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';width:50px;height:1px;background:currentColor;opacity:.4;}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,4.5vw,4.5rem);letter-spacing:2px;line-height:.95;color:var(--text);}
+.dark-sec .sec-title{color:#fff;}
+.dark-sec .sec-label{color:rgba(255,255,255,.3);}
+.sec-sub{font-size:14px;color:var(--muted);margin-top:.7rem;font-weight:300;}
+.dark-sec .sec-sub{color:rgba(255,255,255,.3);}
+.center-header{text-align:center;margin-bottom:3.5rem;}
+.center-label{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:1rem;color:var(--text);}
+.center-label::before,.center-label::after{content:'';width:40px;height:1px;background:currentColor;opacity:0.2;}
+.center-label span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.center-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,5vw,4.5rem);letter-spacing:2px;line-height:1;color:var(--text);margin-bottom:0.5rem;}
+.dark-sec .center-title{color:#fff;}
+.dark-sec .center-label,.dark-sec .center-label span{color:rgba(255,255,255,0.4);}
+#tldr { background: var(--dark); position: relative; overflow: hidden; }
+.tldr-video-wrap{position: relative; z-index: 2; margin: 2.5rem auto 0; max-width:920px; border-radius:20px; overflow:hidden; background:#000; box-shadow:0 24px 80px rgba(0,0,0,0.18); aspect-ratio:16/9;}
+.tldr-video{display:block;width:100%;height:100%;object-fit:cover;border-radius:20px;}
+
+/* FINDINGS - Cards */
+#findings { background: #F5F5F5; }
+.fgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 960px; margin: 0 auto; }
+.fcard { background: var(--bg); border-radius: 24px; padding: 2rem; display: flex; flex-direction: column; position: relative; overflow: hidden; border: 1px solid transparent; transition: all 0.3s ease; min-height: 240px; }
+.fcard:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
+.fc-r:hover { border-color: rgba(28, 64, 207, 0.3); }
+.fc-r .bg-icon { color: var(--theme-f1); }
+.fc-r .fnum { background: #1C40CF; color: #fff; }
+.fc-r .fpill { background: rgba(28, 64, 207, 0.1); color: var(--theme-f1); }
+.fc-y:hover { border-color: rgba(252, 190, 29, 0.3); }
+.fc-y .bg-icon { color: var(--theme-f2); }
+.fc-y .fnum { background: var(--theme-f2); color: #fff; }
+.fc-y .fpill { background: rgba(252, 190, 29, 0.1); color: #B38200; } 
+.fc-o:hover { border-color: rgba(0, 207, 65, 0.3); }
+.fc-o .bg-icon { color: var(--theme-f3); }
+.fc-o .fnum { background: var(--theme-f3); color: #fff; }
+.fc-o .fpill { background: rgba(0, 207, 65, 0.1); color: var(--theme-f3); }
+.bg-icon { position: absolute; top: 1.5rem; right: 1.5rem; width: 80px; height: 80px; opacity: 0.04; transition: opacity 0.3s ease; }
+.fcard:hover .bg-icon { opacity: 0.12; }
+.fnum { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 1.5rem; }
+.fname { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 2rem; }
+.fbot { margin-top: auto; }
+.fpill { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0; }
+
+/* CONTENTS */
+#contents { background: var(--dark); min-height: 100vh; display: flex; align-items: center; }
+.contents-inner { position: relative; z-index: 2; }
+.contents-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--theme-f3); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+.contents-eyebrow::after { content:''; width:40px; height:1px; background:var(--theme-f3); }
+.intro-title { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: #00CF41; letter-spacing: 1.5px; margin-bottom: 0.8rem; margin-top: 5rem; text-align: left; margin-left: 4.2rem; }
+.contents-intro { font-family: 'DM Sans', sans-serif; font-size: 18px; line-height: 1.6; color: rgba(255, 255, 255, 0.7); max-width: 650px; font-weight: 300; text-align: left; margin-left: 4.2rem; margin-bottom: 3rem; }
+.contents-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.contents-list li { display: flex; align-items: center; gap: 2rem; padding: 1.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.07); cursor: pointer; transition: all .25s; text-decoration: none; }
+.contents-list li:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+.contents-list li:hover .cl-title { color: var(--theme-f3); }
+.contents-list li:hover .cl-arrow { transform: translateX(6px); opacity: 1; }
+.cl-num { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.2); width: 2.2rem; flex-shrink: 0; }
+.cl-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 3.5vw, 3rem); color: #fff; letter-spacing: 1.5px; line-height: 1; flex: 1; transition: color .25s; }
+.cl-sub { font-size: 14px; font-family: 'DM Sans', sans-serif; color: rgba(255,255,255,0.3); font-weight: 300; max-width: 300px; line-height: 1.5; text-align: right; }
+.cl-arrow { font-size: 22px; color: var(--theme-f3); opacity: 0; transition: transform .25s, opacity .25s; flex-shrink: 0; }
+
+/* MATRIX AND ROADMAP */
+.tm-title-bar { font-size: 24px; font-weight: 700; color: var(--text); font-family: 'DM Sans', sans-serif; margin-bottom: 1.0rem; }
+.triang-inner { max-width: 1160px; margin: 0 auto; background: #FFFFFF; border-radius: 20px; border: 1px solid #E0E0E0; padding: 2.5rem 2rem; box-shadow: 0 4px 20px rgba(0,0,0,.04); }
+.ux-doc-wrapper { font-family: var(--font-sans); color: #111827; line-height: 1.6; font-size: 14px; padding: 0.5rem 0; }
+.divider { height: 1px; background: #E0E0E0; margin: 2.5rem 0; }
+.tm-desc { font-size: 14px; line-height: 1.5; color: var(--muted); margin-bottom: 1.5rem; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; font-family: 'DM Sans', sans-serif; }
+
+.tm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1.5rem; }
+.tm-card { background: #FFFFFF; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.tm-card-head { padding: 1rem 1.25rem; font-size: 14px; font-weight: 700; color: var(--dark); border-bottom: 1px solid var(--border); }
+.tm-card-head.tc-blue { background: rgba(28, 64, 207, 0.06); border-top: 3px solid var(--theme-f1); }
+.tm-card-head.tc-yellow { background: rgba(252, 190, 29, 0.08); border-top: 3px solid var(--theme-f2); }
+.tm-card-head.tc-green { background: rgba(0, 207, 65, 0.06); border-top: 3px solid var(--theme-f3); }
+.tm-card-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+.tm-point { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: #4b5563; font-family: 'DM Sans', sans-serif; }
+.tm-point svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.6; margin-top: 2px; }
+.tm-final { margin-top: auto; background: #f9fafb; padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+.tm-final-title { font-size: 14px; font-weight: 800; text-transform: uppercase; color: #000000; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+.tm-final-text { font-size: 14px; line-height: 1.5; color: var(--text); font-family: 'DM Sans', sans-serif; }
+
+.tag-strong { background: #F83C00; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 9px; letter-spacing: 0.5px; }
+.tag-strong.yellow { background: #F83C00; color: #fff; }
+.tag-mod { background: #F88000; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 9px; letter-spacing: 0.5px; }
+
+/* Eisenhower & Roadmap */
+.pm-wrapper { display: flex; flex-direction: column; gap: 2rem; align-items: center; justify-content: center; width: 100%; margin-bottom: 1rem; }
+@media (min-width: 992px) { .pm-wrapper { flex-direction: row; gap: 3rem; } }
+.pm-matrix { width: 100%; max-width: 440px; aspect-ratio: 1/1; background: var(--bg); border-radius: 32px; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.05); }
+.pm-y-axis { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 3.5rem; }
+.pm-x-axis { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 3.5rem; }
+.pm-label-rot { writing-mode: vertical-lr; transform: rotate(180deg); }
+.pm-axis-lbl { font-size: 9px; font-weight: 700; color: rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 2px; }
+.pm-axis-badge { background: var(--dark); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 10px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; }
+.pm-grid { width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; margin-left: 2rem; margin-bottom: 2rem; border-left: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); }
+.pm-quad { padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.pm-q-tl { border-right: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); }
+.pm-q-tr { border-bottom: 1px solid rgba(0,0,0,0.1); }
+.pm-q-bl { border-right: 1px solid rgba(0,0,0,0.1); }
+.pm-q-delegate, .pm-q-delete { opacity: 0.3; }
+.pm-q-do { background: rgba(229,57,53,0.05); }
+.pm-q-decide { background: rgba(43,61,231,0.05); }
+.pm-q-title { font-size: 10px; font-weight: 900; color: var(--dark); text-transform: uppercase; margin-bottom: 12px; }
+.pm-pill { background: rgba(255,255,255,0.7); backdrop-filter: blur(4px); padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-size: 9px; font-weight: 900; text-transform: uppercase; color: var(--dark); line-height: 1.2; width: 100%; max-width: 120px; margin-top: 6px; }
+.pm-arrow { display: none; flex-shrink: 0; }
+@media (min-width: 992px) { .pm-arrow { display: block; } }
+
+.roadmap-list { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 480px; }
+.rm-row { background: #FFFFFF; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; align-items: flex-start; gap: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.rm-num { width: 26px; height: 26px; background: var(--dark); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.rm-content { flex: 1; }
+.rm-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+.rm-desc { font-size: 14px; color: #6b7280; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+
+/* ── ACTION SECTIONS ── */
+.act-section { padding: 70px 2.5rem 80px; background: #F5F5F5; }
+.act-section.act-white { background: #FFFFFF; }
+.act-header { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
+.act-badge { width: 58px; height: 54px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 600; color: #fff; flex-shrink: 0; letter-spacing: -1px; }
+
+.ab-price { background: var(--theme-f2); color: #000; }
+.hmw-price .act-hmw-bar { background: var(--theme-f2); }
+.hmw-price .act-hmw-body { background: rgba(252, 190, 29, 0.06); }
+.act-price .collab-tag { background: var(--theme-f2); color: #000; }
+
+.ab-support { background: var(--theme-f1); color: #fff; }
+.hmw-support .act-hmw-bar { background: var(--theme-f1); }
+.hmw-support .act-hmw-body { background: rgba(28, 64, 207, 0.06); }
+.act-support .collab-tag { background: var(--theme-f1); color: #fff; }
+
+.ab-ia { background: var(--theme-f3); color: #fff; }
+.hmw-ia .act-hmw-bar { background: var(--theme-f3); }
+.hmw-ia .act-hmw-body { background: rgba(0, 207, 65, 0.06); }
+.act-ia .collab-tag { background: var(--theme-f3); color: #000; }
+
+.act-title { font-family: 'DM Sans', sans-serif; font-size: clamp(1.5rem, 2.8vw, 2rem); font-weight: 700; color: #1e1e1e; line-height: 1.1; letter-spacing: -.03em; }
+.act-hmw { display: flex; align-items: stretch; border-radius: 0 5px 5px 0; overflow: hidden; margin-bottom: 1.8rem; }
+.act-hmw-bar { width: 4px; flex-shrink: 0; }
+.act-hmw-body { padding: .9rem 1.2rem; font-style: italic; font-size: 14px; line-height: 1.5; font-family: 'DM Sans', sans-serif; color: #1f1f1f; }
+.act-advice-row { display: flex; align-items: center; gap: 1rem; margin-bottom: .8rem; }
+.act-advice-line { flex: 1; height: 1px; background: #d4d4d4; }
+.act-advice-label { font-size: 14px; font-weight: 700; color: #1f1f1f; white-space: nowrap; }
+.act-advice-text { font-size: 14px; line-height: 1.5; color: rgba(0,0,0,.75); margin-bottom: 1.8rem; font-family: 'DM Sans', sans-serif; }
+
+.act-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+.act-card { border-radius: 18px; padding: 1.8rem; display: flex; gap: 2.5rem; align-items: center; min-height: 430px; background: #FFFFFF; border: 1px solid #E0E0E0; }
+
+.act-img { width: 180px; min-width: 180px; height: 390px; border-radius: 28px; overflow: hidden; background: #1a1a1a; border: 5px solid #1a1a1a; flex-shrink: 0; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
+.act-img:hover { transform: translateY(-5px) scale(1.02); }
+.act-img::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 50px; height: 14px; background: #000; border-radius: 10px; z-index: 10; }
+.act-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; display: block; }
+.act-card-content { flex: 1; padding-right: 2rem; }
+
+.act-card-num { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 3px; background: #3b3b3b; color: #fff; font-size: 10px; font-weight: 700; margin-bottom: .4rem; margin-right: 4px; }
+.act-card-label { font-size: 14px; font-weight: 700; color: #1f1f1f; margin-bottom: .5rem; display: inline; }
+.act-card-text { font-size: 14px; line-height: 1.5; color: rgba(0,0,0,.75); margin-top: .5rem; font-family: 'DM Sans', sans-serif; }
+.act-card-text ul { margin: .3rem 0 0 1rem; padding: 0; }
+.act-card-text li { margin-bottom: .2rem; }
+
+.act-bottom { display: grid; grid-template-columns: 280px 1fr; gap: 1.2rem; margin-top: 1rem; }
+
+.act-kpi-card { border-radius: 13px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
+.act-kpi-head { background: #000; padding: .7rem 1rem; font-family: 'Instrument Sans', 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; color: #fff; line-height: .95; text-align: center; }
+.act-kpi-body { padding: 0.4rem; background: #FFFFFF; display: flex; flex: 1; align-items: center; justify-content: center; }
+.act-kpi-body img { width: 100%; height: auto; max-height: 200px; object-fit: contain; display: block; }
+
+.act-collab-card { border-radius: 13px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
+.act-collab-head { background: #000; padding: .7rem 1rem; font-family: 'Instrument Sans', 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; color: #fff; line-height: .95; text-align: center; }
+.act-collab-body { padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: #FFFFFF; flex: 1; }
+.collab-col { display: block; }
+.collab-tag { display: inline-flex; align-items: center; justify-content: center; padding: 3px 10px; border-radius: 9px; font-size: 10px; font-weight: 500; color: #fff; width: fit-content; margin-bottom: 0.4rem; }
+.collab-text { font-size: 14px; line-height: 1.5; color: rgba(0,0,0,.75); font-family: 'DM Sans', sans-serif; margin-bottom: 1.5rem; }
+.collab-text:last-child { margin-bottom: 0; } 
+
+@media(max-width:860px){.act-cards{grid-template-columns:1fr;}.act-card{flex-direction:column;align-items:center;text-align:center;min-height:auto;padding:1.5rem;gap:1.5rem;}.act-card-content{padding-right:0;}.act-card-text ul{text-align:left;}.act-bottom{grid-template-columns:1fr;}}
+
+/* ── FINDING DETAIL ─────────────────── */
+.fd-wrap { padding: 60px 2.5rem 70px; }
+.fd-wrap.fd-light { background: #FFFFFF; }
+.fd-wrap.fd-muted  { background: #F5F5F5; }
+
+.dlabel { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.5rem; }
+.dl-r { color: var(--theme-f1); }
+.dl-y { color: var(--theme-f2); }
+.dl-o { color: var(--theme-f3); }
+
+.fd-heading { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem); letter-spacing: 1.5px; line-height: .95; color: var(--text); margin: 1rem 0 1.8rem; }
+.fd-top { display: grid; grid-template-columns: 55% 1fr; gap: 1.5rem; margin-bottom: 1.5rem; align-items: stretch; }
+
+.fd-card-themed { border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+.fd-head-themed { padding: .6rem 1rem; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.fd-head-themed.th-red, .fd-head-themed.th-yellow, .fd-head-themed.th-orange { background: #000000; color: #fff; }
+
+.quote-mark { font-size: 28px; font-family: serif; font-weight: bold; line-height: 0.8; margin-top: 4px; }
+.quote-mark.th-f1 { color: var(--theme-f1); }
+.quote-mark.th-f2 { color: var(--theme-f2); }
+.quote-mark.th-f3 { color: var(--theme-f3); }
+
+.fd-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.fd-card { background: #FFFFFF; border-radius: 12px; overflow: hidden; border: 1px solid #E0E0E0; display: flex; flex-direction: column; }
+
+.fd-card-head { color: #fff; padding: .6rem 1rem; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+.head-f1 { background: var(--theme-f1); color: #ffffff; }
+.head-f2 { background: var(--theme-f2); color: #000000; }
+.head-f3 { background: var(--theme-f3); color: #000000; }
+
+.fd-card-body { padding: 1.5rem; background: #ffffff; display: flex; flex: 1; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+.fd-card-body img { width: 100%; height: auto; max-height: 240px; object-fit: contain; display: block; margin-bottom: 1.5rem; }
+.card-sub-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; text-align: left; }
+.card-text { font-size: 14px; line-height: 1.6; color: #4b5563; margin-bottom: 0; text-align: left; }
+@media(max-width:860px){ .fd-top { grid-template-columns: 1fr; } .fd-cards { grid-template-columns: 1fr; } .tm-grid{grid-template-columns:1fr;} }
+
+/* METHODOLOGY */
+#methodology{background:var(--dark);}
+.mth-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+.mcard{background:var(--dark3);border-radius:16px;padding:1.8rem;border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;transition:transform .3s; display: flex; flex-direction: column;}
+.mcard:hover{transform:translateY(-5px);}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.mc1::before{background:var(--theme-f1);}
+.mc2::before{background:var(--theme-f2);}
+.mc3::before{background:var(--theme-f3);}
+.mnum{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;opacity:.07;position:absolute;top:1rem;right:1.2rem;color:#fff;}
+.micon { width: auto; height: 42px; display: flex; align-items: center; justify-content: flex-start; margin-bottom: 1rem; }
+.custom-micon img { height: 100%; width: auto; object-fit: contain; display: block; }
+.mname{font-size:17px;font-weight:700;color:#fff;margin-bottom:.5rem;}
+.mdesc{font-size:14px;color:rgba(255,255,255,.6);line-height:1.5;font-weight:300;margin-bottom:1rem; flex: 1; font-family: 'DM Sans', sans-serif;}
+.mtags{display:flex;flex-wrap:wrap;gap:5px;}
+.mtag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.07);}
+.m-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; margin-top: 1.5rem; width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.25s ease; }
+.m-btn:hover { background: var(--theme-f3); color: #000; border-color: var(--theme-f3); }
+.m-tasks-wrap { margin-top: 4rem; padding-top: 3rem; padding-left: 40px; padding-right: 40px; border-top: 1px solid rgba(255,255,255,0.06); }
+.m-tasks-title { font-family: 'DM Sans', sans-serif; font-size: 24px; font-weight: 700; color: #00CF41; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 12px; }
+.m-tasks-sub { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 2rem; font-family: 'DM Sans', sans-serif; }
+.m-task-list { list-style: none; padding-left: 24px; margin: 0; }
+.m-task-list li { position: relative; color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6; margin-bottom: 1.5rem; font-family: 'DM Sans', sans-serif; }
+.m-task-list li::before { content: ""; position: absolute; left: -24px; top: 6px; width: 10px; height: 10px; background-color: var(--theme-f3); border-radius: 3px; }
+.m-task-list li strong { color: #fff; display: block; margin-bottom: 4px; font-size: 15px; }
+
+/* ── TIMELINE WIDGET ── */
+.tl-scroll-wrapper { width: 100%; overflow-x: auto; margin-top: 3.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); }
+.tl-scroll-wrapper::-webkit-scrollbar { height: 8px; }
+.tl-scroll-wrapper::-webkit-scrollbar-track { background: #141620; border-radius: 0 0 16px 16px; }
+.tl-scroll-wrapper::-webkit-scrollbar-thumb { background: #3A3D52; border-radius: 10px; }
+.tl-scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #5B6AE8; }
+.tl-root { min-width: 960px; width: 100%; background: var(--dark); font-family: 'DM Sans', sans-serif; color: #fff; position: relative; overflow: hidden; padding: 30px 40px 25px; border-radius: 16px; }
+.tl-glow { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.tl-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.tl-main-title { font-family: 'DM Sans', sans-serif; font-size: 24px; font-weight: 700; color: #00CF41; line-height: 1.2; margin-top: 4px;}
+.tl-header-right { text-align: right; font-size: 11px; color: rgba(255,255,255,.4); line-height: 1.9; }
+.tl-header-right span { color: #fff; font-weight: 500; }
+.tl-date-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.tl-date-col { flex: 1; display: flex; justify-content: center; }
+.tl-date-label { font-size: 9px; color: rgba(255,255,255,.4); font-weight: 500; letter-spacing: 0.03em; white-space: nowrap; }
+.tl-dots-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.tl-dot-col { flex: 1; display: flex; justify-content: center; position: relative; }
+.tl-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--dark); position: relative; z-index: 2; }
+.tl-dot-col::before { content: ''; position: absolute; top: 50%; left: calc(-4px); width: calc(100%); height: 2px; background: linear-gradient(90deg, var(--lc, #2E3258), var(--rc, #2E3258)); transform: translateY(-50%); z-index: 1; opacity: 0.8; }
+.tl-dot-col:first-child::before { display: none; }
+.tl-phases { display: flex; gap: 8px; }
+.tl-phase { flex: 1; background: var(--dark3); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 12px 10px 10px; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: transform .3s, border-color .3s; }
+.tl-phase:hover { transform: translateY(-5px); border-color: rgba(255,255,255,.15); }
+.tl-phase-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0; }
+.tl-phase-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+.tl-phase-week { font-size: 11px; font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 2px; }
+.tl-phase-name { font-size: 10px; font-weight: 400; color: rgba(255,255,255,.6); line-height: 1.3; margin-bottom: 8px; }
+.tl-divider { height: 1px; background: rgba(255,255,255,.06); margin-bottom: 8px; }
+.tl-milestone-text { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.5; font-weight: 300; flex: 1; font-family: 'DM Sans', sans-serif; }
+.tl-phase-status { margin-top: 10px; font-size: 9px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: rgba(255,255,255,.05) !important; border: 1px solid rgba(255,255,255,.07); display: inline-block; align-self: flex-start; }
+.tl-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 15px; }
+.tl-foot-note { font-size: 10px; color: rgba(255,255,255,.4); }
+.tl-complete-badge { font-size: 10px; font-weight: 600; color: #34D399; letter-spacing: 0.08em; display: flex; align-items: center; gap: 6px; }
+.tl-check { width: 16px; height: 16px; border-radius: 50%; background: #0D2B20; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+
+/* REFLECTION CARD STYLE */
+.reflection-card { max-width: 860px; margin: 0 auto; background: #FFFFFF; border-radius: 20px; border: 1px solid var(--border); padding: 3rem 4rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+.ref-point { margin-bottom: 2rem; }
+.ref-point:last-child { margin-bottom: 0; }
+.ref-point h4 { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 12px; margin-left: 0; padding-left: 0; }
+.ref-point p, .ref-point ul { margin-left: 24px; }
+.ref-point h4::before { content: ''; width: 12px; height: 12px; background: var(--theme-f3); border-radius: 4px; display: inline-block; flex-shrink: 0; margin-top: 2px; }
+.ref-point p, .ref-point li { font-size: 14px; line-height: 1.6; color: #4b5563; font-family: 'DM Sans', sans-serif; margin-bottom: 0.8rem; }
+.ref-point ul { padding-left: 1.2rem; margin-top: 0.5rem; }
+@media(max-width:860px){ .reflection-card { padding: 2rem; } }
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.roadmap-list .rm-row:nth-child(1) .rm-num { background:#E73F09; color: #fff; }
+.roadmap-list .rm-row:nth-child(2) .rm-num { background:#E73F09; color: #fff; }
+.roadmap-list .rm-row:nth-child(3) .rm-num { background: #F88000; color: #fff; }
+
+/* ── LOGO LOOP MARQUEE (Tools & Software) ── */
+.marquee-container { position: relative; width: 100%; overflow: hidden; padding: 3rem 0; margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.06); background: var(--dark); }
+.marquee-container::before, .marquee-container::after { content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2; pointer-events: none; }
+.marquee-container::before { left: 0; background: linear-gradient(to right, var(--dark), transparent); }
+.marquee-container::after { right: 0; background: linear-gradient(to left, var(--dark), transparent); }
+.marquee-label { text-align: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--theme-f3); margin-bottom: 2.5rem; }
+.marquee-track { display: flex; width: max-content; animation: marqueeScroll 20s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item { font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; color: rgba(255,255,255,0.3); margin: 0 3rem; display: flex; align-items: center; gap: 12px; cursor: default; transition: all 0.3s ease; }
+.marquee-item:hover { color: #fff; transform: scale(0.8); }
+.marquee-dot { font-size: 10px; color: var(--theme-f1); }
+@keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.marquee-item img { height: 70px; width: auto; object-fit: contain; display: block; transition: transform 0.3s ease; }
+.marquee-item:hover img { transform: scale(1.15); }
+
+/* --- Action 卡片高亮调整 --- */
+.act-price .act-card { background: rgba(252, 190, 29, 0.06) !important; border: 1px solid rgba(252, 190, 29, 0.2); }
+.act-support .act-card { background: rgba(28, 64, 207, 0.06) !important; border: 1px solid rgba(28, 64, 207, 0.2); }
+.act-ia .act-card { background: rgba(0, 207, 65, 0.06) !important; border: 1px solid rgba(0, 207, 65, 0.2); }
+.act-card:hover { border-color: #FFFFFF; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+
+/* ── METHODOLOGY COMPARISON TABLE ── */
+.method-comparison { margin-top: 4rem; background: #121212 !important; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.08) !important; padding: 3rem; }
+.method-comparison h3 { color: #ffffff !important; font-size: 22px; margin-bottom: 0.5rem; font-family: 'DM Sans', sans-serif; }
+.method-comparison p { color: rgba(255,255,255,0.6) !important; font-size: 14px; margin-bottom: 2rem; }
+.comparison-table { width: 100%; border-collapse: collapse; text-align: left; }
+.comparison-table th, .comparison-table td { padding: 1.4rem 1.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important; font-size: 14px; line-height: 1.6; }
+.comparison-table th { color: #ffffff !important; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; background: rgba(255,255,255,0.02); }
+.comparison-table th:first-child { border-radius: 12px 0 0 0; }
+.comparison-table th:last-child { border-radius: 0 12px 0 0; }
+.comparison-table td { color: rgba(255,255,255,0.65) !important; vertical-align: top; transition: background 0.3s; }
+.comparison-table tbody tr:nth-child(1) td strong { color: var(--theme-f1, #1C40CF) !important; }
+.comparison-table tbody tr:nth-child(2) td strong { color: var(--theme-f2, #FCBE1D) !important; }
+.comparison-table tbody tr:nth-child(3) td strong { color: var(--theme-f3, #00CF41) !important; }
+.comparison-table td strong { font-size: 15px; display: block; margin-bottom: 6px; }
+.comparison-table tbody tr:hover td { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.9) !important; }
+.comparison-table tbody tr:last-child td { border-bottom: none; }
+@media(max-width:860px){ .method-comparison { padding: 1.5rem; } .comparison-table, .comparison-table tbody, .comparison-table tr, .comparison-table td { display: block; width: 100%; } .comparison-table thead { display: none; } .comparison-table td { padding: 1rem 0; } }
+
+/* ── STRATEGIC ROADMAP ── */
+.strategic-roadmap { margin-top: 1.5rem; background: #121212 !important; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.08) !important; padding: 3rem; }
+.strategic-roadmap h3 { color: #ffffff !important; font-size: 22px; margin-bottom: 0.5rem; font-family: 'DM Sans', sans-serif; }
+.strategic-roadmap p { color: rgba(255,255,255,0.6) !important; font-size: 14px; margin-bottom: 2.5rem; line-height: 1.6; }
+.strategic-roadmap ul { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
+.strategic-roadmap li { color: rgba(255,255,255,0.7) !important; font-size: 14px; line-height: 1.6; padding-left: 1.5rem; background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 0 12px 12px 0; }
+.strategic-roadmap li:nth-child(1) { border-left: 3px solid var(--theme-f3); }
+.strategic-roadmap li:nth-child(2) { border-left: 3px solid var(--theme-f2); }
+.strategic-roadmap li:nth-child(3) { border-left: 3px solid var(--theme-f1); }
+.strategic-roadmap li strong { display: block; margin-bottom: 6px; font-size: 15px; }
+.strategic-roadmap li:nth-child(1) strong { color: var(--theme-f3) !important; }
+.strategic-roadmap li:nth-child(2) strong { color: var(--theme-f2) !important; }
+.strategic-roadmap li:nth-child(3) strong { color: var(--theme-f1) !important; }
+@media(max-width:860px){ .strategic-roadmap { padding: 1.5rem; } .strategic-roadmap li { padding: 1rem; } }
+/* ── TLDR TEXT SUMMARY ── */
+.tldr-text-summary {
+  max-width: 860px;
+  margin: 1.5rem auto 2.5rem;
+  background: rgba(255, 255, 255, 0.03); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  text-align: left;
+}
+.tldr-text-summary p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 0;
+}
+.tldr-text-summary strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
+      <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+    </svg>
+    Carol.
+  </a>
+  
+  <div class="nav-links">
+    <a href="index.html#projects">Work</a>
+    <a href="about.html">About</a>
+    
+    <div class="nav-item-dropdown">
+      <a href="#">Contact</a>
+      <div class="dropdown-menu">
+        <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+          <img src="icon-linkedin.png" alt="LinkedIn"> LinkedIn
+        </a>
+        <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+          <img src="icon-instagram.png" alt="Instagram"> Instagram
+        </a>
+        <a href="mailto:YauchiTATA@Gmail.com">
+          <img src="icon-mail.png" alt="Email"> Email
+        </a>
+      </div>
+    </div>
+    
+    <button id="theme-toggle" class="theme-toggle" tabindex="0" aria-label="Toggle theme">
+      <img id="theme-icon" src="image_df6b67.png" alt="Theme icon">
+    </button>
+  </div>
+</nav>
+
+<section id="hero" style="position: relative; background: #050505;">
+  <canvas id="terminal-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></canvas>
+  <div class="crt-scanlines" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px;"></div>
+  
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-tag">UX604 · Research Method 2 · Winter 2026</span>
+        <span class="eyebrow-line"></span>
+      </div>
+      <h1 class="hero-title">
+        <div style="margin-bottom: 10px;">
+          <img src="YOUR_UBEREATS_LOGO.png" alt="Uber Eats" style="height: 80px; width: auto; object-fit: contain;">
+        </div>
+        <span>Uber Eats</span><br>
+        UX Research
+      </h1>
+      <div class="hero-author">
+        <div class="hero-author-name">Carol Chen</div>
+        <div class="hero-author-detail">Independent UX Researcher</div>
+        <div class="hero-author-detail">Professor Susie Simon</div>
+        <div class="hero-author-detail">Wilfrid Laurier University</div>
+        <span class="hero-author-tag">UX604 · Research Method 2 · Winter 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contents">
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="contents-inner">
+      <div class="contents-eyebrow">Table of Contents</div>
+      <h3 class="intro-title">Intro</h3>
+      <p class="contents-intro">The goal of this study is to evaluate the usability of the Uber Eats app, identify the root causes of cognitive friction and factors that undermine user trust, and develop solutions to address these issues and enhance the user experience.</p>
+      <ul class="contents-list">
+        <li onclick="location.href='#tldr'">
+          <span class="cl-num">01</span>
+          <span class="cl-title">Summary</span>
+          <span class="cl-sub">Overview video of the full research</span>
+          <span class="cl-arrow">→</span>
+        </li>
+        <li onclick="location.href='#findings'">
+          <span class="cl-num">02</span>
+          <span class="cl-title">Key Findings</span>
+          <span class="cl-sub">3 problem evidence sections</span>
+          <span class="cl-arrow">→</span>
+        </li>
+        <li onclick="location.href='#actions'">
+          <span class="cl-num">03</span>
+          <span class="cl-title">Actions</span>
+          <span class="cl-sub">Triangulation matrix + Prioritised design recommendations</span>
+          <span class="cl-arrow">→</span>
+        </li>
+        <li onclick="location.href='#methodology'">
+          <span class="cl-num">04</span>
+          <span class="cl-title">Methods</span>
+          <span class="cl-sub">Research methods &amp; Participants &amp; Data</span>
+          <span class="cl-arrow">→</span>
+        </li>
+        <li onclick="location.href='#reflection'">
+          <span class="cl-num">05</span>
+          <span class="cl-title">Reflection</span>
+          <span class="cl-sub">Project takeaways and personal growth</span>
+          <span class="cl-arrow">→</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="tldr" class="dark-sec" style="background: var(--dark); position: relative; overflow: hidden; padding: 100px 2.5rem; min-height: 60vh; display: flex; align-items: center;">
+  <div class="hero-grid" style="position: absolute; inset: 0; display: block; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 55px 55px; z-index: 1; pointer-events: none;"></div>
+  <div class="container" style="position: relative; z-index: 2; width: 100%;">
+   <div class="center-header reveal" style="margin-bottom: 1rem;">
+      <div class="center-label"><span style="color: var(--theme-f3);">Executive Summary</span></div>
+      <h2 class="center-title" style="color: #fff; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;">Summary</h2>
+
+<div class="tldr-text-summary reveal">
+      <p>This comprehensive UX research report evaluates the Uber Eats application to identify cognitive friction points and areas where user trust is compromised. By triangulating data from <strong>Usability Testing</strong>, <strong>PURE Expert Evaluation</strong>, and <strong>AI Heuristic Analysis</strong>, we uncovered three critical issues: invisible customer support, opaque pricing at checkout, and complex information architecture.</p>
+    </div>
+
+<p style="text-align: center; color: var(--theme-f3); font-size: 14px; margin-bottom: 0;">--- Get a quick overview of our research journey and top findings in the video below. ---</p>
+    </div>
+
+    <div class="tldr-video-wrap reveal" style="border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 40px 100px rgba(0,0,0,0.6); position: relative; z-index: 3;">
+      <video class="tldr-video" controls preload="metadata">
+        <source src="YOUR_VIDEO.mp4" type="video/mp4" />
+        <p style="color:#fff;padding:2rem;text-align:center">请将视频文件与此 HTML 放在同一文件夹。</p>
+      </video>
+    </div>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="container">
+    <div class="center-header reveal">
+      <div class="center-label"><span>Research Insights</span></div>
+      <h2 class="center-title">Three Key Findings</h2>
+      <p class="sec-sub" style="text-align: center;">Confirmed and cross-validated across all three research methods.</p>
+    </div>
+    <div class="fgrid reveal" style="max-width: 960px; margin: 0 auto;">
+      <div class="fcard fc-r">
+        <svg class="bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <div class="fnum">01</div>
+        <div class="fname">Support Invisible</div>
+        <div class="fbot"><span class="fpill">Priority — Critical</span></div>
+      </div>
+      <div class="fcard fc-y">
+        <svg class="bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div class="fnum">02</div>
+        <div class="fname">Price Transparency</div>
+        <div class="fbot"><span class="fpill">Priority — Critical</span></div>
+      </div>
+      <div class="fcard fc-o">
+        <svg class="bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <div class="fnum">03</div>
+        <div class="fname">Information Architecture</div>
+        <div class="fbot"><span class="fpill">Priority — High</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="fd-wrap fd-light">
+  <div class="container">
+    <div class="dlabel dl-r">Finding 01 — Critical</div>
+    <div class="fd-heading">Customer Support System Is Invisible</div>
+    <div class="fd-top reveal">
+      <div class="fd-card-themed th-red" style="height: 100%;">
+        <div class="fd-head-themed th-red">Problem Highlight: Support Invisible</div>
+        <div style="position: relative; flex: 1; background: #000; min-height: 240px;">
+          <video controls preload="metadata" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;">
+            <source src="YOUR_VIDEO_F1.mp4" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div style="background: var(--theme-f1); border-radius: 8px; padding: 2rem; color: #FFFFFF;">
+          <div style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">Problem Overview</div>
+          <div style="font-size: 14px; line-height: 1.4; font-weight: 400; font-family: 'DM Sans', sans-serif;">The customer help of Uber Eats is invisible, and there is no direct human contact option to the restaurant. Users feel forced into an AI loop when they have an issue with an order.</div>
+        </div>
+        <div class="fd-card-themed th-red" style="flex: 1;">
+          <div class="fd-head-themed th-red">Selected User Quotes</div>
+          <div style="padding: 1.25rem; background: #F9FAFB; display: flex; flex-direction: column; gap: 1.2rem; flex: 1; justify-content: center;">
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f1">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">Because it just don't show the number, and I have to connect AI and then ask the AI to go through the agent stuff."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; text-align: right;">— Participants 1</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f1">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">I just couldn't find the phone number."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; text-align: right;">— Participant 5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fd-cards reveal">
+      <div class="fd-card">
+        <div class="fd-card-head head-f1">Usability Testing</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING1_USABILITY.png" alt="Usability Testing Data">
+          <div class="card-sub-title">Task 3 Data</div>
+          <p class="card-text">The success rate for Task 3 is 0%, and the SEQ score is only 2.8. This process involves significant friction, making it completely impossible for users to achieve their goals.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f1">PURE</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING1_PURE.png" alt="PURE Evaluation Data">
+          <div class="card-sub-title">Task 3 Data</div>
+          <p class="card-text">The PURE score indicates that multiple friction metrics exceed the threshold, constituting a critical path obstacle; immediate corrective action is required.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f1">AI</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING1_AI.png" alt="AI Heuristic Analysis Data">
+          <div class="card-sub-title">Task 3 - Step 5</div>
+          <p class="card-text">By the end of Task 3, the cognitive load reached 5 (the peak), and the interaction logic was highly counterintuitive, causing the task to be completely abandoned.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fd-wrap fd-muted">
+  <div class="container">
+    <div class="dlabel dl-y">Finding 02 — Critical</div>
+    <div class="fd-heading">The Issue of Price Transparency</div>
+    <div class="fd-top reveal">
+      <div class="fd-card-themed th-yellow" style="height: 100%;">
+        <div class="fd-head-themed th-yellow">Problem Highlight: Price Transparency</div>
+        <div style="position: relative; flex: 1; background: #000; min-height: 240px;">
+          <video controls preload="metadata" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;">
+            <source src="YOUR_VIDEO_F2.mp4" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div style="background: var(--theme-f2); border-radius: 8px; padding: 2rem; color: #0F0F0F;">
+          <div style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">Problem Overview</div>
+          <div style="font-size: 14px; line-height: 1.4; font-weight: 400; font-family: 'DM Sans', sans-serif;">Users experience noticeable hesitation during the final payment stage, leading to a decrease in financial confidence. The grand total is hidden behind ambiguous UI elements, making it impossible to confirm the final amount easily.</div>
+        </div>
+        <div class="fd-card-themed th-yellow" style="flex: 1;">
+          <div class="fd-head-themed th-yellow">Selected User Quotes</div>
+          <div style="padding: 1.25rem; background: #F9FAFB; display: flex; flex-direction: column; gap: 1.2rem; flex: 1; justify-content: center;">
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f2">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">I cannot see the total price after I add a tip. That's a little bit annoying."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;text-align: right;">— Participants 1</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f2">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">When I reached the final step after selecting the tip, I couldn't find a summary of the total price anywhere."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;text-align: right;">— PURE Evaluator 2</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fd-cards reveal">
+      <div class="fd-card">
+        <div class="fd-card-head head-f2">Usability Testing</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING2_USABILITY.png" alt="Usability Testing Data">
+          <div class="card-sub-title">Task 2 Data</div>
+          <p class="card-text">High operational ease (SEQ 5.4/7) but partial success (1.2) due to price-opacity induced anxiety.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f2">PURE</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING2_PURE.png" alt="PURE Evaluation Data">
+          <div class="card-sub-title">Task 2 - Step 7</div>
+          <p class="card-text">In the final step of Task 2, the pure score is 2, indicating that there is a friction point in this step.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f2">AI</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING2_AI.png" alt="AI Heuristic Analysis Data">
+          <div class="card-sub-title">Task 2 Data</div>
+          <p class="card-text">Task 2 AI data indicates a high cognitive load, with an overall PURE score of 3 (serious issue).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fd-wrap fd-light">
+  <div class="container">
+    <div class="dlabel dl-o">Finding 03 — High</div>
+    <div class="fd-heading">Information Architecture Problems</div>
+    <div class="fd-top reveal">
+      <div class="fd-card-themed th-orange" style="height: 100%;">
+        <div class="fd-head-themed th-orange">Problem Highlight: Architecture</div>
+        <div style="position: relative; flex: 1; background: #000; min-height: 240px;">
+          <video controls preload="metadata" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;">
+            <source src="YOUR_VIDEO_F3.mp4" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div style="background: var(--theme-f3); border-radius: 8px; padding: 2rem; color: #0F0F0F;">
+          <div style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">Problem Overview</div>
+          <div style="font-size: 14px; line-height: 1.4; font-weight: 400; font-family: 'DM Sans', sans-serif;">Through three research, we found that the current software’s information architecture is complex, with ad display taking precedence over usability. This results in cognitive overload for users, while the complex information indexing makes it difficult for them to find the information they need. New users struggle to adapt, which negatively impacts the user experience.</div>
+        </div>
+        <div class="fd-card-themed th-orange" style="flex: 1;">
+          <div class="fd-head-themed th-orange">Selected User Quotes</div>
+          <div style="padding: 1.25rem; background: #F9FAFB; display: flex; flex-direction: column; gap: 1.2rem; flex: 1; justify-content: center;">
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f3">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">The interface is a bit too flashy and too complicated... it would be better if the page were simpler."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;text-align: right;">— Participants 5</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <span class="quote-mark th-f3">“</span>
+              <div style="flex: 1;">
+                <p style="font-size: 14px; line-height: 1.5; font-style: italic; color: var(--text); margin-bottom: 4px; font-family: 'DM Sans', sans-serif;">The search bar is not on the top of the screen. It makes me confused a little bit. Then I find it on the bottom."</p>
+                <p style="font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;text-align: right;">— PURE Evaluator 3</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fd-cards reveal">
+      <div class="fd-card">
+        <div class="fd-card-head head-f3">Usability Testing</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING3_USABILITY.png" alt="Usability Testing Data">
+          <div class="card-sub-title">Overall UMUX</div>
+          <p class="card-text">With a 68% UMUX Lite score and 80% neutral ease-of-use ratings, the app’s usability is only average due to persistent navigation barriers.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f3">PURE</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING3_PURE.png" alt="PURE Evaluation Data">
+          <div class="card-sub-title">Overall PURE Score</div>
+          <p class="card-text">High friction (red/yellow) reveals severe IA flaws.</p>
+        </div>
+      </div>
+      <div class="fd-card">
+        <div class="fd-card-head head-f3">AI</div>
+        <div class="fd-card-body">
+          <img src="YOUR_FINDING3_AI.png" alt="AI Heuristic Analysis Data">
+          <div class="card-sub-title">Overall PURE Score</div>
+          <p class="card-text">Overall data reveals widespread severe friction, confirming critical IA.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="actions" style="background: #F5F5F5; padding: 90px 2.5rem 0;">
+  <div class="container">
+    <div class="center-header">
+      <div class="center-label"><span>Design Recommendations</span></div>
+      <h2 class="center-title">Actions</h2>
+      <p class="sec-sub" style="text-align: center;">Prioritised solutions to resolve the identified friction points.</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="triang-inner reveal" style="margin-top: 0; margin-bottom: 4rem;">
+      <div class="ux-doc-wrapper">
+        <p class="tm-desc">We utilized a Triangulation Matrix to cross-validate the identified usability issues, and applied the Eisenhower Matrix to determine the priority of the problems to be solved.</p>
+        <div class="tm">
+          <div class="tm-title-bar"><strong>Triangulation Matrix — Uber Eats UX Evaluation </strong></div>
+          <div class="tm-grid">
+            <div class="tm-card">
+              <div class="tm-card-head tc-blue">Issue: Support Invisible</div>
+              <div class="tm-card-body">
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span><strong>Usability Testing Findings:</strong> Behavior: 100% task failure. Users felt frustrated and helpless ("I can't find a phone number anywhere"). Task 3 success rate is 0.</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span><strong>PURE Evaluation Findings:</strong> Expert Rating: Score 3 – High friction. Task 3 is worth a total of 10 points; there are 4 friction points in Task 3.</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>AI Heuristic Analysis Findings:</strong> The AI assigns an extremely high cognitive load (5/5). AI Persona assigns the lowest SEQ score (2/7, extremely difficult). Heuristics violation: Violates H3 User Control and Freedom.</span></div>
+              </div>
+              <div class="tm-final">
+                <div class="tm-final-title">Final Triangulation <span class="tag-strong">Strong Alignment</span></div>
+                <div class="tm-final-text">All three methods highlight a critical blocker. The complete absence of a human escalation path creates severe emotional friction and guarantees task failure.</div>
+              </div>
+            </div>
+            <div class="tm-card">
+              <div class="tm-card-head tc-yellow">Issue: Price Transparency</div>
+              <div class="tm-card-body">
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span><strong>Usability Testing Findings:</strong> Behavior: Users noticeably hesitated during checkout, leading to decreased financial confidence. Quan show 80% users can not find the final price. SEQ score is low</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span><strong>PURE Evaluation Findings:</strong> Expert reflect couldn't find a summary of the total price anywhere. Expert Rating: Score 3 – Medium friction.</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>AI Heuristic Analysis Findings:</strong> Heuristic violations: Serious violation of the visibility of system status (H1). PURE 3 — High friction, Cognitive load 4 / 5. The AI persona gave a rating of 4 out of 7 and did not confirm the final price during the task.</span></div>
+              </div>
+              <div class="tm-final">
+                <div class="tm-final-title">Final Triangulation <span class="tag-strong yellow">Strong Alignment</span></div>
+                <div class="tm-final-text">Real user hesitation is directly explained by the structural flaws identified by experts and AI—specifically, the hidden grand total and ambiguous payment UI.</div>
+              </div>
+            </div>
+            <div class="tm-card">
+              <div class="tm-card-head tc-green">Issue: Information Architecture</div>
+              <div class="tm-card-body">
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span><strong>Usability Testing Findings:</strong> User Behavior: Users show noticeable hesitation when looking for the after-sales support option; some users have reported that the help option is not clearly visible.</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span><strong>PURE Evaluation Findings:</strong> Tasks 1, 2, and 3 all have several sticking points.</span></div>
+                <div class="tm-point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span><strong>AI Heuristic Analysis Findings:</strong> Heuristic violations: H2 (abbreviations do not conform to natural language), H4 (search box placement deviates from standards). The AI experiences increased cognitive load when processing redundant hierarchical menus. The AI feedback promotion mechanism appears at every decision point, constantly interrupting the core task workflow.</span></div>
+              </div>
+              <div class="tm-final">
+                <div class="tm-final-title">Final Triangulation <span class="tag-mod">Moderate Alignment</span></div>
+                <div class="tm-final-text">Analytical methods (PURE/AI) pinpointed specific structural issues that perfectly align with the minor delays and confusion observed in real users.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="reveal" style="margin-top: 3rem; margin-bottom: 2rem;">
+          <div class="tm-title-bar"><strong>Priority matrix — Eisenhower</strong></div>
+        </div>
+        <div class="pm-wrapper reveal">
+          <div class="pm-matrix">
+            <div class="pm-y-axis">
+              <span class="pm-axis-lbl pm-label-rot">High</span>
+              <div class="pm-axis-badge pm-label-rot" style="padding: 1.5rem 0.4rem;">Urgent</div>
+              <span class="pm-axis-lbl pm-label-rot">Low</span>
+            </div>
+            <div class="pm-x-axis">
+              <span class="pm-axis-lbl">Low</span>
+              <div class="pm-axis-badge" style="padding: 0.4rem 1.5rem;">Important</div>
+              <span class="pm-axis-lbl">High</span>
+            </div>
+            <div class="pm-grid">
+              <div class="pm-quad pm-q-tl pm-q-delegate"><span class="pm-q-title">Delegate</span></div>
+              <div class="pm-quad pm-q-tr pm-q-do">
+                <span class="pm-q-title">Do</span>
+                <div class="pm-pill">1. Price Transparency</div>
+                <div class="pm-pill">2. Support Invisible</div>
+              </div>
+              <div class="pm-quad pm-q-bl pm-q-delete"><span class="pm-q-title">Delete</span></div>
+              <div class="pm-quad pm-q-br pm-q-decide">
+                <span class="pm-q-title">Decide</span>
+                <div class="pm-pill">3. Information Architecture</div>
+              </div>
+            </div>
+          </div>
+          <div class="pm-arrow">
+            <svg width="60" height="40" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 40H75M75 40L55 20M75 40L55 60" stroke="#06C167" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="roadmap-list">
+            <div class="rm-row">
+              <div class="rm-num">1</div>
+              <div class="rm-content">
+                <div class="rm-title">Price Transparency</div>
+                <div class="rm-desc">Explaining that this problem is very serious and can be quickly solved, quickly improving the user experience.</div>
+              </div>
+            </div>
+            <div class="rm-row">
+              <div class="rm-num">2</div>
+              <div class="rm-content">
+                <div class="rm-title">Support Invisible</div>
+                <div class="rm-desc">Although seeking help is the final step in the user flow, a reliable and user-friendly “safety net” is crucial. In the long term, resolving this significant friction point is decisive for restoring user trust, reducing frustration, and ultimately ensuring customer retention.</div>
+              </div>
+            </div>
+            <div class="rm-row">
+              <div class="rm-num">3</div>
+              <div class="rm-content">
+                <div class="rm-title">Information Architecture</div>
+                <div class="rm-desc">Simplified navigation and mental model. Refines global and local navigation for faster task completion and smoother interactions.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="act-section act-white act-price">
+  <div class="container">
+    <div class="act-header">
+      <div class="act-badge ab-price">01</div>
+      <div class="act-title">Fix Price Transparency at Checkout</div>
+    </div>
+    <div class="act-hmw hmw-price">
+      <div class="act-hmw-bar"></div>
+      <div class="act-hmw-body">How might we redesign the checkout flow to provide full price transparency and eliminate users' fear of price uncertainty?</div>
+    </div>
+    <div class="act-advice-row">
+      <div class="act-advice-line"></div>
+      <div class="act-advice-label">Advice</div>
+      <div class="act-advice-line"></div>
+    </div>
+    <p class="act-advice-text">Redesign the layout of the pricing page to ensure price transparency, allowing users to clearly see the total amount they will be charged, while also adding safeguards to prevent accidental orders.</p>
+    <div class="act-cards reveal">
+      <div class="act-card ac-card3">
+        <div class="act-img"><img src="YOUR_ACTION1A.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">1</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text">The total price can be positioned at the bottom of the screen so that users can see it at any time by scrolling; the tax amount can be adjusted on the payment page.</div>
+        </div>
+      </div>
+      <div class="act-card ac-card6">
+        <div class="act-img"><img src="YOUR_ACTION1B.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">2</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text">Provide payment system to prevent misuse, the user clicks on the place order should provide a confirmation of payment steps to avoid misuse.</div>
+        </div>
+      </div>
+    </div>
+    <div class="act-bottom">
+      <div class="act-kpi-card">
+        <div class="act-kpi-head">Business Goals, KPI</div>
+        <div class="act-kpi-body">
+          <img src="YOUR_ACTION2_KPI.png" alt="Business Goals KPI">
+        </div>
+      </div>
+      <div class="act-collab-card">
+        <div class="act-collab-head">Collaborative</div>
+        <div class="act-collab-body">
+          <div class="collab-col"><span class="collab-tag">UI&UX Designer</span><p class="collab-text">To prototype the interactions and design visual for real-time price.</p><span class="collab-tag">UX Research</span><p class="collab-text">Usability testing on new checkout flow to confirm reduced anxiety and hesitation.</p></div><div class="collab-col"><span class="collab-tag">Engineering</span><p class="collab-text">The front-end is responsible for implement the real-time calculation logic and the smooth animation. and the back-end is responsible for making sure that the price calculated before the click is 100% accurate.</p><span class="collab-tag">Product Management</span><p class="collab-text">Track order completion rate and refund rate as primary KPIs post-launch.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act-section act-support">
+  <div class="container">
+    <div class="act-header">
+      <div class="act-badge ab-support">02</div>
+      <div class="act-title">Customer Support Functions are Not Visible</div>
+    </div>
+    <div class="act-hmw hmw-support">
+      <div class="act-hmw-bar"></div>
+      <div class="act-hmw-body">How might we establish a transparent communication mechanism within the app that allows users to resolve their needs at any time?</div>
+    </div>
+    <div class="act-advice-row">
+      <div class="act-advice-line"></div>
+      <div class="act-advice-label">Advice</div>
+      <div class="act-advice-line"></div>
+    </div>
+    <p class="act-advice-text">Establish a direct communication platform so that users can directly contact the merchant or rider, reducing the "contact intermediary". The help page needs to be intuitive so that users can quickly capture the required functions.</p>
+    <div class="act-cards reveal">
+      <div class="act-card ac-card1">
+        <div class="act-img"><img src="YOUR_ACTION2A.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">1</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text">Platform design a <strong>three-way communication platform</strong>: users, merchants, and riders can communicate directly online. Real Reference Case — China's Meituan Delivery Software.</div>
+        </div>
+      </div>
+      <div class="act-card ac-card2">
+        <div class="act-img"><img src="YOUR_ACTION2B.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">2</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text">The help page should be available on both the home page and the order page. Options:
+        <ul>
+          <li>Add a help icon to the top right corner of the home page.</li>
+          <li>Hover over the help icon so the user can see it wherever they click.</li>
+        </ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="act-bottom">
+      <div class="act-kpi-card">
+        <div class="act-kpi-head">Business Goals, KPI</div>
+        <div class="act-kpi-body">
+          <img src="YOUR_ACTION1_KPI.png" alt="Business Goals KPI">
+        </div>
+      </div>
+      <div class="act-collab-card">
+        <div class="act-collab-head">Collaborative</div>
+        <div class="act-collab-body">
+          <div class="collab-col"><span class="collab-tag">UI&UX Designer</span><p class="collab-text">UX designers are responsible for creating communication platforms and helping with interaction design.</p><span class="collab-tag">UX Research</span><p class="collab-text">AB testing to see which design users prefer.</p></div><div class="collab-col"><span class="collab-tag">Engineering</span><p class="collab-text">The front-end is responsible for the interaction with the updated help button.</p><span class="collab-tag">Product Management</span><p class="collab-text">To forecast the increase in direct merchant calls and adjust support capacity.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act-section act-white act-ia">
+  <div class="container">
+    <div class="act-header">
+      <div class="act-badge ab-ia">03</div>
+      <div class="act-title">Redesign Information Architecture</div>
+    </div>
+    <div class="act-hmw hmw-ia">
+      <div class="act-hmw-bar"></div>
+      <div class="act-hmw-body">How might we design an intuitive information architecture that minimises friction points for users during their interactions?</div>
+    </div>
+    <div class="act-advice-row">
+      <div class="act-advice-line"></div>
+      <div class="act-advice-label">Advice</div>
+      <div class="act-advice-line"></div>
+    </div>
+    <p class="act-advice-text">Restructure the navigation so critical functions are visible at a glance. Move the search bar to the top, add a sidebar for menu categories, and redesign the help page hierarchy so users can find support in under 2 steps.</p>
+    <div class="act-cards reveal">
+      <div class="act-card ac-card4">
+        <div class="act-img"><img src="YOUR_ACTION3A.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">1</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text">Product categories should be prominently displayed, with recommended items consolidated into a section below. Users without specific preferences can browse the content below. Any advertising sections must be clearly labeled, but should not be overly prominent.</div>
+          <div class="act-card-text"><strong>Search:</strong> change the search bar from the bottom to the top, in line with the user's habit.</div>
+        </div>
+      </div>
+      <div class="act-card ac-card5">
+        <div class="act-img"><img src="YOUR_ACTION3B.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">2</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text"><strong>Sidebar:</strong> Although the current product selection page provides grouping, but the user needs to scroll down to see, click into the home page can not be seen directly, not intuitive, can be directly designed in the user click into the user can see, vertical row on the left of the form, the user can see at a glance what the grouping, do not need to because of sliding.</div>
+        </div>
+      </div>
+      <div class="act-card ac-card6" style="grid-column: 1 / -1;">
+        <div class="act-img"><img src="YOUR_ACTION3C.png" alt="Action screenshot"></div>
+        <div class="act-card-content">
+          <div><span class="act-card-num">3</span><span class="act-card-label">Action</span></div>
+          <div class="act-card-text"><strong>Help Page:</strong></div>
+          <div class="act-card-text">
+            <ul>
+              <li>Use card sorting to rearrange the information architecture, then test whether the proposed new structure is viable.</li>
+              <li>Previous orders should not be limited to displaying only the most recent one. While showing the last order directly allows users to find it quickly, it prevents them from accessing other orders. Therefore, create a module where users can click to view all pending orders requiring attention.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="act-bottom">
+      <div class="act-kpi-card">
+        <div class="act-kpi-head">Business Goals, KPI</div>
+        <div class="act-kpi-body">
+          <img src="YOUR_ACTION3_KPI.png" alt="Business Goals KPI">
+        </div>
+      </div>
+      <div class="act-collab-card">
+        <div class="act-collab-head">Collaborative</div>
+        <div class="act-collab-body">
+          <div class="collab-col"><span class="collab-tag">UI&UX Designer</span><p class="collab-text">Redesigning the information architecture of the homepage, menus and help page through card sorting, and testing it.</p><span class="collab-tag">UX Research</span><p class="collab-text">Card sorting studies to validate new information architecture with real users.</p></div><div class="collab-col"><span class="collab-tag">Engineering</span><p class="collab-text">Implement new navigation components and sidebar category menu.</p><span class="collab-tag">Product Management</span><p class="collab-text">Define success metrics for new IA — task completion rate and time-to-first-action.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="methodology" class="dark-sec">
+  <div class="container">
+    <div class="center-header reveal">
+      <div class="center-label">
+        <span>Research Process</span>
+      </div>
+      <h2 class="center-title">Methodology</h2>
+      <p class="sec-sub" style="text-align: center;">Three progressive methods, designed to cross-validate each other.</p>
+    </div>
+    
+    <div class="mth-grid reveal">
+      <div class="mcard mc1">
+        <div class="mnum">01</div>
+        <div class="micon custom-micon">
+          <img src="icon-usability.png" alt="Usability Icon">
+        </div>
+        <div class="mname">Usability Study</div>
+        <div class="mdesc">Remote moderated testing via Zoom with 5 real Uber Eats users (ages 20–25). Three tasks with SEQ, UMUX-Lite, task success rate, error rate, and time-on-task.</div>
+        <div class="mtags"><span class="mtag">N=5 Users</span><span class="mtag">Remote/Zoom</span><span class="mtag">SEQ + UMUX-Lite</span><span class="mtag">Affinity Map</span></div>
+        <a href="usability.html" target="_blank" class="m-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> 
+          Click for more data
+        </a>
+      </div>
+      <div class="mcard mc2">
+        <div class="mnum">02</div>
+        <div class="micon custom-micon">
+          <img src="icon-pure.png" alt="PURE Icon">
+        </div>
+        <div class="mname">PURE Study</div>
+        <div class="mdesc">In-person expert evaluation by 3 UX Master's students (WLU). Each step rated on PURE 1–3 friction scale. Qualitative data analyzed via Affinity Mapping in Figma.</div>
+        <div class="mtags"><span class="mtag">N=3 Experts</span><span class="mtag">In-Person</span><span class="mtag">PURE 1–3 Scale</span><span class="mtag">17 Steps</span></div>
+        <a href="pure.html" target="_blank" class="m-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> 
+          Click for more data
+        </a>
+      </div>
+      <div class="mcard mc3">
+        <div class="mnum">03</div>
+        <div class="micon custom-micon">
+          <img src="icon-ai.png" alt="AI Icon">
+        </div>
+        <div class="mname">AI Heuristic Eval</div>
+        <div class="mdesc">Gemini (Thinking) used as AI participant proxy with simulated think-aloud. Same 3 tasks evaluated against Nielsen's 10 Heuristics with SEQ scores recorded.</div>
+        <div class="mtags"><span class="mtag">Gemini Thinking</span><span class="mtag">Nielsen's 10H</span><span class="mtag">SEQ Scores</span><span class="mtag">Think-Aloud</span></div>
+        <a href="https://4379830730.github.io/uber_eats_ux_A/" target="_blank" class="m-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> 
+          Click for more data
+        </a>
+      </div>
+    </div>
+    
+    <div class="m-tasks-wrap reveal">
+      <h4 class="m-tasks-title">Usability Testing Tasks</h4>
+      <p class="m-tasks-sub">To evaluate the core user flow and identify potential friction points, participants were asked to complete the following three key tasks:</p>
+      <ul class="m-task-list">
+        <li>
+          <strong>Task 1: Item Selection & Pop-up Handling</strong>
+          Search for a "Sandwich" within the app, select a specific package, and successfully navigate through any promotional pop-ups that appear.
+        </li>
+        <li>
+          <strong>Task 2: Payment & Checkout Customization</strong>
+          Navigate to the payment page to modify the default payment method and adjust the tip amount before finalizing the order.
+        </li>
+        <li>
+          <strong>Task 3: Support & Issue Resolution</strong>
+          Locate customer service to inquire about the most recent order and attempt to find a direct customer service phone number.
+        </li>
+      </ul>
+    </div>
+
+    <div class="tl-scroll-wrapper reveal">
+      <div class="tl-root">
+        <div class="tl-glow" style="width:240px;height:240px;top:-100px;left:-40px;background:#3B4EFF;opacity:0.05;"></div>
+        <div class="tl-glow" style="width:180px;height:180px;top:-80px;right:60px;background:#818CF8;opacity:0.04;"></div>
+        
+        <div class="tl-header">
+          <div><div class="tl-main-title">UX Research Timeline</div></div>
+          <div class="tl-header-right">Jan 5 – Mar 23, 2026 &nbsp;·&nbsp; <span>11 Weeks</span> &nbsp;·&nbsp; Methods: <span>Usability · PURE · AI</span></div>
+        </div>
+
+        <div class="tl-date-row">
+          <div class="tl-date-col" style="flex:1.4;"><span class="tl-date-label">Jan 5</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Jan 26</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Feb 2</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Feb 9</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Feb 16</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Feb 23</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Mar 2</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Mar 9</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Mar 16</span></div>
+          <div class="tl-date-col"><span class="tl-date-label">Mar 23</span></div>
+        </div>
+
+        <div class="tl-dots-row">
+          <div class="tl-dot-col" style="flex:1.4;--lc:#5B6AE8;--rc:#818CF8;"><div class="tl-dot" style="background:#5B6AE8;"></div></div>
+          <div class="tl-dot-col" style="--lc:#818CF8;--rc:#9F8DFA;"><div class="tl-dot" style="background:#9F8DFA;"></div></div>
+          <div class="tl-dot-col" style="--lc:#9F8DFA;--rc:#B48BFB;"><div class="tl-dot" style="background:#B48BFB;"></div></div>
+          <div class="tl-dot-col" style="--lc:#B48BFB;--rc:#C87FF5;"><div class="tl-dot" style="background:#C87FF5;"></div></div>
+          <div class="tl-dot-col" style="--lc:#C87FF5;--rc:#D946EF;"><div class="tl-dot" style="background:#D946EF;"></div></div>
+          <div class="tl-dot-col" style="--lc:#D946EF;--rc:#F43F5E;"><div class="tl-dot" style="background:#F43F5E;"></div></div>
+          <div class="tl-dot-col" style="--lc:#F43F5E;--rc:#F97316;"><div class="tl-dot" style="background:#F97316;"></div></div>
+          <div class="tl-dot-col" style="--lc:#F97316;--rc:#FBBF24;"><div class="tl-dot" style="background:#FBBF24;"></div></div>
+          <div class="tl-dot-col" style="--lc:#FBBF24;--rc:#34D399;"><div class="tl-dot" style="background:#34D399;"></div></div>
+          <div class="tl-dot-col" style="--lc:#34D399;--rc:#22D3EE;"><div class="tl-dot" style="background:#22D3EE;"></div></div>
+        </div>
+
+        <div class="tl-phases">
+          <div class="tl-phase" style="flex:1.4;">
+            <div class="tl-phase-bar" style="background:#5B6AE8;"></div>
+            <div class="tl-phase-num" style="color:#5B6AE8;">W1–3</div>
+            <div class="tl-phase-week">Research Plan</div>
+            <div class="tl-phase-name">Planning</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Finalize task list & screening criteria</div>
+            <div class="tl-phase-status" style="color:#5B6AE8;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#818CF8;"></div>
+            <div class="tl-phase-num" style="color:#818CF8;">W4</div>
+            <div class="tl-phase-week">Recruitment</div>
+            <div class="tl-phase-name">Usability</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Recruit 5 participants; screening & consent</div>
+            <div class="tl-phase-status" style="color:#818CF8;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#9F8DFA;"></div>
+            <div class="tl-phase-num" style="color:#9F8DFA;">W5</div>
+            <div class="tl-phase-week">Testing</div>
+            <div class="tl-phase-name">Usability</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">5 sessions Zoom / in person, recorded</div>
+            <div class="tl-phase-status" style="color:#9F8DFA;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#B48BFB;"></div>
+            <div class="tl-phase-num" style="color:#B48BFB;">W6</div>
+            <div class="tl-phase-week">Analysis</div>
+            <div class="tl-phase-name">Usability</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Success rate, time-on-task, error data</div>
+            <div class="tl-phase-status" style="color:#B48BFB;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#C87FF5;"></div>
+            <div class="tl-phase-num" style="color:#C87FF5;">W7</div>
+            <div class="tl-phase-week">Recruitment</div>
+            <div class="tl-phase-name">PURE</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Secure 3 UX expert evaluators</div>
+            <div class="tl-phase-status" style="color:#C87FF5;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#D946EF;"></div>
+            <div class="tl-phase-num" style="color:#D946EF;">W8</div>
+            <div class="tl-phase-week">Evaluation</div>
+            <div class="tl-phase-name">PURE</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Task scoring (1–3 scale); organize findings</div>
+            <div class="tl-phase-status" style="color:#D946EF;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#F43F5E;"></div>
+            <div class="tl-phase-num" style="color:#F43F5E;">W9</div>
+            <div class="tl-phase-week">AI Evaluation</div>
+            <div class="tl-phase-name">AI Study</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Simulate user flows; analyze task steps via AI</div>
+            <div class="tl-phase-status" style="color:#F43F5E;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#F97316;"></div>
+            <div class="tl-phase-num" style="color:#F97316;">W10</div>
+            <div class="tl-phase-week">Cross-Method</div>
+            <div class="tl-phase-name">Comparison</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Compare Usability, PURE & AI data</div>
+            <div class="tl-phase-status" style="color:#F97316;">✓ Done</div>
+          </div>
+          <div class="tl-phase">
+            <div class="tl-phase-bar" style="background:#34D399;"></div>
+            <div class="tl-phase-num" style="color:#34D399;">W11</div>
+            <div class="tl-phase-week">Final Project</div>
+            <div class="tl-phase-name">Deliverable</div>
+            <div class="tl-divider"></div>
+            <div class="tl-milestone-text">Consolidated report & final presentation</div>
+            <div class="tl-phase-status" style="color:#34D399;">✓ Done</div>
+          </div>
+        </div>
+
+        <div class="tl-footer">
+          <div class="tl-foot-note">Uber Eats UX Study · Jan 5 – Mar 23, 2026 · 11 Weeks</div>
+          <div class="tl-complete-badge"><div class="tl-check">✓</div>All phases completed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-comparison reveal">
+      <h3>Methodology Comparison: Strengths & Weaknesses</h3>
+      <p>A core component of this study was comparing the efficacy of Usability Testing, PURE, and AI Evaluation.</p>
+      <table class="comparison-table">
+          <thead>
+              <tr>
+                  <th style="width: 20%;">Method</th>
+                  <th style="width: 40%;">Strengths</th>
+                  <th style="width: 40%;">Weaknesses</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><strong>1. Usability Testing</strong></td>
+                  <td>Provides undeniable behavioral evidence, genuine emotional reactions (e.g., frustration), and qualitative context ("say-do" gap). High stakeholder buy-in.</td>
+                  <td>Resource-intensive (recruiting, moderating), smaller sample size, and users may exhibit "social desirability bias," overlooking friction if a task is eventually completed.</td>
+              </tr>
+              <tr>
+                  <td><strong>2. PURE (Expert Eval)</strong></td>
+                  <td>Systematic, structured, and fast. Excellent at identifying granular UI friction points and structural flaws that average users might not articulate.</td>
+                  <td>Lacks real user empathy and emotional context. Experts might suffer from "curse of knowledge," assuming tasks are easier (or harder) than they are for the target demographic.</td>
+              </tr>
+              <tr>
+                  <td><strong>3. AI Evaluation</strong></td>
+                  <td>Incredibly fast, scalable, and low-cost. Highly objective in flagging heuristic violations and quantifying cognitive load step-by-step.</td>
+                  <td>Can be overly rigid or hallucinate context. AI lacks genuine human emotional nuance and cannot fully simulate the unpredictable, chaotic nature of real human interactions.</td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+
+    <div class="strategic-roadmap reveal">
+      <h3>Strategic Integration: When to Leverage Each Research Method</h3>
+      <p>Based on our comparative study, we propose the following strategic roadmap for integrating these methods into the product development lifecycle:</p>
+      <ul>
+          <li><strong>Early Stage (Ideation & Wireframing) -> AI Evaluation:</strong> Use AI as a low-cost, high-speed "first pass" to identify obvious heuristic violations, structural logic errors, and cognitive overload before any code is written.</li>
+          <li><strong>Mid Stage (Prototyping) -> PURE (Expert Review):</strong> Once interactive prototypes are built, deploy UX experts to conduct systematic PURE evaluations. This ensures the interaction design is fluid and meets industry standards before investing in user recruitment.</li>
+          <li><strong>Late Stage (Pre-Launch & Post-Launch) -> Usability Testing:</strong> Reserve resource-intensive real user testing for validating high-risk flows, assessing emotional impact (trust, anxiety), and uncovering the unpredictable "say-do" gaps that experts and AI cannot simulate.</li>
+      </ul>
+    </div>
+
+    <div class="marquee-container reveal">
+      <div style="text-align: center; font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 700; color: #FFFFFF; margin-bottom: 4rem;">Software & Tools Used</div>
+      <div class="marquee-track">
+        <div class="marquee-item"><img src="logos/tool-zoom.svg" alt="Zoom"></div>
+        <div class="marquee-item"><img src="logos/tool-gemini.svg" alt="Gemini"></div>
+        <div class="marquee-item"><img src="logos/tool-figma.svg" alt="Figma"></div>
+        <div class="marquee-item"><img src="logos/tool-google-docs.svg" alt="Google Docs"></div>
+        <div class="marquee-item"><img src="logos/tool-canva.svg" alt="Canva"></div>
+        <div class="marquee-item"><img src="logos/tool-capcut.svg" alt="CapCut"></div>
+        <div class="marquee-item"><img src="logos/tool-github.svg" alt="GitHub"></div>
+        
+        <div class="marquee-item"><img src="logos/tool-zoom.svg" alt="Zoom"></div>
+        <div class="marquee-item"><img src="logos/tool-gemini.svg" alt="Gemini"></div>
+        <div class="marquee-item"><img src="logos/tool-figma.svg" alt="Figma"></div>
+        <div class="marquee-item"><img src="logos/tool-google-docs.svg" alt="Google Docs"></div>
+        <div class="marquee-item"><img src="logos/tool-canva.svg" alt="Canva"></div>
+        <div class="marquee-item"><img src="logos/tool-capcut.svg" alt="CapCut"></div>
+        <div class="marquee-item"><img src="logos/tool-github.svg" alt="GitHub"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reflection" style="background: #FFFFFF;">
+  <div class="container">
+    <div class="center-header reveal">
+      <div class="center-label" style="color: var(--text);"><span>Project Takeaways</span></div>
+      <h2 class="center-title" style="color: var(--text);">Reflection</h2>
+      <p class="sec-sub" style="text-align: center;">What I learned from this comparative evaluation study.</p>
+    </div>
+    
+    <div class="reveal reflection-card">
+      <div class="ref-point">
+        <h4>1. Identifying the Gap: Behavioral Data vs. Self-Reporting</h4>
+        <p>One of the most profound insights from this study was the "say-do" gap. I observed that users often assigned high satisfaction scores even when they encountered significant obstacles during tasks. This suggests that users may subconsciously overlook friction points once a task is completed, or they might feel a "social desirability bias" during testing. It taught me that relying solely on quantitative ratings can be misleading; we must cross-reference subjective feedback with objective behavioral observations to pinpoint where the experience truly breaks down.</p>
+      </div>
+      <div class="ref-point">
+        <h4>2. Mastering Data Synthesis & Evidence-Based Prioritization</h4>
+        <p>The biggest challenge was synthesizing vast amounts of qualitative and quantitative data. Transitioning from data collection to prioritizing findings requires more than just intuition—it requires a structured, <strong>evidence-based approach</strong>. Utilizing the <strong>Triangulation Matrix</strong> and the <strong>Eisenhower Priority Matrix</strong> was a turning point. These frameworks allowed me to align new findings with existing research, ensuring that our focus was directed toward the most critical issues rather than subjective preferences. This process was instrumental in building a robust, defensible evidence chain.</p>
+      </div>
+      <div class="ref-point">
+        <h4>3. Future Improvements</h4>
+        <ul><li><strong>Agile Methodology Selection: </strong>In future projects, I aim to more rapidly identify the most effective research methods tailored to specific goals, ensuring a more streamlined data-gathering phase.</li>
+<li><strong>Strategic Stakeholder Communication:</strong> I plan to further refine my reporting style by focusing on actionable insights. By simplifying complex data into high-impact narratives, I want to ensure that stakeholders can quickly grasp the core findings to make informed, data-driven decisions.</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  
+  <div class="ft-contact">
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="ft-icon-btn" target="_blank">
+      <img src="icon-linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="ft-icon-btn" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="mailto:YauchiTATA@Gmail.com" class="ft-icon-btn">
+      <img src="icon-mail.png" alt="Email">
+    </a>
+  </div>
+  <div class="ft-line"></div>
+  <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
+</footer>
+
+<script>
+  /* ── 统一的主题切换与光标跟随 ── */
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const sunIconPath = "image_df6b4a.png"; 
+  const moonIconPath = "image_df6b67.png"; 
+
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode'); themeIcon.src = sunIconPath; 
+  } else { themeIcon.src = moonIconPath; }
+
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+      themeIcon.src = sunIconPath; localStorage.setItem('theme', 'dark'); 
+    } else {
+      themeIcon.src = moonIconPath; localStorage.setItem('theme', 'light'); 
+    }
+  });
+
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  });
+  
+  /* 给 Uber Eats 页面内的元素加上鼠标悬浮放大效果 */
+  document.querySelectorAll('a, button, .theme-toggle, .ft-icon-btn, .contents-list li, .mcard, .fcard').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+
+  /* ── Uber Eats 报告自带的动画和特效 ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.07 });
+  reveals.forEach(el => io.observe(el));
+
+  document.querySelectorAll('.fgrid > *, .mth-grid > *, .agrid > *, .contents-list li').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.09}s`;
+  });
+
+  const terminalCanvas = document.getElementById('terminal-canvas');
+  const tCtx = terminalCanvas.getContext('2d');
+  const heroSection = document.getElementById('hero');
+
+  let tWidth, tHeight;
+  let tMouse = { x: -1000, y: -1000 };
+
+  function resizeTerminal() {
+    tWidth = terminalCanvas.width = heroSection.offsetWidth;
+    tHeight = terminalCanvas.height = heroSection.offsetHeight;
+  }
+  window.addEventListener('resize', resizeTerminal);
+  resizeTerminal();
+
+  heroSection.addEventListener('mousemove', (e) => {
+    const rect = terminalCanvas.getBoundingClientRect();
+    tMouse.x = e.clientX - rect.left;
+    tMouse.y = e.clientY - rect.top;
+  });
+  heroSection.addEventListener('mouseleave', () => {
+    tMouse.x = -1000;
+    tMouse.y = -1000;
+  });
+
+  const tint = '#0F3D1A';
+  const tCellSize = 16;
+  const tChars = [' ', ' ', '.', '+', '▤', '■', '█']; 
+  let tTime = 0;
+
+  function drawTerminal() {
+    tCtx.fillStyle = '#050505';
+    tCtx.fillRect(0, 0, tWidth, tHeight);
+    tCtx.fillStyle = tint;
+    tCtx.font = '12px monospace';
+    tCtx.textAlign = 'center';
+    tCtx.textBaseline = 'middle';
+
+    tTime += 0.015;
+
+    for (let y = 0; y < tHeight; y += tCellSize) {
+      for (let x = 0; x < tWidth; x += tCellSize) {
+        let dx = x - tMouse.x;
+        let dy = y - tMouse.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        let wave1 = Math.sin(x * 0.004 + tTime) * Math.cos(y * 0.004 + tTime);
+        let wave2 = Math.sin(x * 0.008 - tTime * 0.8) * Math.cos(y * 0.008 + tTime * 0.5);
+        let noiseValue = (wave1 + wave2) / 2; 
+
+        let mouseInfluence = 0;
+        if (dist < 250) {
+          mouseInfluence = Math.cos(dist * Math.PI / 500) * 0.8; 
+        }
+        
+        let finalValue = noiseValue + mouseInfluence;
+        let normalizedValue = (finalValue + 1.2) / 2.4; 
+        normalizedValue = Math.max(0, Math.min(1, normalizedValue));
+        
+        let charIndex = Math.floor(normalizedValue * tChars.length);
+        if (charIndex >= tChars.length) charIndex = tChars.length - 1;
+        
+        let char = tChars[charIndex];
+
+        if (char !== ' ') {
+            tCtx.globalAlpha = 0.2 + normalizedValue * 0.8;
+            tCtx.fillText(char, x, y);
+        }
+      }
+    }
+    requestAnimationFrame(drawTerminal);
+  }
+  drawTerminal();
+
+  document.addEventListener('click', function(e) {
+    const sparkCount = 8;
+    const sparkSize = 10;
+    const sparkRadius = 15;
+    const sparkColor = '#ffffff';
+    const duration = 400;
+
+    for (let i = 0; i < sparkCount; i++) {
+      createSpark(e.clientX, e.clientY, i, sparkCount);
+    }
+
+    function createSpark(x, y, index, total) {
+      const spark = document.createElement('div');
+      spark.style.position = 'fixed';
+      spark.style.left = x + 'px';
+      spark.style.top = y + 'px';
+      spark.style.width = sparkSize + 'px';
+      spark.style.height = sparkSize + 'px';
+      spark.style.backgroundColor = sparkColor;
+      spark.style.borderRadius = '50%';
+      spark.style.pointerEvents = 'none';
+      spark.style.zIndex = '9999';
+      spark.style.transform = 'translate(-50%, -50%) scale(1)';
+      spark.style.transition = `transform ${duration}ms cubic-bezier(0, 0, 0.2, 1), opacity ${duration}ms ease-out`;
+
+      document.body.appendChild(spark);
+
+      const angle = (index / total) * Math.PI * 2;
+      const distance = sparkRadius * 4;
+      const tx = Math.cos(angle) * distance;
+      const ty = Math.sin(angle) * distance;
+
+      requestAnimationFrame(() => {
+        spark.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`;
+        spark.style.opacity = '0';
+      });
+
+      setTimeout(() => { spark.remove(); }, duration);
+    }
+  });
+</script>
+</body>
+</html>
