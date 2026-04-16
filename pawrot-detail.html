@@ -15,8 +15,8 @@
 
     :root {
       --black: #111111;
-      --white: #F1F1F1;
-      --off: #F1F1F1; 
+      --white: #F6F6F6;
+      --off: #F6F6F6; 
       --gray: #aaaaaa;
       --gray-dark: #666666;
       --border: #e5e1db;
@@ -61,7 +61,7 @@
     #nav {
       position: fixed; top: 0; left: 0; right: 0; padding: 30px 10vw;
       display: flex; justify-content: space-between; align-items: center;
-      z-index: 200; background: rgba(241,241,241,0.8); backdrop-filter: blur(10px);
+      z-index: 200; background: rgba(246,246,246,0.8); backdrop-filter: blur(10px);
       transition: background 0.5s;
     }
     body.dark-mode #nav { background: rgba(17,17,17,0.8); }
@@ -138,10 +138,15 @@
     .cs-list li { font-size: 18px; line-height: 1.6; color: var(--gray-dark); margin-bottom: 12px; position: relative; padding-left: 24px; }
     .cs-list li::before { content: '•'; color: var(--accent); font-size: 24px; position: absolute; left: 0; top: -4px; }
 
-    img.fluid { width: 100%; border-radius: 16px; display: block; object-fit: cover; margin: 32px 0; background: var(--off); }
-    img.shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-    body.dark-mode img.shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-
+    img.fluid { 
+      width: 100%; 
+      border-radius: 0; 
+      display: block; 
+      object-fit: contain; 
+      margin: 32px 0; 
+      background: transparent; 
+    }
+    
     /* ── 1. Hero Banner (全屏大图) ── */
     #hero-banner {
       width: 100vw;
@@ -167,10 +172,10 @@
       margin-bottom: 40px; font-weight: 800; letter-spacing: -0.02em;
     }
 
-    /* ── 1.3 Index Layout (🌟 核心新增：图文左右索引) ── */
+    /* ── 1.3 Index Layout (极简横线版) ── */
     .index-layout {
       display: grid;
-      grid-template-columns: 1.2fr 1fr; /* 左图稍宽，右边留给文字 */
+      grid-template-columns: 1.2fr 1fr; 
       align-items: center;
       gap: 60px;
       margin-top: 80px;
@@ -183,67 +188,136 @@
       margin: 0 auto;
       object-fit: contain;
     }
-    .index-right { display: flex; justify-content: center; }
-    
-    /* 时间线容器 */
-    .toc-container { position: relative; padding-left: 50px; }
-    
-    /* 垂直主干线 */
-    .toc-line {
-      position: absolute; left: 0;
-      top: 15px; bottom: 15px; /* 缩进一点，对齐文字居中 */
-      width: 1px; background: var(--black);
-    }
-    /* 主干线两端的小圆点 */
-    .toc-line::before, .toc-line::after {
-      content: ''; position: absolute; left: -2px; width: 5px; height: 5px; 
-      border-radius: 50%; background: var(--black);
-    }
-    .toc-line::before { top: 0; }
-    .toc-line::after { bottom: 0; }
+    .index-right { display: flex; justify-content: flex-start; }
 
-    /* 列表项目 */
-    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 40px; }
+    /* ── Side Navigation (右侧悬浮导航) ── */
+    .side-nav {
+      position: fixed;
+      top: 50%;
+      right: 3vw; 
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+      align-items: flex-end;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .side-nav.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @media (max-width: 1200px) {
+      .side-nav { display: none !important; }
+    }
+
+    .side-nav a {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gray);
+      text-decoration: none;
+      transition: color 0.3s, transform 0.3s;
+      position: relative;
+    }
+    .side-nav a::after {
+      content: '';
+      position: absolute;
+      right: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--black);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .side-nav a:hover, .side-nav a.active {
+      color: var(--black);
+      transform: translateX(-10px);
+    }
+    .side-nav a.active::after {
+      opacity: 1;
+    }
+    
+    /* 容器缩进 */
+    .toc-container { position: relative; padding-left: 24px; }
+    .toc-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 40px; }
     .toc-list li { position: relative; }
+    .toc-list li::before {
+      content: '';
+      position: absolute; left: -24px; top: 50%; transform: translateY(-50%);
+      width: 12px; height: 2px; background: var(--black); transition: background 0.3s;
+    }
     .toc-list a {
       font-size: 20px; font-weight: 800; color: var(--black); text-decoration: none;
       transition: color 0.3s, transform 0.3s; display: inline-block; letter-spacing: 0.02em;
     }
-    .toc-list a:hover { color: var(--accent); transform: translateX(8px); }
-
-    /* 延伸出的横线和菱形点 */
-    .toc-list li::before {
-      content: ''; position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
-      width: 25px; height: 1px; background: var(--black);
-    }
-    .toc-list li::after {
-      content: ''; position: absolute; left: -53px; top: 50%;
-      transform: translateY(-50%) rotate(45deg);
-      width: 6px; height: 6px; background: var(--black);
-    }
-
-    /* 暗色模式适配 */
-    body.dark-mode .toc-line, body.dark-mode .toc-line::before, body.dark-mode .toc-line::after,
-    body.dark-mode .toc-list li::before, body.dark-mode .toc-list li::after { background: var(--white); }
+    .toc-list li:hover a { color: var(--accent); transform: translateX(6px); }
+    .toc-list li:hover::before { background: var(--accent); }
 
     /* ── 2. Image Grid (3 pics) ── */
     .img-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 32px 0; }
-    .img-grid-3 img { width: 100%; border-radius: 12px; object-fit: cover; aspect-ratio: 4/3; background: var(--off); }
+    .img-grid-3 img { 
+      width: 100%; height: auto; border-radius: 0; 
+      display: block; object-fit: contain; background: transparent; 
+    }
 
     /* ── 3. Solution Cards (4 Cards) ── */
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 40px; }
+    /* 🌟 核心修改：强制分为两列，确保在宽屏下是 2x2 排版 */
+    .features-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 32px; 
+      margin-top: 40px; 
+    }
+    
+    /* 🌟 核心修改：增加了 hover 颜色动画和样式反转 */
     .feature-card {
       background: var(--off); border: 1px solid var(--border); border-radius: 24px; padding: 40px 32px;
-      position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative; 
+      transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease, border-color 0.4s ease;
     }
-    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
+    .feature-card:hover { 
+      transform: translateY(-5px); 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.06); 
+      background-color: var(--accent); /* 变橙色 */
+      border-color: var(--accent);
+    }
     body.dark-mode .feature-card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
     
-    .feature-quote { font-family: 'Jersey 10', sans-serif; font-size: 80px; color: var(--accent); opacity: 0.2; position: absolute; top: 10px; right: 24px; line-height: 1; pointer-events: none; }
-    .feature-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; color: var(--black); line-height: 1.2; position: relative; z-index: 2; }
+    .feature-quote { 
+      font-family: 'Jersey 10', sans-serif; font-size: 80px; color: var(--accent); opacity: 0.2; 
+      position: absolute; top: 10px; right: 24px; line-height: 1; pointer-events: none;
+      transition: color 0.4s ease, opacity 0.4s ease;
+    }
+    .feature-card:hover .feature-quote { color: #ffffff; opacity: 0.3; } /* 变白 */
+
+    .feature-title { 
+      font-size: 22px; font-weight: 800; margin-bottom: 20px; color: var(--black); 
+      line-height: 1.2; position: relative; z-index: 2;
+      transition: color 0.4s ease;
+    }
+    .feature-card:hover .feature-title { color: #ffffff; } /* 变白 */
+
     .feature-list { list-style: none; padding-left: 0; position: relative; z-index: 2; }
-    .feature-list li { font-size: 15px; color: var(--gray-dark); margin-bottom: 12px; line-height: 1.5; padding-left: 18px; position: relative; }
-    .feature-list li::before { content: '→'; color: var(--accent); font-weight: bold; position: absolute; left: 0; top: 0; }
+    .feature-list li { 
+      font-size: 15px; color: var(--gray-dark); margin-bottom: 12px; line-height: 1.5; 
+      padding-left: 18px; position: relative;
+      transition: color 0.4s ease;
+    }
+    .feature-card:hover .feature-list li { color: rgba(255,255,255,0.9); } /* 变白 */
+
+    .feature-list li::before { 
+      content: '→'; color: var(--accent); font-weight: bold; position: absolute; left: 0; top: 0;
+      transition: color 0.4s ease;
+    }
+    .feature-card:hover .feature-list li::before { color: #ffffff; } /* 变白 */
 
     /* ── 4. Design Guide ── */
     .design-guide-block { margin-bottom: 60px; }
@@ -287,13 +361,14 @@
       #hero-banner { height: 60vh; }
       #hero-content { padding: 60px 6vw 40px; border-radius: 24px 24px 0 0; }
       
-      /* 手机端索引排版改为上下结构 */
       .index-layout { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
       .index-left { order: -1; } 
       .index-right { justify-content: flex-start; padding-left: 20px; }
       
       .cs-section { padding: 60px 6vw; }
       .img-grid-3 { grid-template-columns: 1fr; gap: 16px; }
+      
+      /* 手机端恢复成一列 */
       .features-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -301,6 +376,15 @@
 <body>
 
 <div id="cursor"></div>
+
+<div class="side-nav">
+  <a href="#s-problem">Problem</a>
+  <a href="#s-research">Research</a>
+  <a href="#s-solution">Solution</a>
+  <a href="#s-design">Design</a>
+  <a href="#s-wireframes">Wireframes</a>
+  <a href="#s-summary">Summary</a>
+</div>
 
 <nav id="nav">
   <a href="index.html" class="nav-logo">
@@ -344,7 +428,6 @@
       
       <div class="index-right">
         <div class="toc-container">
-          <div class="toc-line"></div>
           <ul class="toc-list">
             <li><a href="#s-problem">Problem Statement</a></li>
             <li><a href="#s-research">Research & Insights</a></li>
@@ -387,19 +470,19 @@
     <p class="cs-text">After identifying the target population, the research methodology of the survey was chosen, the One-on-One Interview is good for the research and understanding the main pains users face.</p>
     
     <div class="img-grid-3">
-      <img src="research-img1.jpg" alt="Interview 1" class="shadow">
-      <img src="research-img2.jpg" alt="Interview 2" class="shadow">
-      <img src="research-img3.jpg" alt="Interview 3" class="shadow">
+      <img src="research-img1.png" alt="Interview 1" class="shadow">
+      <img src="research-img2.png" alt="Interview 2" class="shadow">
+      <img src="research-img3.png" alt="Interview 3" class="shadow">
     </div>
 
     <h3 class="cs-subtitle" style="margin-top: 60px;">Affinity Map</h3>
     <p class="cs-text">Based on the interview, I was use it to do a Affinity Map research, we identified key challenges pet owners face in four main areas.</p>
-    <img src="affinity-map.jpg" alt="Affinity Map" class="fluid shadow">
+    <img src="affinity-map.png" alt="Affinity Map" class="fluid shadow">
 
     <h3 class="cs-subtitle" style="margin-top: 60px;">Competitive Analysis</h3>
     <p class="cs-text">Through Competition Analysis, we discovered that users desire a platform where they can share pet care experiences while accessing professional and authoritative pet care knowledge. However, existing platforms lack expert guidance, and excessive advertisements negatively impact user experience. Users prefer personalized recommendations tailored to their pets and a more interactive, community-driven platform.</p>
     <p class="cs-text">Our insights highlight the need for a platform that balances professional knowledge with social engagement, combining pet care expertise, social sharing, and personalized recommendations. A comprehensive pet service platform with these features would fill a market gap, offering both credibility and a strong sense of community.</p>
-    <img src="competitive-analysis.jpg" alt="Competitive Analysis" class="fluid shadow">
+    <img src="competitive-analysis.png" alt="Competitive Analysis" class="fluid shadow">
   </div>
 </section>
 
@@ -458,17 +541,22 @@
     
     <div class="design-guide-block">
       <h3 class="cs-subtitle">Brand value</h3>
-      <img src="design-brand.jpg" alt="Brand Value" class="fluid shadow">
+      <img src="design-brand.png" alt="Brand Value" class="fluid shadow">
     </div>
 
     <div class="design-guide-block">
-      <h3 class="cs-subtitle">Typography & Color</h3>
-      <img src="design-typo-color.jpg" alt="Typography & Color" class="fluid shadow">
+      <h3 class="cs-subtitle">Typography</h3>
+      <img src="design-typo.png" alt="Typography" class="fluid">
+    </div>
+
+    <div class="design-guide-block">
+      <h3 class="cs-subtitle">Color</h3>
+      <img src="design-color.png" alt="Color" class="fluid">
     </div>
 
     <div class="design-guide-block">
       <h3 class="cs-subtitle">Icon</h3>
-      <img src="design-icons.jpg" alt="Icons" class="fluid shadow">
+      <img src="design-icons.png" alt="Icons" class="fluid shadow">
     </div>
   </div>
 </section>
@@ -477,7 +565,12 @@
   <div class="reveal">
     <div class="cs-label">05 / Wireframes & Prototyping</div>
     <h2 class="cs-title">Building the Interface</h2>
-    <img src="wireframes-prototyping.jpg" alt="Wireframes and Prototyping" class="fluid shadow">
+    
+    <h3 class="cs-subtitle">1. Wireframes</h3>
+    <img src="wireframes.png" alt="Wireframes" class="fluid shadow">
+
+    <h3 class="cs-subtitle" style="margin-top: 60px;">2. High-prototyping</h3>
+    <img src="high-prototyping.jpg" alt="High-prototyping" class="fluid shadow">
   </div>
 </section>
 
@@ -543,7 +636,9 @@
   document.addEventListener('mousemove', e => {
     cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
   });
-  document.querySelectorAll('a, button, .theme-toggle, .ft-icon-btn').forEach(el => {
+  
+  // 增加让侧边栏导航链接也能放大光标的逻辑
+  document.querySelectorAll('a, button, .theme-toggle, .ft-icon-btn, .side-nav a, .feature-card').forEach(el => {
     el.addEventListener('mouseenter', () => cur.classList.add('big'));
     el.addEventListener('mouseleave', () => cur.classList.remove('big'));
   });
@@ -555,6 +650,50 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ── 侧边栏跟随与高亮逻辑 ── */
+  const sections = document.querySelectorAll('.cs-section');
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const sideNav = document.querySelector('.side-nav');
+  const firstSection = document.getElementById('s-problem');
+
+  // 控制侧边栏显隐
+  window.addEventListener('scroll', () => {
+    if (firstSection && sideNav) {
+      if (window.scrollY > firstSection.offsetTop - window.innerHeight * 0.6) {
+        sideNav.classList.add('show');
+      } else {
+        sideNav.classList.remove('show');
+      }
+    }
+  });
+
+  // 控制自动高亮
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.3 
+  };
+
+  const observer2 = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(sec => {
+    if (sec.getAttribute('id')) {
+      observer2.observe(sec);
+    }
+  });
 </script>
 
 </body>
