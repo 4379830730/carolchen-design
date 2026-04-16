@@ -46,7 +46,7 @@
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0;
-      padding: 34px 10vw;
+      padding: 15px 10vw;
       display: flex; justify-content: space-between; align-items: center;
       z-index: 100;
       background: rgba(255,255,255,.88);
@@ -258,16 +258,16 @@
 
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    .hero-inner {
+   .hero-inner {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
+      grid-template-columns: 0.85fr 1.15fr; /* 👈 核心修改：让右侧变成 1.15 倍宽，视频会自动变大 */
+      gap: 130px;
+      align-items: flex-start; /* 👈 核心修改：从 center 改为 flex-start，让左右两边先在顶部对齐 */
       width: 100%;
     }
     .hero-left-col { display: flex; flex-direction: column; }
 
-    .hero-video-wrap {
+   .hero-video-wrap {
       position: relative;
       width: 100%;
       border-radius: 20px;
@@ -276,6 +276,7 @@
       opacity: 0; transform: translateY(20px);
       animation: fadeUp .9s ease .5s forwards;
       overflow: hidden; 
+      margin-top: 20px; /* 👈 新增魔法代码：向下推 56px，刚好抵消左侧小标签的高度，完美对齐大标题 */
     }
     .hero-video-wrap video {
       width: 100%; 
@@ -570,12 +571,7 @@
   <div class="hero-inner">
 
     <div class="hero-left-col">
-      <div class="hero-meta">
-        <span class="meta-tag accent">UX Design</span>
-        <span class="meta-tag">Physical + Digital</span>
-        <span class="meta-tag">Accessibility</span>
-        <span class="meta-tag">Public Transit</span>
-      </div>
+
       <h1 class="hero-title">Brantford<br>Bus Kiosk</h1>
       <p class="hero-subtitle">
         Bridging the digital divide in public transit — a "phygital" kiosk that ensures every commuter can access real-time bus information, regardless of tech literacy.
