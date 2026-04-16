@@ -93,9 +93,10 @@
     /* ── Contact Dropdown Menu ── */
     .nav-item-dropdown {
       position: relative;
-      display: inline-block;
-      padding-bottom: 12px;
-      margin-bottom: -12px;
+      display: flex;         /* 👈 核心修改：改为 flex 布局 */
+      align-items: center;   /* 👈 核心修改：强制内部元素绝对垂直居中 */
+      padding: 12px 0;       /* 👈 上下对称留白 */
+      margin: -12px 0;
     }
     .dropdown-menu {
       position: absolute;
@@ -246,13 +247,21 @@
       animation: fadeUp .8s ease .5s forwards;
     }
 
-    .hero-stats {
-      display: flex; gap: 48px; flex-wrap: wrap;
-      padding-top: 40px; border-top: 1px solid var(--border);
+.hero-stats {
+      display: flex; 
+      justify-content: center; /* 👈 核心魔法：让里面的 3 个块在屏幕正中间居中对齐 */
+      gap: 10vw; /* 👈 核心魔法：给它们之间留出巨大、均匀的呼吸间距 */
+      width: 100%;
+      margin-top: 80px; /* 距离上面标题和视频的高度 */
+      padding-top: 40px; 
+      border-top: 1px solid var(--border); /* 上面的一条横线 */
       opacity: 0; transform: translateY(10px);
       animation: fadeUp .7s ease .65s forwards;
     }
-    .stat-item {}
+    
+    .stat-item {
+      text-align: left; /* 保持文字本身是左对齐的 */
+    }
     .stat-label { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
     .stat-val { font-size: 15px; font-weight: 700; line-height: 1.4; }
 
@@ -569,34 +578,31 @@
 
 <section id="hero">
   <div class="hero-inner">
-
     <div class="hero-left-col">
-
       <h1 class="hero-title">Brantford<br>Bus Kiosk</h1>
       <p class="hero-subtitle">
         Bridging the digital divide in public transit — a "phygital" kiosk that ensures every commuter can access real-time bus information, regardless of tech literacy.
       </p>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-label">Timeline</div>
-          <div class="stat-val">Sep — Dec 2025<br>4 Months</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Team</div>
-          <div class="stat-val">Page 404<br>5 Members</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Tools</div>
-          <div class="stat-val">Figma<br>Physical Prototyping</div>
-        </div>
-
-      </div>
     </div>
 
     <div class="hero-video-wrap" id="hero-vid-wrap">
       <video src="kiosk-project.mp4" autoplay controls muted loop playsinline></video>
     </div>
+  </div>
 
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-label">Timeline</div>
+      <div class="stat-val">Sep — Dec 2025<br>4 Months</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Team</div>
+      <div class="stat-val">Page 404<br>5 Members</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Tools</div>
+      <div class="stat-val">Figma<br>Physical Prototyping</div>
+    </div>
   </div>
 </section>
 
