@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZSJY Medical Lab Pitch Video — Carol</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #111111;
+      --white: #F1F1F1;
+      --off: #F1F1F1; 
+      --gray: #aaaaaa;
+      --border: #e5e1db;
+      --dot: #d6d2cc;
+      --accent: #F14F9B; 
+    }
+
+    body.dark-mode {
+      --black: #ffffff;
+      --white: #111111;
+      --off: #111111;
+      --gray: #888888;
+      --border: #333333;
+      --dot: #333333;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--off);
+      color: var(--black);
+      cursor: none;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ── cursor ── */
+    #cursor {
+      position: fixed; width: 9px; height: 9px;
+      background: #fff; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, opacity .2s;
+      mix-blend-mode: difference;
+    }
+    #cursor.big { width: 44px; height: 44px; opacity: 1; }
+
+    /* ── NAV ── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 24px 10vw;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 200;
+      background: transparent;
+      pointer-events: none; 
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    #nav.scrolled {
+      background: rgba(241,241,241,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    body.dark-mode #nav.scrolled {
+      background: rgba(17,17,17,0.88);
+    }
+
+    .nav-logo { 
+      pointer-events: auto; 
+      font-family: 'Jersey 10', sans-serif;
+      font-size: 36px; 
+      font-weight: 400; 
+      letter-spacing: 0.05em; 
+      color: var(--accent); 
+      text-decoration: none; 
+      display: flex; align-items: center; gap: 10px; 
+      line-height: 1;
+      margin-left: -36px;
+    }
+    .nav-logo svg { width: 26px; height: 26px; }
+    
+    .nav-links { display: flex; gap: 32px; align-items: center; pointer-events: auto; }
+    .nav-links > a, .nav-item-dropdown > a {
+      font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--black); text-decoration: none; position: relative; padding-bottom: 2px;
+    }
+    .nav-links > a::after, .nav-item-dropdown > a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--black); transition: width .3s;
+    }
+    .nav-links > a:hover::after, .nav-item-dropdown:hover > a::after { width: 100%; }
+
+    .nav-item-dropdown { position: relative; display: flex; align-items: center; padding: 12px 0; margin: -12px 0; }
+    .dropdown-menu {
+      position: absolute; top: 100%; right: -10px; margin-top: 0;
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+      border: 1px solid var(--border); border-radius: 14px; padding: 10px;
+      display: flex; flex-direction: column; gap: 4px; min-width: 140px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06); opacity: 0; transform: translateY(-5px); pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease, background 0.5s ease;
+      z-index: 100;
+    }
+    .nav-item-dropdown:hover .dropdown-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    body.dark-mode .dropdown-menu { background: rgba(17, 17, 17, 0.95); }
+    body.dark-mode .dropdown-menu img { filter: invert(1); }
+    .dropdown-menu a {
+      display: flex !important; align-items: center; gap: 12px; padding: 10px 14px; color: var(--black) !important;
+      text-decoration: none !important; font-size: 13px !important; font-weight: 500 !important;
+      text-transform: capitalize !important; border-radius: 8px; transition: background 0.2s !important;
+    }
+    .dropdown-menu a::after { display: none !important; } 
+    .dropdown-menu a:hover { background: var(--off); }
+    .dropdown-menu img { width: 16px; height: 16px; object-fit: contain; }
+
+    .theme-toggle {
+      background: transparent; border: 1px solid var(--border); width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; text-decoration: none; cursor: none; margin-left: 12px; padding: 0; transition: transform .2s, background-color .3s, border-color .3s; outline: none;
+    }
+    .theme-toggle img { width: 20px; height: 20px; object-fit: contain; filter: brightness(0); transition: filter .3s; }
+    .theme-toggle:hover { transform: scale(0.92); background-color: var(--black); border-color: var(--black); }
+    .theme-toggle:hover img { filter: brightness(0) invert(1); }
+    body.dark-mode .theme-toggle { border-color: rgba(255, 255, 255, 0.3); }
+    body.dark-mode .theme-toggle img { filter: brightness(0) invert(1); }
+    body.dark-mode .theme-toggle:hover { background-color: var(--white); border-color: var(--white); }
+    body.dark-mode .theme-toggle:hover img { filter: brightness(0); }
+
+
+    /* ══════════════════════════════
+       SINGLE PROJECT LAYOUT (UPDATED: 上下结构)
+    ══════════════════════════════ */
+    #project-showcase {
+      display: flex;
+      flex-direction: column; /* 改为垂直排布 */
+      align-items: center;
+      min-height: 100vh;
+      padding: 140px 8vw 120px; /* 顶部留出导航栏空间 */
+      gap: 60px; /* 视频和文字的间距 */
+      position: relative;
+    }
+
+    /* 点阵背景 */
+    #project-showcase::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── 上方：巨幅视频区域 ── */
+    .video-container {
+      width: 100%;
+      max-width: 1280px; /* 控制视频最大宽度，保证大屏也很震撼 */
+      position: relative;
+      z-index: 2;
+      background: var(--black);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.15);
+      transition: box-shadow .3s, border-color 0.5s;
+    }
+    body.dark-mode .video-container {
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      border-color: rgba(255,255,255,0.1);
+    }
+    .video-container video {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      outline: none;
+    }
+
+    /* ── 下方：文字信息区域 ── */
+    .info-container {
+      width: 100%;
+      max-width: 800px; /* 文字容器稍微收窄，提升阅读体验 */
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 16px;
+    }
+    
+    .project-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(48px, 6vw, 72px); 
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+      color: var(--black); margin-bottom: 24px;
+    }
+    
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 48px;
+    }
+    .tags span {
+      font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 40px;
+      border: 1px solid var(--border);
+      color: var(--black);
+      background: transparent;
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 分两列：左边写 Role，右边写 Overview */
+      gap: 40px;
+    }
+
+    .section-title {
+      font-size: 18px; font-weight: 700; 
+      color: var(--black); margin-bottom: 12px;
+    }
+    
+    .section-desc {
+      font-size: 16px; line-height: 1.6; font-weight: 400;
+      color: var(--gray);
+    }
+
+    .highlight-role {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ══════════════════════
+       FOOTER & BACK TO TOP (源自 about.html)
+    ══════════════════════ */
+    footer {
+      background: var(--accent);
+      color: #ffffff; 
+      padding: 80px 10vw 56px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 18px;
+      position: relative;
+      z-index: 2;
+    }
+    .ft-label { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); }
+    .ft-title { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; color: #ffffff;}
+    
+    .ft-contact { display: flex; gap: 16px; margin-top: 4px; }
+    .ft-icon-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; cursor: none;
+      transition: transform .2s, background-color .3s, border-color .3s;
+    }
+    .ft-icon-btn img {
+      width: 26px; height: 26px; object-fit: contain;
+      filter: brightness(0) invert(1);
+      transition: filter .3s;
+    }
+    .ft-icon-btn:hover {
+      transform: scale(0.92);
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+    .ft-icon-btn:hover img {
+      filter: brightness(0);
+    }
+
+    .ft-line { width: 100%; height: 1px; background: rgba(255, 255, 255, 0.3); margin-top: 20px; }
+    .ft-copy { font-size: 11px; color: rgba(255, 255, 255, 0.9); letter-spacing: .08em; }
+
+    .back-top {
+      position: fixed; bottom: 36px; right: 36px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--black); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; text-decoration: none; cursor: none;
+      opacity: 0; transform: translateY(10px); pointer-events: none;
+      transition: opacity .35s, transform .35s, background-color 0.5s, color 0.5s;
+      z-index: 50;
+    }
+    .back-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .back-top:hover { transform: translateY(0) scale(1.1); }
+
+
+    /* ── 手机端适配 ── */
+    @media (max-width: 768px) {
+      #cursor { display: none !important; }
+      body, a, button, video, .ft-icon-btn { cursor: auto !important; }
+      #nav { padding: 20px 6vw !important; }
+      .nav-logo { font-size: 28px !important; margin-left: -20px !important; }
+      
+      #project-showcase {
+        padding: 100px 6vw 80px;
+        gap: 32px;
+      }
+      
+      .project-title { font-size: 40px; margin-bottom: 16px; }
+      
+      .content-grid {
+        grid-template-columns: 1fr; /* 手机端文字排成一列 */
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- 导航栏 -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
+      <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
+    </svg>
+    Carol.
+  </a>
+  
+  <div class="nav-links">
+    <a href="index.html#projects">Work</a>
+    <a href="about.html">About</a>
+    
+    <div class="nav-item-dropdown">
+      <a href="#">Contact</a>
+      <div class="dropdown-menu">
+        <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" target="_blank">
+          <img src="icon-linkedin.png" alt="LinkedIn"> LinkedIn
+        </a>
+        <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" target="_blank">
+          <img src="icon-instagram.png" alt="Instagram"> Instagram
+        </a>
+        <a href="mailto:YauchiTATA@Gmail.com">
+          <img src="icon-mail.png" alt="Email"> Email
+        </a>
+      </div>
+    </div>
+    
+    <button id="theme-toggle" class="theme-toggle" tabindex="0" aria-label="Toggle theme">
+      <img id="theme-icon" src="image_df6b67.png" alt="Theme icon">
+    </button>
+  </div>
+</nav>
+
+<!-- 项目展示主体 -->
+<section id="project-showcase">
+  
+  <!-- 视频变大、置于顶部 -->
+  <div class="video-container">
+    <video src="mg.mp4" controls autoplay loop muted playsinline></video>
+  </div>
+
+  <!-- 文字移到底部 -->
+  <div class="info-container">
+    <div class="eyebrow">Project Showcase</div>
+    <h1 class="project-title">ZSJY Medical Lab Pitch Video</h1>
+    
+    <div class="tags">
+      <span>Storyboard Design</span>
+      <span>Illustration</span>
+      <span>Commercial Pitch</span>
+    </div>
+
+    <!-- 文字采用网格布局：左边职责，右边简介 -->
+    <div class="content-grid">
+      <div>
+        <div class="section-title">My Role</div>
+        <p class="section-desc">
+          <span class="highlight-role">Responsible for complete storyboard design and all custom illustrations</span> (excluding final video editing). Hand-drew the visual assets to align with the brand's professional and medical identity.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-title">Overview</div>
+        <p class="section-desc">
+          A commercial pitch video crafted for the Beijing Zhongsheng Jingyi medical testing laboratory. The goal was to visualize complex medical testing concepts through clear, engaging storytelling and clean illustrations, helping the client stand out in their bidding proposals.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="ft-label">Let's Connect</div>
+  <div class="ft-title">Say Hello.</div>
+  
+  <div class="ft-contact">
+    <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="ft-icon-btn" target="_blank">
+      <img src="icon-linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="ft-icon-btn" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="mailto:YauchiTATA@Gmail.com" class="ft-icon-btn">
+      <img src="icon-mail.png" alt="Email">
+    </a>
+  </div>
+
+  <div class="ft-line"></div>
+  <div class="ft-copy">© 2026 Carol Chen — All rights reserved</div>
+</footer>
+
+<!-- 回到顶部按钮 -->
+<a href="#" class="back-top" id="back-top">↑</a>
+
+<script>
+  /* ── Theme Toggle & Cursor ── */
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  // 确保图片路径与你本地一致
+  const sunIconPath = "image_df6b4a.png"; 
+  const moonIconPath = "image_df6b67.png"; 
+
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode'); themeIcon.src = sunIconPath; 
+  } else { themeIcon.src = moonIconPath; }
+
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+      themeIcon.src = sunIconPath; localStorage.setItem('theme', 'dark'); 
+    } else {
+      themeIcon.src = moonIconPath; localStorage.setItem('theme', 'light'); 
+    }
+  });
+
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  });
+  
+  // 鼠标悬停放大效果
+  const cursorHoverElements = 'a, button, .theme-toggle, video, .ft-icon-btn';
+  document.body.addEventListener('mouseover', e => {
+    if(e.target.closest(cursorHoverElements)) cur.classList.add('big');
+  });
+  document.body.addEventListener('mouseout', e => {
+    if(e.target.closest(cursorHoverElements)) cur.classList.remove('big');
+  });
+
+  /* ── 导航栏滚动模糊与回到顶部显示逻辑 ── */
+  const nav = document.getElementById('nav');
+  const backTop = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+    if(backTop) backTop.classList.toggle('show', window.scrollY > 400);
+  });
+</script>
+</body>
+</html>

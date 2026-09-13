@@ -318,9 +318,62 @@
       margin: 0 auto;        
     }
 
+    /* Featured card (Brantford Kiosk — HCII 2026 Bronze Award) spans both columns */
+    .pcard.featured {
+      grid-column: 1 / -1;
+      flex-direction: row;
+    }
+    .pcard.featured .pcard-img {
+      width: 50%;
+      height: auto;
+      flex-shrink: 0;
+      border-bottom: none;
+      border-right: 2px solid var(--black);
+    }
+    .pcard.featured .pcard-body {
+      flex: 1;
+      align-items: center;
+      padding: 36px 40px;
+    }
+    .pcard.featured .pcard-left h3 { font-size: 26px; }
+    .pcard.featured .pcard-left p { font-size: 15px; }
+
+    .award-badge {
+      position: absolute; top: 60px; left: 18px;
+      background: linear-gradient(135deg, #F5C542, #F14F9B);
+      color: #fff; border-radius: 40px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      white-space: nowrap;
+    }
+
+    /* Video project placeholder card */
+    .pcard-video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      background: #000; transition: transform .5s;
+    }
+    .pcard:hover .pcard-video { transform: scale(1.05); }
+    .coming-soon {
+      position: absolute; bottom: 14px; right: 14px;
+      background: rgba(0,0,0,.65); color: #fff; font-size: 10px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px;
+      border-radius: 20px; backdrop-filter: blur(4px);
+    }
+
     @media (max-width: 900px) {
       .bento { grid-template-columns: 1fr; gap: 32px; }
       .pcard-img { height: 220px; }
+
+      .pcard.featured { flex-direction: column; }
+      .pcard.featured .pcard-img {
+        width: 100%; height: 220px;
+        border-right: none; border-bottom: 2px solid var(--black);
+      }
+      .pcard.featured .pcard-body { padding: 22px 24px; align-items: flex-end; }
+      .pcard.featured .pcard-left h3 { font-size: 19px; }
+      .pcard.featured .pcard-left p { font-size: 13px; }
+      .award-badge { top: 54px; font-size: 10px; padding: 4px 11px; }
     }
 
     .pcard {
@@ -518,14 +571,16 @@
 <section id="projects">
   <div class="proj-header reveal">
     <h2 class="proj-title">Projects</h2>
-    <span class="proj-count">04 Projects</span>
+    <span class="proj-count">05 Projects</span>
   </div>
 
   <div class="bento">
-    <div class="pcard reveal">
+    <!-- Featured project — HCII 2026 Student Design Competition, Bronze Award -->
+    <div class="pcard featured reveal">
       <div class="pcard-img">
         <img src="project4.png" alt="Brantford Bus Kiosk">
         <span class="ftag">UX Design</span>
+        <span class="award-badge">🏆 HCII 2026 Bronze Award</span>
         <span class="fnum">01</span>
       </div>
       <div class="pcard-body">
@@ -598,6 +653,28 @@
         <a href="package design.html" class="go">→</a>
       </div>
     </div>
+
+    <!-- Video project -->
+    <div class="pcard reveal video-project">
+      <div class="pcard-img">
+        <video class="pcard-video" muted loop playsinline preload="metadata" poster="video-project-poster.png">
+          <source src="mg.mp4" type="video/mp4">
+        </video>
+        <span class="ftag">Motion / Video</span>
+        <span class="fnum">05</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-left">
+          <h3>ZSJY Medical Lab Pitch Video</h3>
+          <p>Responsible for complete storyboard design and all visual illustrations</p>
+          <div class="chips">
+            <span class="chip">Motion Graphics</span>
+            <span class="chip">Commercial Pitch</span>
+          </div>
+        </div>
+        <a href="video-project.html" class="go">→</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -657,6 +734,13 @@ document.addEventListener('mousemove', e => {
 document.querySelectorAll('a, .pcard, .dropdown-menu, .theme-toggle, .ft-icon-btn').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+/* ── 视频项目卡片：hover 自动播放 ── */
+document.querySelectorAll('.video-project .pcard-video').forEach(video => {
+  const card = video.closest('.pcard');
+  card.addEventListener('mouseenter', () => { video.play().catch(() => {}); });
+  card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
 });
 
 /* ── 滚动触发下一页打字机 ── */

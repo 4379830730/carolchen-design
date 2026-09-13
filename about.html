@@ -460,6 +460,49 @@
       text-transform: uppercase; color: var(--gray);
     }
 
+    /* ── Award section (HCII 2026) ── */
+    .award-content {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      margin-top: 20px;
+    }
+    .award-text { flex: 1; }
+    .award-text h3 {
+      font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.3;
+    }
+    .award-text p {
+      color: var(--gray); font-size: 15px; line-height: 1.7;
+    }
+    .award-text p + p { margin-top: 14px; }
+    .award-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 22px;
+      padding: 10px 22px;
+      background: var(--accent); color: #fff;
+      border: 2px solid var(--accent);
+      border-radius: 40px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none;
+      transition: background .3s, color .3s, border-color .3s;
+    }
+    .award-link:hover { background: var(--black); border-color: var(--black); }
+    .award-img {
+      flex: 1;
+      aspect-ratio: 4/3;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--off);
+      border: 2px solid var(--black);
+      box-shadow: 12px 12px 0px var(--accent);
+    }
+    .award-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    @media (max-width: 800px) {
+      .award-content { flex-direction: column; gap: 32px; }
+    }
+
     /* ── timeline rows ── */
    /* ── 🌟 全新 Visual Timeline 样式 ── */
     .visual-timeline {
@@ -760,10 +803,29 @@
 
 <div class="content-wrap">
 
+<div class="sec reveal">
+    <div class="sec-header">
+      <h2 class="sec-title">Award</h2>
+      <span class="sec-num">01</span>
+    </div>
+
+    <div class="award-content">
+      <div class="award-text">
+        <h3>HCII 2026 Student Design Competition — Bronze Award</h3>
+        <p>My team and I won Bronze at HCI International 2026, competing against 35 student teams from around the world — an incredible honour to represent Wilfrid Laurier University and Canada on an international stage. Held in Montreal alongside thousands of researchers and designers, earning this Student Design Competition honour was a surreal milestone for all of us.</p>
+        <p>Our project reimagined the City of Brantford Transit experience — what began as an academic assignment grew into something we deeply believed in: better, more accessible mobility for riders. Thank you to Professor John E. Munoz for championing our vision from the very beginning, and to my incredible teammates Yash Goswami, Swarali Gogate (Hindlekar), Congxi D., and Jason — this milestone belongs to all of us.</p>
+        <a href="kiosk-detail.html" class="award-link">View the award-winning project →</a>
+      </div>
+      <div class="award-img">
+        <img src="hci2026.jpg" alt="HCII 2026 Bronze Award — Brantford Bus Kiosk Project">
+      </div>
+    </div>
+  </div>
+
 <div class="sec">
     <div class="sec-header">
       <h2 class="sec-title">My Journey</h2>
-      <span class="sec-num">01</span>
+      <span class="sec-num">02</span>
     </div>
     
     <div class="visual-timeline">
@@ -819,7 +881,7 @@
   <div class="sec">
     <div class="sec-header">
       <h2 class="sec-title">Skills & Tools</h2>
-      <span class="sec-num">02</span>
+      <span class="sec-num">03</span>
     </div>
     
     <div class="marquee-wrapper reveal">
