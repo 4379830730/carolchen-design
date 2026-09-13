@@ -95,14 +95,12 @@
       transition: background-image 0.5s ease;
     }
 
-    /* 👇 新增：限制左侧文字宽度，为 3D 留出空间 */
     #type-left-content {
       position: relative;
       z-index: 10;
       max-width: 55vw; 
     }
 
-/* 👇 修改：3D 画布容器铺满全屏，打破边缘框框 */
     #voxel-canvas-container {
       position: absolute;
       left: 0;
@@ -110,7 +108,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 5;
-      pointer-events: none; /* 让鼠标穿透，不阻挡其他操作 */
+      pointer-events: none; 
     }
 
     .type-eyebrow {
@@ -338,14 +336,17 @@
     .pcard.featured .pcard-left h3 { font-size: 26px; }
     .pcard.featured .pcard-left p { font-size: 15px; }
 
+    /* 💡 修改：奖牌标签现在的样式，取消了绝对定位并调整了间距 */
     .award-badge {
-      position: absolute; top: 60px; left: 18px;
+      display: inline-flex; align-items: center; gap: 5px;
       background: linear-gradient(135deg, #F5C542, #F14F9B);
       color: #fff; border-radius: 40px; padding: 5px 14px;
       font-size: 11px; font-weight: 700; letter-spacing: .05em;
-      text-transform: uppercase; display: flex; align-items: center; gap: 5px;
+      text-transform: uppercase; 
       box-shadow: 0 4px 10px rgba(0,0,0,.15);
       white-space: nowrap;
+      margin-bottom: 12px;
+      width: fit-content;
     }
 
     /* Video project placeholder card */
@@ -354,12 +355,6 @@
       background: #000; transition: transform .5s;
     }
     .pcard:hover .pcard-video { transform: scale(1.05); }
-    .coming-soon {
-      position: absolute; bottom: 14px; right: 14px;
-      background: rgba(0,0,0,.65); color: #fff; font-size: 10px; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px;
-      border-radius: 20px; backdrop-filter: blur(4px);
-    }
 
     @media (max-width: 900px) {
       .bento { grid-template-columns: 1fr; gap: 32px; }
@@ -373,7 +368,9 @@
       .pcard.featured .pcard-body { padding: 22px 24px; align-items: flex-end; }
       .pcard.featured .pcard-left h3 { font-size: 19px; }
       .pcard.featured .pcard-left p { font-size: 13px; }
-      .award-badge { top: 54px; font-size: 10px; padding: 4px 11px; }
+      
+      /* 💡 修改：奖牌标签手机端样式适配 */
+      .award-badge { font-size: 10px; padding: 4px 11px; margin-bottom: 8px; }
     }
 
     .pcard {
@@ -580,11 +577,14 @@
       <div class="pcard-img">
         <img src="project4.png" alt="Brantford Bus Kiosk">
         <span class="ftag">UX Design</span>
-        <span class="award-badge">🏆 HCII 2026 Bronze Award</span>
         <span class="fnum">01</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
+          
+          <!-- 💡 奖牌标签移到了标题正上方 -->
+          <span class="award-badge">🏆 HCII 2026 Bronze Award</span>
+          
           <h3>Brantford Bus Kiosk HCI Project</h3>
           <p>Bridging the Digital Divide in Public Transit.</p>
           <div class="chips">
