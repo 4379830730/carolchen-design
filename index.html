@@ -9,14 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
-  
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-      }
-    }
-  </script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -99,16 +91,6 @@
       position: relative;
       z-index: 10;
       max-width: 55vw; 
-    }
-
-    #voxel-canvas-container {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 5;
-      pointer-events: none; 
     }
 
     .type-eyebrow {
@@ -501,16 +483,7 @@
       body.dark-mode .theme-toggle:hover img {
         filter: brightness(0) invert(1) !important;
       }
-
-      /* 5. 手机端 3D 画布退到文字后方当背景 */
       #type-left-content { max-width: 100%; }
-      #voxel-canvas-container {
-        right: 0;
-        top: 20%;
-        width: 100%;
-        height: 50vh;
-        opacity: 0.25; /* 半透明化，不阻挡文字阅读 */
-      }
     }
   </style>
 </head>
