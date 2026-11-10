@@ -500,7 +500,21 @@
   /* Consistent body copy across the portfolio. */
   p { font-size: 16px !important; }
   @media (max-width: 768px) { p { font-size: 15px !important; } }
-</style>
+
+    /* Featured project hierarchy: title, description and tags occupy distinct zones. */
+    .pcard.featured .pcard-body { align-items: stretch; min-height: 400px; }
+    .pcard.featured .pcard-left { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+    .pcard.featured .pcard-left h3 { margin-bottom: 0; }
+    .pcard.featured .pcard-left p { margin: auto 0; padding: 24px 0; }
+    .pcard.featured .chips { gap: 8px; }
+    .pcard.featured .go { align-self: center; }
+    @media (max-width: 900px) {
+      .pcard.featured .pcard-body { min-height: 0; align-items: stretch; }
+      .pcard.featured .pcard-left p { margin: 0; padding: 24px 0 28px; }
+      .pcard.featured .go { align-self: flex-end; }
+    }
+
+  </style>
 </head>
 <body>
 
@@ -563,7 +577,6 @@
     <div class="pcard featured reveal">
       <div class="pcard-img">
         <img src="project4.png" alt="Brantford Bus Kiosk">
-        <span class="ftag">UX Design</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -586,7 +599,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="project3.png" alt="Uber Eats UX Research">
-        <span class="ftag">UX Research</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -604,7 +616,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="parrot.png" alt="Pawrot App">
-        <span class="ftag">UX Design</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -623,7 +634,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="package.png" alt="Package Design">
-        <span class="ftag">Graphic Design</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -643,7 +653,6 @@
         <video class="pcard-video" muted loop playsinline preload="metadata" poster="video-project-poster.png">
           <source src="mg.mp4" type="video/mp4">
         </video>
-        <span class="ftag">Motion / Video</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
