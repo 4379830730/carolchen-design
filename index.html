@@ -504,13 +504,14 @@
     /* Featured project hierarchy: title, description and tags occupy distinct zones. */
     .pcard.featured .pcard-body { align-items: stretch; min-height: 400px; }
     .pcard.featured .pcard-left { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
-    .pcard.featured .pcard-left h3 { margin-bottom: 0; }
-    .pcard.featured .pcard-left p { margin: auto 0; padding: 24px 0; }
+    .pcard.featured .pcard-left h3 { margin-top: auto; margin-bottom: 8px; }
+    .pcard.featured .pcard-left p { margin: 0 0 auto; padding: 0 0 24px; }
     .pcard.featured .chips { gap: 8px; }
     .pcard.featured .go { align-self: center; }
     @media (max-width: 900px) {
       .pcard.featured .pcard-body { min-height: 0; align-items: stretch; }
-      .pcard.featured .pcard-left p { margin: 0; padding: 24px 0 28px; }
+      .pcard.featured .pcard-left h3 { margin-top: 16px; }
+      .pcard.featured .pcard-left p { margin: 0; padding: 0 0 28px; }
       .pcard.featured .go { align-self: flex-end; }
     }
 
