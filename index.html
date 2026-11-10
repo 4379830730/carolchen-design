@@ -1224,7 +1224,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     const card = new THREE.Group();
     card.position.set(4.5, 0.5, 0);
-    card.rotation.set(-0.14, 0.34, 0.08);
+    card.rotation.set(0, 0.04, 0.015);
     scene.add(card);
 
     function roundedShape(w, h, r) {
@@ -1240,8 +1240,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     }
     const pinkMetal = new THREE.MeshPhysicalMaterial({ color:'#f58dbb', metalness:.48, roughness:.25, clearcoat:.9, clearcoatRoughness:.16 });
     const whitePaper = new THREE.MeshPhysicalMaterial({ color:'#fffdf9', roughness:.7, metalness:.04 });
-    const bezel=plate(5.45,7.65,.24,.18,pinkMetal); bezel.position.z=-.12; card.add(bezel);
-    const paper=plate(5.02,7.20,.30,.09,whitePaper); paper.position.z=.16; card.add(paper);
+    const bezel=plate(5.20,7.40,.12,.035,pinkMetal); bezel.position.z=-.03; card.add(bezel);
+    const paper=plate(5.02,7.20,.08,.025,whitePaper); paper.position.z=.10; card.add(paper);
 
     // pink textile lanyard, clip and a soft paper card
     const strap=new THREE.Mesh(new THREE.BoxGeometry(.72,5.5,.14),new THREE.MeshPhysicalMaterial({color:'#ff75ad',roughness:.55,metalness:.04}));
@@ -1272,11 +1272,11 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     print.position.z=.31; card.add(print);
 
     // The user's portrait sits in a rounded physical photo frame.
-    const photoFrame=plate(1.72,2.26,.06,.025,new THREE.MeshStandardMaterial({color:'#ece8e0',roughness:.95}));
-    photoFrame.position.set(1.12,-.20,.34); card.add(photoFrame);
+    const photoFrame=new THREE.Mesh(new THREE.PlaneGeometry(1.70,2.20),new THREE.MeshBasicMaterial({color:'#e2dcd5'}));
+    photoFrame.position.set(1.12,-.20,.32); card.add(photoFrame);
     const photoTexture=new THREE.TextureLoader().load('carol-portrait.jpg'); photoTexture.colorSpace=THREE.SRGBColorSpace;
     const portrait=new THREE.Mesh(new THREE.PlaneGeometry(1.42,1.94),new THREE.MeshBasicMaterial({map:photoTexture}));
-    portrait.position.set(1.12,-.20,.49); card.add(portrait);
+    portrait.position.set(1.12,-.20,.33); card.add(portrait);
 
     // Tiny dimensional star detail.
     const star=new THREE.Mesh(new THREE.OctahedronGeometry(.18,0),new THREE.MeshPhysicalMaterial({color:'#ff559f',metalness:.35,roughness:.23}));
@@ -1291,8 +1291,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     function render(){ const time=clock.getElapsedTime(), drop=Math.min(time/1.45,1), b=easeOutBounce(drop);
       const mobile=innerWidth<=768; card.position.x=mobile?0:4.5; card.scale.setScalar(mobile?.62:1);
       card.position.y=10.5+(0.5-10.5)*b + Math.sin(time*1.05)*.08;
-      card.rotation.z=.08+(1-b)*.40 + Math.sin(time*.9)*.025 + pointerX*.08;
-      card.rotation.y=.34 + pointerX*.16; card.rotation.x=-.14-pointerY*.08;
+      card.rotation.z=.015+(1-b)*.14 + Math.sin(time*.9)*.012;
+      card.rotation.y=.04 + pointerX*.025; card.rotation.x=-pointerY*.02;
       renderer.render(scene,camera); requestAnimationFrame(render); }
     render(); addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
   }
