@@ -123,15 +123,21 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     #nav {
-      position: absolute;
-      top: 44px; left: 0; right: 0;
-      padding: 0 10vw;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 36px 10vw;
+      background: rgba(241,241,241,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
-      z-index: 10;
+      z-index: 100;
       opacity: 0; transform: translateY(-10px);
       transition: opacity .7s, transform .7s;
     }
     #nav.show { opacity: 1; transform: translateY(0); }
+    body.dark-mode #nav { background: rgba(17,17,17,.92); }
+    #projects { scroll-margin-top: 110px; }
     
     .nav-logo { 
       font-family: 'Jersey 10', sans-serif;
@@ -288,7 +294,9 @@
       letter-spacing: 0.05em;               
       line-height: 1;
     }
-    .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
+    .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #595959; }
+    body.dark-mode .proj-count, body.dark-mode .pcard-left p, body.dark-mode .chip { color: #c9c9c9; }
+    body.dark-mode .chip { border-color: #888; }
 
     .bento { 
       display: grid; 
@@ -389,18 +397,18 @@
     .fnum {
       position: absolute; top: 12px; right: 18px;
       font-size: 46px; font-weight: 800;
-      color: rgba(255,255,255,.5); line-height: 1; user-select: none;
+      color: #222; background: rgba(255,255,255,.92); border-radius: 8px; padding: 3px 8px; line-height: 1; user-select: none;
       transition: color 0.5s ease;
     }
-    body.dark-mode .fnum { color: rgba(255,255,255,.06); }
+    body.dark-mode .fnum { color: #222; background: rgba(255,255,255,.92); }
 
     .pcard-body { padding: 22px 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
     .pcard-left h3 { font-size: 19px; font-weight: 800; margin: 0 0 4px; }
-    .pcard-left p { font-size: 13px; color: var(--gray); margin: 0 0 11px; line-height: 1.5; }
+    .pcard-left p { font-size: 13px; color: #595959; margin: 0 0 11px; line-height: 1.5; }
     .chips { display: flex; gap: 6px; flex-wrap: wrap; }
     .chip {
       font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-      padding: 4px 11px; border-radius: 40px; border: 1px solid var(--border); color: var(--gray);
+      padding: 4px 11px; border-radius: 40px; border: 1px solid #888; color: #595959;
       transition: border-color 0.5s ease, color 0.5s ease;
     }
     
@@ -450,6 +458,7 @@
         padding-left: 6vw !important;
         padding-right: 6vw !important;
       }
+      #projects { scroll-margin-top: 76px; }
       #nav, nav {
         padding-top: 20px !important;
         padding-bottom: 20px !important;
