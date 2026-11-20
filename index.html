@@ -516,13 +516,33 @@
     }
 
   </style>
+
+<style>
+  #nav { opacity: 1; transform: none; }
+  #hero { min-height: 100vh; padding: 160px 10vw 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
+  #hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px); background-size: 38px 38px; opacity: .45; pointer-events: none; }
+  .hero-left, .hero-right { position: relative; z-index: 1; }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gray); margin-bottom: 24px; }
+  .hero-name { font-family: 'Jersey 10', sans-serif; font-size: clamp(60px, 8vw, 110px); font-weight: 400; letter-spacing: .02em; line-height: .85; margin-bottom: 28px; }
+  .hero-bio { font-size: 16px; font-weight: 400; line-height: 1.75; color: #595959; max-width: 460px; }
+  body.dark-mode .hero-bio { color: #c9c9c9; }
+  .hero-contact { display: flex; gap: 14px; margin-top: 32px; }
+  .hero-icon-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; text-decoration: none; border: none; transition: transform .2s, background-color .3s; }
+  .hero-icon-btn img { width: 26px; height: 26px; object-fit: contain; filter: brightness(0) invert(1); }
+  .hero-icon-btn:hover { transform: scale(.92); background-color: var(--black); }
+  .photo-frame { width: 75%; max-width: 420px; margin-left: auto; aspect-ratio: 4/5; border-radius: 20px; overflow: hidden; background: var(--off); border: 2px solid var(--black); box-shadow: 12px 12px 0 var(--accent); position: relative; }
+  .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .intro-typing .hero-bio, .intro-typing .hero-contact, .intro-typing .hero-right { opacity: 0; }
+  .hero-bio, .hero-contact, .hero-right { transition: opacity .7s ease; }
+  @media (max-width: 900px) { #hero { grid-template-columns: 1fr; gap: 40px; padding: 140px 7vw 80px; } .photo-frame { width: 100%; max-width: 360px; margin: 0 auto; } }
+  @media (prefers-reduced-motion: reduce) { .hero-bio, .hero-contact, .hero-right { transition: none; } }
+</style>
 </head>
 <body>
 
 <div id="cursor"></div>
 
-<section id="type-section">
-  <nav id="nav">
+<nav id="nav" class="show">
     <a href="#" class="nav-logo">
       <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
         <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
@@ -554,17 +574,32 @@
       </button>
       
     </div>
-  </nav>
+</nav>
 
-  <div id="type-left-content">
-    <div id="typed-text"><span class="t-cur"></span></div>
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">About Me</div>
+    <h1 class="hero-name" aria-label="Hi, I'm Carol Chen."><span id="intro-line-one">Hi, I'm</span><br><span id="intro-line-two" style="color: var(--accent);">Carol Chen.</span></h1>
+    <p class="hero-bio">
+      With two years of experience in graphic design and a growing passion for UX, I turn complex problems into elegant, intuitive experiences. I care deeply about the intersection of beauty and function — design that doesn't just look good, but feels right.
+    </p>
+    <div class="hero-contact">
+      <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="hero-icon-btn" target="_blank">
+        <img src="icon-linkedin.png" alt="LinkedIn">
+      </a>
+      <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="hero-icon-btn" target="_blank">
+        <img src="icon-instagram.png" alt="Instagram">
+      </a>
+      <a href="mailto:YauchiTATA@Gmail.com" class="hero-icon-btn">
+        <img src="icon-mail.png" alt="Email">
+      </a>
+    </div>
   </div>
 
-  
-
-  <div id="bot">
-    <div class="bot-role">UX Designer &nbsp;·&nbsp; Open to opportunities</div>
-    <a href="#projects" class="view-btn">View Work <span class="arr">→</span></a>
+  <div class="hero-right">
+    <div class="photo-frame">
+      <img src="carol-photo.jpg" alt="Carol">
+      </div>
   </div>
 </section>
 
@@ -735,56 +770,26 @@ document.querySelectorAll('.video-project .pcard-video').forEach(video => {
   card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
 });
 
-/* ── 滚动触发下一页打字机 ── */
-let typeStarted = false;
-
-const typeObserver = new IntersectionObserver(entries => {
-  if(entries[0].isIntersecting && !typeStarted) {
-    typeStarted = true;
-    const eb = document.getElementById('eyebrow');
-    if(eb) eb.classList.add('show');
-    setTimeout(typeNext, 300);
+/* Type the introduction, then reveal the rest of the hero. */
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const first = document.getElementById('intro-line-one');
+  const second = document.getElementById('intro-line-two');
+  const hero = document.getElementById('hero');
+  if (!first || !second || !hero) return;
+  const lines = [first, second];
+  const words = lines.map(line => line.textContent);
+  lines.forEach(line => { line.textContent = ''; line.setAttribute('aria-hidden', 'true'); });
+  hero.classList.add('intro-typing');
+  let line = 0, position = 0;
+  function type() {
+    lines[line].textContent = words[line].slice(0, ++position);
+    if (position < words[line].length) return setTimeout(type, 75);
+    if (++line < lines.length) { position = 0; return setTimeout(type, 230); }
+    hero.classList.remove('intro-typing');
   }
-}, { threshold: 0.3 }); 
-const ts = document.getElementById('type-section');
-if(ts) typeObserver.observe(ts);
-
-
-/* ── typewriter ── */
-const fullText = "HI, I am Carol Chen\nWelcome to my\nDesign World_";
-const typedEl = document.getElementById('typed-text');
-let ci = 0;
-
-function typeNext() {
-  if(!typedEl) return;
-  if (ci >= fullText.length) {
-    const nv = document.getElementById('nav');
-    const bt = document.getElementById('bot');
-    if(nv) nv.classList.add('show');
-    if(bt) bt.classList.add('show');
-    return;
-  }
-  const ch = fullText[ci];
-  const cursor = typedEl.querySelector('.t-cur');
-  if (ch === '\n') {
-    if(cursor) cursor.before(document.createElement('br'));
-  } else {
-    const s = document.createElement('span');
-    s.textContent = ch;
-    s.style.opacity = '0';
-    s.style.transition = 'opacity 0.06s';
-    
-    if (ci >= 9 && ci <= 18) {
-      s.style.color = '#F14F9B';
-    }
-    
-    if(cursor) cursor.before(s);
-    requestAnimationFrame(() => s.style.opacity = '1');
-  }
-  ci++;
-  const speed = (ch === ',' || ch === '\n') ? 290 : 46 + Math.random() * 26;
-  setTimeout(typeNext, speed);
-}
+  setTimeout(type, 250);
+})();
 
 /* ── scroll reveal ── */
 const io = new IntersectionObserver(entries => {
