@@ -9,14 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,800&family=Jersey+10&display=swap" rel="stylesheet">
-  
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-      }
-    }
-  </script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -101,16 +93,6 @@
       max-width: 55vw; 
     }
 
-    #voxel-canvas-container {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 5;
-      pointer-events: none; 
-    }
-
     .type-eyebrow {
       font-size: 11px; font-weight: 500;
       letter-spacing: 0.22em; text-transform: uppercase;
@@ -141,15 +123,21 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     #nav {
-      position: absolute;
-      top: 44px; left: 0; right: 0;
-      padding: 0 10vw;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 36px 10vw;
+      background: rgba(241,241,241,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
-      z-index: 10;
+      z-index: 100;
       opacity: 0; transform: translateY(-10px);
       transition: opacity .7s, transform .7s;
     }
     #nav.show { opacity: 1; transform: translateY(0); }
+    body.dark-mode #nav { background: rgba(17,17,17,.92); }
+    #projects { scroll-margin-top: 110px; }
     
     .nav-logo { 
       font-family: 'Jersey 10', sans-serif;
@@ -306,7 +294,9 @@
       letter-spacing: 0.05em;               
       line-height: 1;
     }
-    .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--gray); }
+    .proj-count { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #595959; }
+    body.dark-mode .proj-count, body.dark-mode .pcard-left p, body.dark-mode .chip { color: #c9c9c9; }
+    body.dark-mode .chip { border-color: #888; }
 
     .bento { 
       display: grid; 
@@ -397,28 +387,28 @@
 
     .ftag {
       position: absolute; top: 18px; left: 18px;
-      background: rgba(255,255,255,.92); backdrop-filter: blur(6px);
-      border: 1px solid rgba(0,0,0,.1); border-radius: 40px;
-      padding: 5px 14px; font-size: 11px; font-weight: 700;
+      background: rgba(255, 214, 232, .88); backdrop-filter: blur(6px);
+      border: 1px solid rgba(189, 49, 115, .35); border-radius: 40px;
+      padding: 7px 16px; font-size: 13px; font-weight: 700;
       letter-spacing: .07em; text-transform: uppercase; color: var(--black);
     }
-    body.dark-mode .ftag { background: rgba(17, 17, 17, 0.92); border-color: rgba(255, 255, 255, 0.1); }
+    body.dark-mode .ftag { background: rgba(255, 214, 232, .92); border-color: rgba(189, 49, 115, .45); color: #601536; }
 
     .fnum {
       position: absolute; top: 12px; right: 18px;
       font-size: 46px; font-weight: 800;
-      color: rgba(255,255,255,.5); line-height: 1; user-select: none;
+      color: #F14F9B; background: rgba(255,255,255,.92); border-radius: 8px; padding: 3px 8px; line-height: 1; user-select: none;
       transition: color 0.5s ease;
     }
-    body.dark-mode .fnum { color: rgba(255,255,255,.06); }
+    body.dark-mode .fnum { color: #F14F9B; background: rgba(255,255,255,.92); }
 
     .pcard-body { padding: 22px 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
     .pcard-left h3 { font-size: 19px; font-weight: 800; margin: 0 0 4px; }
-    .pcard-left p { font-size: 13px; color: var(--gray); margin: 0 0 11px; line-height: 1.5; }
+    .pcard-left p { font-size: 13px; color: #595959; margin: 0 0 11px; line-height: 1.5; }
     .chips { display: flex; gap: 6px; flex-wrap: wrap; }
     .chip {
       font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-      padding: 4px 11px; border-radius: 40px; border: 1px solid var(--border); color: var(--gray);
+      padding: 4px 11px; border-radius: 40px; border: 1px solid #888; color: #595959;
       transition: border-color 0.5s ease, color 0.5s ease;
     }
     
@@ -468,6 +458,7 @@
         padding-left: 6vw !important;
         padding-right: 6vw !important;
       }
+      #projects { scroll-margin-top: 76px; }
       #nav, nav {
         padding-top: 20px !important;
         padding-bottom: 20px !important;
@@ -501,25 +492,62 @@
       body.dark-mode .theme-toggle:hover img {
         filter: brightness(0) invert(1) !important;
       }
-
-      /* 5. 手机端 3D 画布退到文字后方当背景 */
       #type-left-content { max-width: 100%; }
-      #voxel-canvas-container {
-        right: 0;
-        top: 20%;
-        width: 100%;
-        height: 50vh;
-        opacity: 0.25; /* 半透明化，不阻挡文字阅读 */
-      }
     }
   </style>
+
+<style>
+  /* Consistent body copy across the portfolio. */
+  p { font-size: 16px !important; }
+  @media (max-width: 768px) { p { font-size: 15px !important; } }
+
+    /* Featured project hierarchy: title, description and tags occupy distinct zones. */
+    .pcard.featured .pcard-body { align-items: stretch; min-height: 400px; }
+    .pcard.featured .pcard-left { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+    .pcard.featured .pcard-left h3 { margin-top: auto; margin-bottom: 8px; }
+    .pcard.featured .pcard-left p { margin: 0 0 auto; padding: 0 0 24px; }
+    .pcard.featured .chips { gap: 8px; }
+    .pcard.featured .go { align-self: center; }
+    @media (max-width: 900px) {
+      .pcard.featured .pcard-body { min-height: 0; align-items: stretch; }
+      .pcard.featured .pcard-left h3 { margin-top: 16px; }
+      .pcard.featured .pcard-left p { margin: 0; padding: 0 0 28px; }
+      .pcard.featured .go { align-self: flex-end; }
+    }
+
+  </style>
+
+<style>
+  #nav { opacity: 1; transform: none; }
+  #hero { min-height: 100vh; padding: 160px 10vw 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; overflow: hidden; }
+  #hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, var(--dot) 1px, transparent 1px); background-size: 38px 38px; opacity: .45; pointer-events: none; }
+  .hero-left, .hero-right { position: relative; z-index: 1; }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gray); margin-bottom: 24px; }
+  .hero-name { font-family: 'Jersey 10', sans-serif; font-size: clamp(60px, 8vw, 110px); font-weight: 400; letter-spacing: .02em; line-height: .85; margin-bottom: 28px; }
+  .hero-bio { font-size: 16px; font-weight: 400; line-height: 1.75; color: #595959; max-width: 460px; }
+  body.dark-mode .hero-bio { color: #c9c9c9; }
+  .hero-contact { display: flex; gap: 14px; margin-top: 32px; }
+  .hero-icon-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; text-decoration: none; border: none; transition: transform .2s, background-color .3s; }
+  .hero-icon-btn img { width: 26px; height: 26px; object-fit: contain; filter: brightness(0) invert(1); }
+  .hero-icon-btn:hover { transform: scale(.92); background-color: var(--black); }
+  .photo-frame { width: 75%; max-width: 420px; margin-left: auto; aspect-ratio: 4/5; border-radius: 20px; overflow: hidden; background: var(--off); border: 2px solid var(--black); box-shadow: 12px 12px 0 var(--accent); position: relative; }
+  .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .intro-typing .hero-bio, .intro-typing .hero-contact, .intro-typing .hero-right { opacity: 0; }
+  .hero-bio, .hero-contact, .hero-right { transition: opacity .7s ease; }
+  .scroll-cue { position: absolute; z-index: 2; bottom: 18px; left: 50%; margin-left: -22px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--accent); opacity: 1; visibility: visible; transition: opacity .45s ease .7s, visibility 0s linear .7s; }
+  .scroll-cue svg { width: 28px; height: 28px; animation: scroll-bob 1.5s ease-in-out infinite; }
+  .scroll-cue:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .intro-typing .scroll-cue { opacity: 0; visibility: hidden; transition: none; }
+  @keyframes scroll-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+  @media (max-width: 900px) { #hero { grid-template-columns: 1fr; gap: 40px; padding: 140px 7vw 80px; } .photo-frame { width: 100%; max-width: 360px; margin: 0 auto; } }
+  @media (prefers-reduced-motion: reduce) { .hero-bio, .hero-contact, .hero-right, .scroll-cue { transition: none; } .scroll-cue svg { animation: none; } }
+</style>
 </head>
 <body>
 
 <div id="cursor"></div>
 
-<section id="type-section">
-  <nav id="nav">
+<nav id="nav" class="show">
     <a href="#" class="nav-logo">
       <svg viewBox="0 0 10 10" shape-rendering="crispEdges">
         <path fill="var(--accent)" d="M2,2h2v1h-2z M6,2h2v1h-2z M1,3h8v2h-8z M2,5h6v1h-6z M3,6h4v1h-4z M4,7h2v1h-2z" />
@@ -551,24 +579,41 @@
       </button>
       
     </div>
-  </nav>
+</nav>
 
-  <div id="type-left-content">
-    <div id="typed-text"><span class="t-cur"></span></div>
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">About Me</div>
+    <h1 class="hero-name" aria-label="Hi, I'm Carol Chen."><span id="intro-line-one">Hi, I'm</span><br><span id="intro-line-two" style="color: var(--accent);">Carol Chen.</span></h1>
+    <p class="hero-bio">
+      With two years of experience in graphic design and a growing passion for UX, I turn complex problems into elegant, intuitive experiences. I care deeply about the intersection of beauty and function — design that doesn't just look good, but feels right.
+    </p>
+    <div class="hero-contact">
+      <a href="https://www.linkedin.com/in/carol-chen-6a4a75329/" class="hero-icon-btn" target="_blank">
+        <img src="icon-linkedin.png" alt="LinkedIn">
+      </a>
+      <a href="https://www.instagram.com/yougedashuaige?igsh=MW1qc3p1NmJnODJueA%3D%3D&utm_source=qr" class="hero-icon-btn" target="_blank">
+        <img src="icon-instagram.png" alt="Instagram">
+      </a>
+      <a href="mailto:YauchiTATA@Gmail.com" class="hero-icon-btn">
+        <img src="icon-mail.png" alt="Email">
+      </a>
+    </div>
   </div>
 
-  <div id="voxel-canvas-container"></div>
-
-  <div id="bot">
-    <div class="bot-role">UX Designer &nbsp;·&nbsp; Open to opportunities</div>
-    <a href="#projects" class="view-btn">View Work <span class="arr">→</span></a>
+  <div class="hero-right">
+    <div class="photo-frame">
+      <img src="carol-photo.jpg" alt="Carol">
+      </div>
   </div>
+  <a class="scroll-cue" href="#projects" aria-label="Scroll down to projects">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M12 4v14M6 12l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
 </section>
 
 <section id="projects">
   <div class="proj-header reveal">
     <h2 class="proj-title">Projects</h2>
-    <span class="proj-count">05 Projects</span>
   </div>
 
   <div class="bento">
@@ -576,8 +621,6 @@
     <div class="pcard featured reveal">
       <div class="pcard-img">
         <img src="project4.png" alt="Brantford Bus Kiosk">
-        <span class="ftag">UX Design</span>
-        <span class="fnum">01</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -600,8 +643,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="project3.png" alt="Uber Eats UX Research">
-        <span class="ftag">UX Research</span>
-        <span class="fnum">02</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -619,8 +660,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="parrot.png" alt="Pawrot App">
-        <span class="ftag">UX Design</span>
-        <span class="fnum">03</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -639,8 +678,6 @@
     <div class="pcard reveal">
       <div class="pcard-img">
         <img src="package.png" alt="Package Design">
-        <span class="ftag">Graphic Design</span>
-        <span class="fnum">04</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -660,8 +697,6 @@
         <video class="pcard-video" muted loop playsinline preload="metadata" poster="video-project-poster.png">
           <source src="mg.mp4" type="video/mp4">
         </video>
-        <span class="ftag">Motion / Video</span>
-        <span class="fnum">05</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-left">
@@ -743,56 +778,26 @@ document.querySelectorAll('.video-project .pcard-video').forEach(video => {
   card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
 });
 
-/* ── 滚动触发下一页打字机 ── */
-let typeStarted = false;
-
-const typeObserver = new IntersectionObserver(entries => {
-  if(entries[0].isIntersecting && !typeStarted) {
-    typeStarted = true;
-    const eb = document.getElementById('eyebrow');
-    if(eb) eb.classList.add('show');
-    setTimeout(typeNext, 300);
+/* Type the introduction, then reveal the rest of the hero. */
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const first = document.getElementById('intro-line-one');
+  const second = document.getElementById('intro-line-two');
+  const hero = document.getElementById('hero');
+  if (!first || !second || !hero) return;
+  const lines = [first, second];
+  const words = lines.map(line => line.textContent);
+  lines.forEach(line => { line.textContent = ''; line.setAttribute('aria-hidden', 'true'); });
+  hero.classList.add('intro-typing');
+  let line = 0, position = 0;
+  function type() {
+    lines[line].textContent = words[line].slice(0, ++position);
+    if (position < words[line].length) return setTimeout(type, 75);
+    if (++line < lines.length) { position = 0; return setTimeout(type, 230); }
+    hero.classList.remove('intro-typing');
   }
-}, { threshold: 0.3 }); 
-const ts = document.getElementById('type-section');
-if(ts) typeObserver.observe(ts);
-
-
-/* ── typewriter ── */
-const fullText = "HI, I am Carol Chen\nWelcome to my\nDesign World_";
-const typedEl = document.getElementById('typed-text');
-let ci = 0;
-
-function typeNext() {
-  if(!typedEl) return;
-  if (ci >= fullText.length) {
-    const nv = document.getElementById('nav');
-    const bt = document.getElementById('bot');
-    if(nv) nv.classList.add('show');
-    if(bt) bt.classList.add('show');
-    return;
-  }
-  const ch = fullText[ci];
-  const cursor = typedEl.querySelector('.t-cur');
-  if (ch === '\n') {
-    if(cursor) cursor.before(document.createElement('br'));
-  } else {
-    const s = document.createElement('span');
-    s.textContent = ch;
-    s.style.opacity = '0';
-    s.style.transition = 'opacity 0.06s';
-    
-    if (ci >= 9 && ci <= 18) {
-      s.style.color = '#F14F9B';
-    }
-    
-    if(cursor) cursor.before(s);
-    requestAnimationFrame(() => s.style.opacity = '1');
-  }
-  ci++;
-  const speed = (ch === ',' || ch === '\n') ? 290 : 46 + Math.random() * 26;
-  setTimeout(typeNext, speed);
-}
+  setTimeout(type, 250);
+})();
 
 /* ── scroll reveal ── */
 const io = new IntersectionObserver(entries => {
@@ -804,397 +809,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 </script>
 
-<script type="module">
-  import * as THREE from 'three';
 
-  const container = document.getElementById('voxel-canvas-container');
-  if (container) {
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.z = 22;
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
-
-    // 整个魔方放进一个组合里，方便统一缩放/摆角度/漂浮
-    const group = new THREE.Group();
-    scene.add(group);
-    // 整体大小：之前 0.62 太小了一点，调大到 0.78
-    group.scale.setScalar(0.78);
-
-    // ── 魔方参数：3x3x3 一共 27 个小方块（cubie）──
-    const CUBIE_SIZE = 2.6;
-    const GAP = 0.35;
-    const STEP = CUBIE_SIZE + GAP;
-
-    // 明亮粉白配色：六个面直接上色，不再贴单独的小贴纸
-    const FACE_COLORS = {
-      px: new THREE.Color('#F14F9B'),
-      nx: new THREE.Color('#ffffff'),
-      py: new THREE.Color('#ffffff'),
-      ny: new THREE.Color('#FBC8DF'),
-      pz: new THREE.Color('#FF7EB6'),
-      nz: new THREE.Color('#FDEAF3'),
-    };
-
-    // BoxGeometry 的材质分组顺序固定为：+x, -x, +y, -y, +z, -z
-    // 27 个小方块共用同一套材质（每个方向颜色一致，看起来永远是"拼好"的状态）
-    const cubieMaterials = [
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.px, roughness: 0.3, metalness: 0.1 }),
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.nx, roughness: 0.3, metalness: 0.1 }),
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.py, roughness: 0.3, metalness: 0.1 }),
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.ny, roughness: 0.3, metalness: 0.1 }),
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.pz, roughness: 0.3, metalness: 0.1 }),
-      new THREE.MeshStandardMaterial({ color: FACE_COLORS.nz, roughness: 0.3, metalness: 0.1 }),
-    ];
-    const cubieGeo = new THREE.BoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE);
-
-    // 生成 27 个小方块，并记录每个方块在魔方里的"逻辑坐标"(-1,0,1)
-    const cubies = [];
-    for (let x = -1; x <= 1; x++) {
-      for (let y = -1; y <= 1; y++) {
-        for (let z = -1; z <= 1; z++) {
-          const mesh = new THREE.Mesh(cubieGeo, cubieMaterials);
-          mesh.position.set(x * STEP, y * STEP, z * STEP);
-          mesh.userData.grid = { x, y, z };
-          group.add(mesh);
-          cubies.push(mesh);
-        }
-      }
-    }
-
-    // 周围悬浮的"魔法像素碎片"装饰
-    const particleCount = 30;
-    const particleGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
-    const particleMaterial = new THREE.MeshStandardMaterial({ roughness: 0.2, metalness: 0.1 });
-    const particleMesh = new THREE.InstancedMesh(particleGeo, particleMaterial, particleCount);
-    const pDummy = new THREE.Object3D();
-    const particlesData = [];
-    const colorPink = new THREE.Color('#F14F9B');
-    const colorWhite = new THREE.Color('#ffffff');
-
-    for (let j = 0; j < particleCount; j++) {
-      particlesData.push({
-        x: (Math.random() - 0.5) * 18,
-        y: (Math.random() - 0.5) * 18,
-        z: (Math.random() - 0.5) * 18,
-        rx: Math.random() * Math.PI,
-        ry: Math.random() * Math.PI,
-        speed: 0.01 + Math.random() * 0.02
-      });
-      particleMesh.setColorAt(j, Math.random() > 0.3 ? colorPink : colorWhite);
-    }
-    group.add(particleMesh);
-
-    // 打光
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    keyLight.position.set(12, 18, 14);
-    scene.add(keyLight);
-
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
-    fillLight.position.set(-14, -6, -10);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(0xF14F9B, 0.5);
-    rimLight.position.set(-8, 10, -14);
-    scene.add(rimLight);
-
-    // ══════════════════════════════════════════
-    // 魔方拧动核心
-    // ══════════════════════════════════════════
-    const pivot = new THREE.Object3D();
-    group.add(pivot);
-    let isTwisting = false;      // 有任何一层正在转动（自动或手动）时为 true
-    let freezeIdleRotation = false; // 手动拖动时，暂停整体的自转/摇摆，避免参照系漂移
-    let idlePausedUntil = 0;     // 松手后一段时间内暂停"自动随机拧动"
-
-    // 把一次 90° 转动的结果，写回每个方块的逻辑坐标
-    function finalizeTwist(affected, axis, dir) {
-      affected.forEach(c => {
-        group.attach(c);
-        c.position.x = Math.round(c.position.x / STEP) * STEP;
-        c.position.y = Math.round(c.position.y / STEP) * STEP;
-        c.position.z = Math.round(c.position.z / STEP) * STEP;
-
-        const g = c.userData.grid;
-        if (axis === 'x') {
-          const ny = dir > 0 ? -g.z : g.z;
-          const nz = dir > 0 ? g.y : -g.y;
-          g.y = ny; g.z = nz;
-        } else if (axis === 'y') {
-          const nx = dir > 0 ? g.z : -g.z;
-          const nz = dir > 0 ? -g.x : g.x;
-          g.x = nx; g.z = nz;
-        } else {
-          const nx = dir > 0 ? -g.y : g.y;
-          const ny = dir > 0 ? g.x : -g.x;
-          g.x = nx; g.y = ny;
-        }
-      });
-    }
-
-    function pickRandomMove() {
-      const axes = ['x', 'y', 'z'];
-      const axis = axes[Math.floor(Math.random() * 3)];
-      const layer = Math.floor(Math.random() * 3) - 1;
-      const dir = Math.random() > 0.5 ? 1 : -1;
-      return { axis, layer, dir };
-    }
-
-    // 自动随机拧一层（无人拖动时的"待机小动作"）
-    function twistLayer({ axis, layer, dir }, duration = 650) {
-      const affected = cubies.filter(c => c.userData.grid[axis] === layer);
-      if (affected.length === 0) return;
-
-      isTwisting = true;
-      pivot.rotation.set(0, 0, 0);
-      pivot.position.set(0, 0, 0);
-      affected.forEach(c => pivot.attach(c));
-
-      const startTime = performance.now();
-      const targetAngle = dir * (Math.PI / 2);
-
-      function step(now) {
-        const t = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        pivot.rotation[axis] = eased * targetAngle;
-
-        if (t < 1) {
-          requestAnimationFrame(step);
-        } else {
-          finalizeTwist(affected, axis, dir);
-          pivot.rotation.set(0, 0, 0);
-          isTwisting = false;
-        }
-      }
-      requestAnimationFrame(step);
-    }
-
-    function scheduleNextMove() {
-      const delay = 1200 + Math.random() * 1200;
-      setTimeout(() => {
-        if (!isTwisting && performance.now() > idlePausedUntil) {
-          twistLayer(pickRandomMove());
-        }
-        scheduleNextMove();
-      }, delay);
-    }
-    scheduleNextMove();
-
-    // 固定的"好角度"：斜上方看过去，能同时看到三个面
-    const baseRotY = 0.62;
-    const baseRotX = -0.42;
-
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-
-      const isMobile = window.innerWidth <= 768;
-      const targetX = isMobile ? 0 : 8;
-
-      if (!freezeIdleRotation) {
-        group.rotation.y = baseRotY + Math.sin(time * 0.3) * 0.12;
-        group.rotation.x = baseRotX + Math.sin(time * 0.25) * 0.06;
-      }
-      group.position.y = Math.sin(time * 1.2) * 0.5;
-      group.position.x = targetX;
-
-      particlesData.forEach((p, idx) => {
-        p.y += p.speed;
-        p.rx += p.speed;
-        p.ry += p.speed;
-        if (p.y > 16) p.y = -16;
-        pDummy.position.set(p.x, p.y, p.z);
-        pDummy.rotation.set(p.rx, p.ry, 0);
-        pDummy.updateMatrix();
-        particleMesh.setMatrixAt(idx, pDummy.matrix);
-      });
-      particleMesh.instanceMatrix.needsUpdate = true;
-
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
-
-    // ══════════════════════════════════════════
-    // 鼠标长按拖动 = 手动拧某一层（只在桌面端开启，手机端魔方是背景装饰，不抢滚动手势）
-    // ══════════════════════════════════════════
-    if (window.innerWidth > 768) {
-      renderer.domElement.style.pointerEvents = 'auto';
-      renderer.domElement.style.touchAction = 'none';
-      renderer.domElement.style.cursor = 'grab';
-
-      const raycaster = new THREE.Raycaster();
-      const ndc = new THREE.Vector2();
-      let drag = null;
-
-      function screenPoint(worldPos) {
-        const v = worldPos.clone().project(camera);
-        const rect = renderer.domElement.getBoundingClientRect();
-        return { x: (v.x * 0.5 + 0.5) * rect.width, y: (-v.y * 0.5 + 0.5) * rect.height };
-      }
-
-      function pickCubie(clientX, clientY) {
-        const rect = renderer.domElement.getBoundingClientRect();
-        ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-        ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-        raycaster.setFromCamera(ndc, camera);
-        const hits = raycaster.intersectObjects(cubies, false);
-        return hits[0] || null;
-      }
-
-      renderer.domElement.addEventListener('pointerdown', (e) => {
-        if (isTwisting) return; // 有动画正在跑（自动或上一次手动）时先不响应，避免打架
-        const hit = pickCubie(e.clientX, e.clientY);
-        if (!hit) return;
-
-        e.preventDefault();
-        renderer.domElement.setPointerCapture(e.pointerId);
-        renderer.domElement.style.cursor = 'grabbing';
-        freezeIdleRotation = true; // 拖动期间冻结整体自转，坐标系不漂移
-
-        const cubie = hit.object;
-        const faceNormalWorld = hit.face.normal.clone().transformDirection(cubie.matrixWorld).normalize();
-        const invGroupQuat = group.quaternion.clone().invert();
-        const localNormal = faceNormalWorld.clone().applyQuaternion(invGroupQuat).round();
-
-        let normalAxis = 'x';
-        if (Math.abs(localNormal.y) > Math.abs(localNormal[normalAxis])) normalAxis = 'y';
-        if (Math.abs(localNormal.z) > Math.abs(localNormal[normalAxis])) normalAxis = 'z';
-
-        const axisVectorsLocal = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0), z: new THREE.Vector3(0, 0, 1) };
-        const inPlaneAxes = ['x', 'y', 'z'].filter(a => a !== normalAxis);
-
-        const cubieWorldPos = new THREE.Vector3();
-        cubie.getWorldPosition(cubieWorldPos);
-        const p0 = screenPoint(cubieWorldPos);
-
-        // 两个候选的"拖动方向"，对应抓到的这个面上的两条边
-        const candidates = inPlaneAxes.map(axisName => {
-          const dirWorld = axisVectorsLocal[axisName].clone().applyQuaternion(group.quaternion).normalize();
-          const p1 = screenPoint(cubieWorldPos.clone().add(dirWorld.clone().multiplyScalar(0.6)));
-          const raw = { x: p1.x - p0.x, y: p1.y - p0.y };
-          const len = Math.hypot(raw.x, raw.y) || 1;
-          return { axisName, dirWorld, screenDir: { x: raw.x / len, y: raw.y / len } };
-        });
-
-        drag = {
-          cubie, faceNormalWorld, candidates,
-          startX: e.clientX, startY: e.clientY,
-          locked: false,
-          rotationAxis: null, rotationSign: 1,
-          matched: null, affected: null,
-        };
-      });
-
-      window.addEventListener('pointermove', (e) => {
-        if (!drag) return;
-        const dx = e.clientX - drag.startX;
-        const dy = e.clientY - drag.startY;
-
-        if (!drag.locked) {
-          if (Math.hypot(dx, dy) < 6) return; // 拖得太短还不判断方向，避免误触
-
-          // 找出跟当前拖动方向最接近的那条边
-          let best = drag.candidates[0], bestScore = -Infinity;
-          drag.candidates.forEach(c => {
-            const score = Math.abs(dx * c.screenDir.x + dy * c.screenDir.y);
-            if (score > bestScore) { bestScore = score; best = c; }
-          });
-
-          // 转动轴 = 抓取面法线 × 拖动方向（右手定则，方向自动算对）
-          const rotAxisVectorWorld = drag.faceNormalWorld.clone().cross(best.dirWorld).normalize();
-          const invGroupQuat = group.quaternion.clone().invert();
-          const rotAxisLocal = rotAxisVectorWorld.applyQuaternion(invGroupQuat).round();
-
-          let rotationAxis = 'x';
-          if (Math.abs(rotAxisLocal.y) > Math.abs(rotAxisLocal[rotationAxis])) rotationAxis = 'y';
-          if (Math.abs(rotAxisLocal.z) > Math.abs(rotAxisLocal[rotationAxis])) rotationAxis = 'z';
-          const rotationSign = rotAxisLocal[rotationAxis] || 1;
-
-          const layer = drag.cubie.userData.grid[rotationAxis];
-          const affected = cubies.filter(c => c.userData.grid[rotationAxis] === layer);
-          if (affected.length === 0) { drag = null; freezeIdleRotation = false; return; }
-
-          drag.matched = best;
-          drag.rotationAxis = rotationAxis;
-          drag.rotationSign = rotationSign;
-          drag.affected = affected;
-          drag.locked = true;
-          isTwisting = true;
-
-          pivot.rotation.set(0, 0, 0);
-          pivot.position.set(0, 0, 0);
-          affected.forEach(c => pivot.attach(c));
-        }
-
-        const proj = dx * drag.matched.screenDir.x + dy * drag.matched.screenDir.y;
-        const MAX_ANGLE = (Math.PI / 2) * 1.15;
-        let angle = drag.rotationSign * (proj / 120) * (Math.PI / 2);
-        angle = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, angle));
-        pivot.rotation[drag.rotationAxis] = angle;
-      });
-
-      function endDrag() {
-        if (!drag) return;
-        renderer.domElement.style.cursor = 'grab';
-        idlePausedUntil = performance.now() + 2000; // 松手后 2 秒再恢复自动待机拧动
-
-        if (!drag.locked) {
-          drag = null;
-          freezeIdleRotation = false;
-          return;
-        }
-
-        const axis = drag.rotationAxis;
-        const affected = drag.affected;
-        const startAngle = pivot.rotation[axis];
-        const quarter = Math.PI / 2;
-        const snapped = Math.round(startAngle / quarter) * quarter;
-        const dir = snapped === 0 ? 0 : Math.sign(snapped);
-
-        const startTime = performance.now();
-        const duration = 180;
-
-        function step(now) {
-          const t = Math.min((now - startTime) / duration, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
-          pivot.rotation[axis] = startAngle + (snapped - startAngle) * eased;
-
-          if (t < 1) {
-            requestAnimationFrame(step);
-          } else {
-            if (dir !== 0) {
-              finalizeTwist(affected, axis, dir);
-            } else {
-              affected.forEach(c => group.attach(c)); // 没转够 45°，还原，不改变逻辑坐标
-            }
-            pivot.rotation.set(0, 0, 0);
-            isTwisting = false;
-            freezeIdleRotation = false;
-          }
-        }
-        requestAnimationFrame(step);
-        drag = null;
-      }
-
-      window.addEventListener('pointerup', endDrag);
-      window.addEventListener('pointercancel', endDrag);
-    }
-  }
-</script>
 
 </body>
 </html>
