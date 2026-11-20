@@ -534,8 +534,13 @@
   .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .intro-typing .hero-bio, .intro-typing .hero-contact, .intro-typing .hero-right { opacity: 0; }
   .hero-bio, .hero-contact, .hero-right { transition: opacity .7s ease; }
+  .scroll-cue { position: absolute; z-index: 2; bottom: 18px; left: 50%; margin-left: -22px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--accent); opacity: 1; visibility: visible; transition: opacity .45s ease .7s, visibility 0s linear .7s; }
+  .scroll-cue svg { width: 28px; height: 28px; animation: scroll-bob 1.5s ease-in-out infinite; }
+  .scroll-cue:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 50%; }
+  .intro-typing .scroll-cue { opacity: 0; visibility: hidden; transition: none; }
+  @keyframes scroll-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
   @media (max-width: 900px) { #hero { grid-template-columns: 1fr; gap: 40px; padding: 140px 7vw 80px; } .photo-frame { width: 100%; max-width: 360px; margin: 0 auto; } }
-  @media (prefers-reduced-motion: reduce) { .hero-bio, .hero-contact, .hero-right { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-bio, .hero-contact, .hero-right, .scroll-cue { transition: none; } .scroll-cue svg { animation: none; } }
 </style>
 </head>
 <body>
@@ -601,6 +606,9 @@
       <img src="carol-photo.jpg" alt="Carol">
       </div>
   </div>
+  <a class="scroll-cue" href="#projects" aria-label="Scroll down to projects">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M12 4v14M6 12l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
 </section>
 
 <section id="projects">
